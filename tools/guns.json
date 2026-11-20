@@ -1,0 +1,1095 @@
+{
+  "aa12": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "barrel",
+        "bolt",
+        "charge_handle",
+        "fore_sight",
+        "iron_view",
+        "laser_pos",
+        "magazine_and_bullet",
+        "mount_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "rail2",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "safety",
+        "scope_pos",
+        "sight_back",
+        "sight_illuminated",
+        "top_rail"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "ai_awp": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "barrel_default",
+        "bolt_group",
+        "bullet_in_barrel",
+        "bullet_shell",
+        "iron_view",
+        "mag_and_lefthand",
+        "muzzle_flash",
+        "muzzle_pos",
+        "refit_extended_mag_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "screws",
+        "sight",
+        "trigger"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图",
+    "shell@1.2.0": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "barrel",
+        "bipoddmrsniper2",
+        "bolt_group",
+        "bullet_in_barrel",
+        "iron_view",
+        "mag_and_lefthand",
+        "mag_release",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "refit_extended_mag_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "sight"
+      ]
+    },
+    "note@1.2.0": "TaCZ 1.2.0 改了模型：按骨骼名重新提的外壳"
+  },
+  "ak47": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "additional_magazine",
+        "barrel3",
+        "bolt",
+        "bullet_in_barrel",
+        "iron_sight3",
+        "iron_sight4",
+        "iron_view",
+        "lefthand_and_mag",
+        "mount",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "refit_extended_mag_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "safety3",
+        "scope_pos",
+        "trigger2",
+        "trigger_guard2"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "aug": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "aug_bolt",
+        "aug_charge",
+        "boltcover",
+        "iron_view",
+        "laser_pos",
+        "mag_and_lefthand",
+        "mag_release",
+        "mount",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "safety",
+        "scope_pos",
+        "side_rail",
+        "trigger"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "cz75": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "additional_magazine",
+        "barrel",
+        "bullet_in_barrel",
+        "frontsight_illuminated",
+        "hammer",
+        "iron_view",
+        "mag_and_lefthand",
+        "mag_standard2",
+        "refit_extended_mag_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "screw",
+        "sight",
+        "trigger"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "deagle": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "additional_magazine",
+        "bullet_in_barrel",
+        "chamber",
+        "fore_sight",
+        "hammer",
+        "iron_view",
+        "laser_pos",
+        "mag_and_lefthand",
+        "muzzle_flash",
+        "muzzle_pos",
+        "rear_sight",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "safety",
+        "scope_pos",
+        "tactical_rail",
+        "trigger"
+      ]
+    },
+    "note": "沙鹰的 barrel 是套筒上方前段一长条，留着会剩一道灰，算外壳"
+  },
+  "fn_evolys": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "barrel",
+        "bipod",
+        "bolt",
+        "charge",
+        "iron_view",
+        "mag_and_lefthand",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "rearsight",
+        "refit_extended_mag_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "safety",
+        "scope_pos",
+        "sight_rear",
+        "sights",
+        "trigger"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "fn_fal": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "additional_magazine",
+        "barrel",
+        "belt",
+        "bolt",
+        "iron_view",
+        "laser_pos",
+        "mag_and_lefthand",
+        "mag_well",
+        "mount",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "pull_handle",
+        "rearsight",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "safety",
+        "scope_pos",
+        "side_rail",
+        "side_rail2",
+        "trigger"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "g36k": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "additional_magazine",
+        "barrel",
+        "fore_sight",
+        "iron_view",
+        "laser_pos",
+        "lower_rail",
+        "mag_and_lefthand",
+        "mag_well",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "pull_handle",
+        "rear_sight",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "safety",
+        "scope_pos",
+        "side_rails",
+        "top_rail",
+        "trigger"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "hk416d": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "MagazineCatch",
+        "Safety",
+        "a5_sights",
+        "additional_magazine",
+        "barrel",
+        "charge_handle",
+        "iron_view",
+        "laser_pos",
+        "magazine_and_hand",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos"
+      ]
+    },
+    "note": "护木就是导轨：不漆的话近处黑、远处（映射过去）却上了漆，对不上"
+  },
+  "hk_g3": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "G3_bolt",
+        "additional_magazine",
+        "barrel",
+        "iron_view",
+        "laser_pos",
+        "mag_and_l",
+        "mag_release",
+        "magwell",
+        "mount",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "pull",
+        "rail",
+        "rail2",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "selector",
+        "sight",
+        "sight2",
+        "sight_illuminated",
+        "trigger"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "hk_mp5a5": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "additional_magazine",
+        "barrel3",
+        "bolt",
+        "charge_handle",
+        "iron_view",
+        "laser_adapter",
+        "laser_pos",
+        "mag_and_lefthand",
+        "magazinecatch_1",
+        "magazinecatch_2",
+        "mount",
+        "muzzle_flash",
+        "muzzle_pos",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "safety",
+        "scope_pos",
+        "sight",
+        "stablering",
+        "trigger"
+      ]
+    },
+    "note": "barrel_default 下面是护木（handguard、group2）加枪管、拉机柄、稳定环：只扣后三个"
+  },
+  "m1014": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "Bolt",
+        "Gunbarrel",
+        "Trigger",
+        "bullet",
+        "bullet_and_hand",
+        "iron_sight",
+        "iron_view",
+        "magazine",
+        "muzzle_flash",
+        "muzzle_pos",
+        "rail",
+        "refit_extended_mag_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "screws",
+        "springplate"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "m107": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "bipod_extended",
+        "bolt",
+        "gun_barrel",
+        "iron_view",
+        "mag_and_bullet",
+        "rail",
+        "refit_extended_mag_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "sight",
+        "sight_folded",
+        "sightbase",
+        "trigger"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "m16a1": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "barrel",
+        "bolt_release",
+        "fix_sight",
+        "iron_view",
+        "mag_and_lefthand",
+        "mag_release",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "pull2",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "safety",
+        "scope_pos"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "m16a4": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "iron_view",
+        "laser_pos",
+        "mag_and_lefthand",
+        "mag_release",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "pull2",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "screw3",
+        "sight2",
+        "sights"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "m249": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "barrel",
+        "iron",
+        "iron_view",
+        "laser_pos",
+        "magazine",
+        "muzzle_flash",
+        "muzzle_pos",
+        "pull_handle",
+        "rails",
+        "rare_sight",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "top_rail",
+        "trigger"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "m320": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "iron_view",
+        "mag_release",
+        "safety",
+        "sight"
+      ]
+    },
+    "note": "M320 主要就是那根发射管（chamber），算外壳"
+  },
+  "m4a1": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "additional_magazine",
+        "barrel",
+        "body_rail",
+        "bolt_release",
+        "fore_sight3",
+        "iron_view",
+        "laser_pos",
+        "m4a1_pull",
+        "mag_and_lefthand",
+        "mag_release",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "rail",
+        "rail2",
+        "rail3",
+        "rail4",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "selector",
+        "sight2",
+        "sights"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图",
+    "shell@1.2.0": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "additional_magazine",
+        "barrel",
+        "barrel2",
+        "bolt_release",
+        "iron_view",
+        "laser_pos",
+        "m4a1_pull",
+        "mag_and_lefthand",
+        "mag_release",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "selector",
+        "sight",
+        "sight_illuminated"
+      ]
+    },
+    "note@1.2.0": "TaCZ 1.2.0 改了模型：按骨骼名重新提的外壳"
+  },
+  "m700": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "bullet_and_bolt",
+        "bullet_shell",
+        "iron_view",
+        "mag_and_lefthand",
+        "muzzle_flash",
+        "muzzle_pos",
+        "refit_extended_mag_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "sight"
+      ]
+    },
+    "note": "枪管与机匣是同一根骨骼（main_body），分不开，外壳里枪管也上漆"
+  },
+  "m870": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "barrel",
+        "bolt",
+        "bullet_and_lefthand",
+        "iron_view",
+        "mag_extended_1",
+        "mag_extended_2",
+        "mag_extended_3",
+        "magazine",
+        "muzzle_flash",
+        "muzzle_pos",
+        "refit_extended_mag_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "safety",
+        "safety2",
+        "screw",
+        "sight",
+        "trigger"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "m95": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "bipod",
+        "iron_view",
+        "m95_barrel",
+        "m95_bolt",
+        "mag_and_lefthand",
+        "mag_release",
+        "muzzle_flash",
+        "muzzle_pos",
+        "refit_extended_mag_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "shell_ejection",
+        "sight",
+        "sight_folded",
+        "sightbase",
+        "trigger"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图",
+    "shell@1.2.0": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "bipod",
+        "iron_view",
+        "m95_barrel",
+        "m95_bolt",
+        "mag_and_lefthand",
+        "mag_release",
+        "muzzle_flash",
+        "muzzle_pos",
+        "refit_extended_mag_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "sight",
+        "sight_folded",
+        "sightbase",
+        "trigger"
+      ]
+    },
+    "note@1.2.0": "TaCZ 1.2.0 去掉了 shell_ejection"
+  },
+  "minigun": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "barrel_rotate",
+        "iron_view",
+        "laser_beam",
+        "mag2",
+        "mounts",
+        "muzzle_flash",
+        "refit_muzzle_view"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "mk14": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "additional_magazine",
+        "barrel2",
+        "bipod",
+        "bolt2",
+        "boltrelease",
+        "charger",
+        "front_rail",
+        "iron_view",
+        "laser_pos",
+        "mag_and_lefthand",
+        "magrelease",
+        "mount",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "rail6",
+        "rail7",
+        "rail8",
+        "rear_sight2",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "safety",
+        "scope_pos",
+        "selector",
+        "trigger2"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "p90": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "Trigger2",
+        "barrel2",
+        "iron_view",
+        "laser_pos",
+        "mag_release",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "p90_mag_standard",
+        "pull",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "screws2",
+        "side_rail2"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "qbz_191": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "Gunrails",
+        "additional_magazine",
+        "barrel",
+        "body_rail2",
+        "body_rail3",
+        "bolt",
+        "bolt_release",
+        "iron_view",
+        "laser_pos",
+        "mag_and_lefthand",
+        "mag_release",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "rail",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "selector",
+        "sights"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "qbz_95": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "additional_magazine",
+        "back_sight",
+        "barrel",
+        "bolt_group",
+        "extra_rails",
+        "iron_view",
+        "laser_pos",
+        "mag_and_hand",
+        "magrelease",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "safety",
+        "scope_pos",
+        "toprail1"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "rpg7": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "Sight",
+        "iron_view",
+        "mag_hand",
+        "trigger"
+      ]
+    },
+    "note": "管子中间那段青色是露出来的火箭（rocket，不上漆），外壳照自动提的"
+  },
+  "rpk": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "barrel2",
+        "bipod_extended",
+        "bolt",
+        "iron_sight",
+        "iron_sight2",
+        "iron_view",
+        "lefthand_and_mag",
+        "mount",
+        "muzzle_flash",
+        "muzzle_pos",
+        "refit_extended_mag_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "safety2",
+        "scope_pos",
+        "sight_illuminate",
+        "trigger2",
+        "trigger_guard"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "scar_h": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "additional_magazine",
+        "barrel",
+        "barrel2",
+        "bolt",
+        "iron_view",
+        "laser_pos",
+        "mag_and_lh",
+        "magrelease",
+        "magwell",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "rails",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "screws",
+        "sights",
+        "trigger"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "scar_l": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "additional_magazine",
+        "barrel",
+        "barrel2",
+        "bolt",
+        "iron_view",
+        "laser_pos",
+        "mag_and_lh",
+        "magrelease",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "rails",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "screws",
+        "sights",
+        "trigger"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "spas_12": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "barrel",
+        "bolt2",
+        "bolt_release",
+        "bullet_and_righthand",
+        "bullet_in_mag",
+        "iron_view",
+        "mags",
+        "mount",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "rear_sight",
+        "refit_extended_mag_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "safety",
+        "safety2",
+        "scope_pos",
+        "shootingmodeselector",
+        "sight",
+        "sight_f",
+        "sight_folded",
+        "trigger"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "spr15hb": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "additional_magazine",
+        "barrel",
+        "bipod",
+        "body_rail",
+        "bolt_pull",
+        "bolt_release",
+        "iron_view",
+        "laser_pos",
+        "mag_and_lefthand",
+        "mag_release",
+        "muzzle_default",
+        "muzzle_flash",
+        "muzzle_pos",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "selector",
+        "sight",
+        "sight_base",
+        "sight_folded"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "taurus500": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "hammer",
+        "iron_view",
+        "ironsight",
+        "laser_pos",
+        "muzzle_flash",
+        "muzzle_pos",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "trigger"
+      ]
+    },
+    "note": "左轮的枪管与转轮占了枪的一大半，算外壳"
+  },
+  "type_81": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "additional_magazine",
+        "barrel2",
+        "bolt",
+        "iron_view",
+        "mag_and_lefthand",
+        "mag_release",
+        "muzzle_flash",
+        "muzzle_pos",
+        "rearsight",
+        "refit_extended_mag_view",
+        "refit_muzzle_view",
+        "safety",
+        "trigger"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "ump45": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "barrel",
+        "bolt_release",
+        "iron_view",
+        "laser_pos",
+        "mag_release",
+        "magzine_and_bullet",
+        "muzzle_flash",
+        "muzzle_pos",
+        "rails",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "scope_pos",
+        "sight_illuminated",
+        "ump45_bolt",
+        "ump45_charge_handle",
+        "ump45_safety"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  },
+  "vector45": {
+    "shell": {
+      "include": [
+        "root"
+      ],
+      "exclude": [
+        "barrel",
+        "iron_view",
+        "laser_adapter",
+        "laser_pos",
+        "mag_and_lefthand",
+        "muzzle_flash",
+        "muzzle_pos",
+        "rail",
+        "rail2",
+        "refit_extended_mag_view",
+        "refit_laser_view",
+        "refit_muzzle_view",
+        "refit_scope_view",
+        "safety",
+        "scope_pos",
+        "sight",
+        "vector45_bolt"
+      ]
+    },
+    "note": "按骨骼名自动提的，2026-10-12 看过检查图"
+  }
+}

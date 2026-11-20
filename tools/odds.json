@@ -1,0 +1,52 @@
+{
+  "_说明": "喷一次：先按这把枪有的外观等级的权重掷等级（这把枪没有的等级，权重按其余各档分掉），等级里的外观均匀挑；再按成色分档的权重掷一档、档内均匀取数，缩放进外观自己的磨损上下限。权重照 CS 的武器箱公示与社区实测。",
+  "grades": [
+    {
+      "name": "standard",
+      "weight": 79.92
+    },
+    {
+      "name": "modified",
+      "weight": 15.98
+    },
+    {
+      "name": "custom",
+      "weight": 3.2
+    },
+    {
+      "name": "collector",
+      "weight": 0.64
+    },
+    {
+      "name": "unique",
+      "weight": 0.26
+    }
+  ],
+  "bands": [
+    {
+      "name": "factory_new",
+      "upper": 0.07,
+      "weight": 3
+    },
+    {
+      "name": "minimal_wear",
+      "upper": 0.15,
+      "weight": 24
+    },
+    {
+      "name": "field_tested",
+      "upper": 0.38,
+      "weight": 33
+    },
+    {
+      "name": "well_worn",
+      "upper": 0.45,
+      "weight": 24
+    },
+    {
+      "name": "battle_scarred",
+      "upper": 1.0,
+      "weight": 16
+    }
+  ]
+}

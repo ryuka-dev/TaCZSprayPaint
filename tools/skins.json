@@ -1,0 +1,339 @@
+{
+  "_说明": "skins 是给 skingen.py --check 与实验用的单把样例（bake 是几档磨损的样张）；正式外观由 pack.py 按 finishes.tsv 生成：每个 patterns 里的图案铺到 finishes.tsv 里列了它的那些枪。",
+  "skins": [
+    {
+      "id": "glock_17_sakura",
+      "name": "樱",
+      "gun": "glock_17",
+      "bones": [
+        "slide"
+      ],
+      "lod_bones": [
+        "Slide"
+      ],
+      "pixel": 0.25,
+      "lod_pixel": 0.5,
+      "pattern": {
+        "size": 16,
+        "shades": [
+          "d9729c",
+          "e58bb0",
+          "eea5c2",
+          "f7c6d9"
+        ],
+        "accents": [
+          "7a8a3a",
+          "5f7030"
+        ],
+        "accent_rate": 0.04
+      },
+      "bake": {
+        "fn": 0.03,
+        "mw": 0.1,
+        "ft": 0.25,
+        "ww": 0.42,
+        "bs": 0.7,
+        "ft_b": {
+          "f": 0.25,
+          "wear": 7,
+          "pattern": 3
+        },
+        "bs_b": {
+          "f": 0.7,
+          "wear": 7,
+          "pattern": 3
+        }
+      }
+    }
+  ],
+  "_说明_patterns": "正式的图案：cover 是上漆范围（shell 只漆外壳，外壳按 guns.json；full 整把漆）；pattern 是 patterns.py 的画法与参数；anim 是会动的效果；projection 为 side 的从侧面整体投影（条纹、色带、格纹这类有方向的图案）。name 是中文名，英文名在 pack.py 的 ENGLISH。",
+  "patterns": [
+    {
+      "id": "sakura",
+      "name": "樱",
+      "cover": "shell",
+      "pattern": {
+        "kind": "leaves",
+        "size": 16,
+        "shades": [
+          "d9729c",
+          "e58bb0",
+          "eea5c2",
+          "f7c6d9"
+        ],
+        "accents": [
+          "7a8a3a",
+          "5f7030"
+        ],
+        "accent_rate": 0.04
+      }
+    },
+    {
+      "id": "celadon",
+      "name": "青瓷",
+      "cover": "shell",
+      "pattern": {
+        "kind": "crackle",
+        "size": 32,
+        "base": [
+          "8fbfa8",
+          "a6d0bb",
+          "bfe0cf"
+        ],
+        "crack": "6a9483",
+        "cells": 5
+      }
+    },
+    {
+      "id": "ice",
+      "name": "冰裂",
+      "cover": "shell",
+      "pattern": {
+        "kind": "crackle",
+        "size": 32,
+        "base": [
+          "a9d6ec",
+          "cbe8f6",
+          "eef8fd"
+        ],
+        "crack": "ffffff",
+        "cells": 4,
+        "width": 0.09
+      }
+    },
+    {
+      "id": "rust",
+      "name": "锈",
+      "cover": "shell",
+      "pattern": {
+        "kind": "blotches",
+        "size": 32,
+        "shades": [
+          "7d3a1c",
+          "a64a22",
+          "c8642c",
+          "d98a4a"
+        ],
+        "cells": 4
+      }
+    },
+    {
+      "id": "lava",
+      "name": "熔岩",
+      "cover": "full",
+      "pattern": {
+        "kind": "veins",
+        "size": 32,
+        "base": [
+          "5c1a14",
+          "7a2216"
+        ],
+        "vein": [
+          "d9481c",
+          "ff9a2a",
+          "ffe27a"
+        ],
+        "freq": 2,
+        "warp": 2.5,
+        "thin": 0.22
+      },
+      "anim": [
+        {
+          "type": "flow",
+          "speed": 1.0
+        },
+        {
+          "type": "pulse",
+          "period": 3.0,
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "id": "neon",
+      "name": "霓虹",
+      "cover": "full",
+      "pattern": {
+        "kind": "stripes",
+        "size": 32,
+        "colours": [
+          "4a2a7a",
+          "ff3dcf",
+          "4a2a7a",
+          "35e0f0"
+        ],
+        "widths": [
+          6,
+          2,
+          6,
+          2
+        ]
+      },
+      "projection": "side"
+    },
+    {
+      "id": "hazard",
+      "name": "警戒",
+      "cover": "full",
+      "pattern": {
+        "kind": "stripes",
+        "size": 32,
+        "colours": [
+          "f2c21b",
+          "2b2b2b"
+        ],
+        "widths": [
+          5,
+          3
+        ]
+      },
+      "projection": "side"
+    },
+    {
+      "id": "candy",
+      "name": "糖果",
+      "cover": "shell",
+      "pattern": {
+        "kind": "stripes",
+        "size": 32,
+        "colours": [
+          "f7a8c8",
+          "fff4f8",
+          "9fe3cf",
+          "fff4f8"
+        ],
+        "widths": [
+          3,
+          1,
+          3,
+          1
+        ]
+      },
+      "projection": "side"
+    },
+    {
+      "id": "marble",
+      "name": "大理石",
+      "cover": "shell",
+      "pattern": {
+        "kind": "veins",
+        "size": 32,
+        "base": [
+          "e2ddd3",
+          "f2efe8"
+        ],
+        "vein": [
+          "6f6b67",
+          "9a958e"
+        ],
+        "freq": 2,
+        "warp": 2.2,
+        "thin": 0.15
+      }
+    },
+    {
+      "id": "brass",
+      "name": "黄铜",
+      "cover": "shell",
+      "pattern": {
+        "kind": "blotches",
+        "size": 32,
+        "shades": [
+          "a8802e",
+          "c9a24a",
+          "dfbd62",
+          "f2d98a"
+        ],
+        "cells": 8
+      }
+    },
+    {
+      "id": "dots",
+      "name": "波点",
+      "cover": "shell",
+      "pattern": {
+        "kind": "dots",
+        "size": 32,
+        "base": "c8323c",
+        "dot": "f4efe6",
+        "step": 16,
+        "radius": 3.3
+      }
+    },
+    {
+      "id": "sunset",
+      "name": "晚霞",
+      "cover": "full",
+      "pattern": {
+        "kind": "bands",
+        "size": 64,
+        "colours": [
+          "ffb347",
+          "ff7a6b",
+          "e0558f",
+          "8a5bc9"
+        ],
+        "warp": 0.8
+      },
+      "anim": [
+        {
+          "type": "hue",
+          "period": 8.0,
+          "degrees": 30
+        }
+      ],
+      "projection": "side"
+    },
+    {
+      "id": "waves",
+      "name": "海浪",
+      "cover": "full",
+      "pattern": {
+        "kind": "bands",
+        "size": 64,
+        "colours": [
+          "1f5fae",
+          "2f86d6",
+          "7cc3ee",
+          "eaf6ff"
+        ],
+        "wave": 1.2,
+        "warp": 0.4
+      },
+      "projection": "side"
+    },
+    {
+      "id": "tartan",
+      "name": "格纹",
+      "cover": "shell",
+      "pattern": {
+        "kind": "plaid",
+        "size": 32,
+        "base": "b0282e",
+        "lines": [
+          [
+            "2f6b4a",
+            0,
+            6
+          ],
+          [
+            "2f6b4a",
+            16,
+            6
+          ],
+          [
+            "f2d36b",
+            10,
+            1
+          ],
+          [
+            "1d2f5a",
+            26,
+            2
+          ]
+        ]
+      },
+      "projection": "side"
+    }
+  ]
+}
