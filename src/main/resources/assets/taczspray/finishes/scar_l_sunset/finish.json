@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "pattern": "sunset",
+  "pixel": 0.25,
+  "lod_pixel": 0.25,
+  "texels": {
+    "1.1": "scar_l_full_11",
+    "1.2": "scar_l_full_12"
+  },
+  "anim": [
+    {
+      "type": "hue",
+      "period": 8.0,
+      "degrees": 30
+    }
+  ],
+  "projection": "side"
+}

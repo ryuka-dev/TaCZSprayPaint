@@ -1,0 +1,8 @@
+{
+  "v": 1,
+  "pattern": "waves",
+  "pixel": 0.25,
+  "lod_pixel": 0.25,
+  "texels": "m16a4_full",
+  "projection": "side"
+}

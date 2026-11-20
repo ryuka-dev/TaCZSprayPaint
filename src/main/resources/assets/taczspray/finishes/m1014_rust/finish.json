@@ -1,0 +1,7 @@
+{
+  "v": 1,
+  "pattern": "rust",
+  "pixel": 0.25,
+  "lod_pixel": 0.25,
+  "texels": "m1014_shell"
+}

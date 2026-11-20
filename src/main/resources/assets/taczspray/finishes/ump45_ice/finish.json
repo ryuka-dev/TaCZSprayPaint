@@ -1,0 +1,7 @@
+{
+  "v": 1,
+  "pattern": "ice",
+  "pixel": 0.25,
+  "lod_pixel": 0.25,
+  "texels": "ump45_shell"
+}

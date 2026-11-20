@@ -1,0 +1,8 @@
+{
+  "v": 1,
+  "pattern": "neon",
+  "pixel": 0.25,
+  "lod_pixel": 0.25,
+  "texels": "qbz_95_full",
+  "projection": "side"
+}

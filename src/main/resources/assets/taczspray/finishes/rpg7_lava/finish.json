@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "pattern": "lava",
+  "pixel": 0.25,
+  "lod_pixel": 0.25,
+  "texels": "rpg7_full",
+  "anim": [
+    {
+      "type": "flow",
+      "speed": 1.0
+    },
+    {
+      "type": "pulse",
+      "period": 3.0,
+      "amount": 0.5
+    }
+  ]
+}

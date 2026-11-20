@@ -1,0 +1,15 @@
+{
+  "v": 1,
+  "pattern": "sunset",
+  "pixel": 0.25,
+  "lod_pixel": 0.25,
+  "texels": "hk_mp5a5_full",
+  "anim": [
+    {
+      "type": "hue",
+      "period": 8.0,
+      "degrees": 30
+    }
+  ],
+  "projection": "side"
+}

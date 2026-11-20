@@ -1,0 +1,8 @@
+{
+  "v": 1,
+  "pattern": "neon",
+  "pixel": 0.25,
+  "lod_pixel": 0.25,
+  "texels": "hk_mp5a5_full",
+  "projection": "side"
+}

@@ -1,0 +1,8 @@
+{
+  "v": 1,
+  "pattern": "candy",
+  "pixel": 0.25,
+  "lod_pixel": 0.25,
+  "texels": "spr15hb_shell",
+  "projection": "side"
+}
