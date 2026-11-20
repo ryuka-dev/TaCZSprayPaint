@@ -2,9 +2,15 @@
   "required": true,
   "minVersion": "0.8",
   "package": "io.github.ryukadev.taczspray.mixin",
+  "plugin": "io.github.ryukadev.taczspray.mixin.TaczSprayMixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "taczspray.refmap.json",
-  "client": [],
+  "client": [
+    "BedrockModelMixin",
+    "ExternalGunItemVboRendererMixin",
+    "GunDisplayInstanceMixin",
+    "GunItemRendererWrapperMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
