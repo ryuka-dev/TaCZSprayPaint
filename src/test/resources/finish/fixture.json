@@ -1,0 +1,69 @@
+{
+  "skin": "fixture",
+  "pixel": 0.25,
+  "cases": [
+    {
+      "f": 0.03,
+      "pattern": 0,
+      "wear": 0,
+      "image": "expected_0.png"
+    },
+    {
+      "f": 0.25,
+      "pattern": 3,
+      "wear": 7,
+      "image": "expected_1.png"
+    },
+    {
+      "f": 0.7,
+      "pattern": 999,
+      "wear": 1000,
+      "image": "expected_2.png"
+    },
+    {
+      "f": 0.25,
+      "pattern": 3,
+      "wear": 7,
+      "t": 1.7,
+      "anim": [
+        {
+          "type": "flow",
+          "speed": 1.5
+        },
+        {
+          "type": "pulse",
+          "period": 2.4,
+          "amount": 0.6
+        }
+      ],
+      "image": "expected_3.png"
+    },
+    {
+      "f": 0.1,
+      "pattern": 0,
+      "wear": 0,
+      "t": 2.3,
+      "anim": [
+        {
+          "type": "hue",
+          "period": 8.0,
+          "degrees": 30
+        },
+        {
+          "type": "sweep",
+          "period": 4.0,
+          "width": 2.0,
+          "strength": 0.55
+        }
+      ],
+      "image": "expected_4.png"
+    },
+    {
+      "f": 0.25,
+      "pattern": 3,
+      "wear": 7,
+      "projection": "side",
+      "image": "expected_5.png"
+    }
+  ]
+}

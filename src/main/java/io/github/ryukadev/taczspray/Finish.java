@@ -8,25 +8,30 @@ import javax.annotation.Nullable;
 import java.util.regex.Pattern;
 
 /**
- * The finish painted on one gun, stored on the gun's own tag so that it travels with the gun. Every number is rolled
- * once, on the server, when the gun is sprayed; clients only draw it.
+ * The finish painted on one gun, stored on the gun's own tag so that it travels with the gun. Everything is rolled
+ * once, on the server, when the gun is sprayed; clients only draw and name it.
  *
- * @param id      which finish ({@code finishes/<id>/} in the resources)
- * @param wear    0 (factory new) to 1 (battle-scarred)
- * @param pattern where the pattern sits on this gun
- * @param wearNo  where the scratches and dirt fall on this gun
+ * @param id        which finish ({@code finishes/<id>/} in the resources), {@code <gun>_<look>}
+ * @param look      the pattern, which names the finish ({@code taczspray.pattern.<look>})
+ * @param grade     1 (standard, commonest) to 5 (unique, rarest)
+ * @param band      the wear band, 1 (factory new) to 5 (battle-scarred), as the server's odds placed {@code wear}
+ * @param wear      0 to 1
+ * @param patternNo where the pattern sits on this gun
+ * @param wearNo    where the scratches and dirt fall on this gun
  */
-public record Finish(String id, double wear, int pattern, int wearNo) {
+public record Finish(String id, String look, int grade, int band, double wear, int patternNo, int wearNo) {
     public static final String TAG = "TaczSprayFinish";
+    public static final int GRADES = 5;
+    public static final int BANDS = 5;
     static final int VERSION = 1;
-    private static final Pattern ID = Pattern.compile("[a-z0-9_]{1,64}");
+    private static final Pattern NAME = Pattern.compile("[a-z0-9_]{1,64}");
 
     public Finish {
-        if (!ID.matcher(id).matches()) {
-            throw new IllegalArgumentException("bad finish id " + id);
+        if (!NAME.matcher(id).matches() || !NAME.matcher(look).matches()) {
+            throw new IllegalArgumentException("bad finish " + id + " / " + look);
         }
-        if (!(wear >= 0 && wear <= 1)) {
-            throw new IllegalArgumentException("wear out of range: " + wear);
+        if (!(wear >= 0 && wear <= 1) || grade < 1 || grade > GRADES || band < 1 || band > BANDS) {
+            throw new IllegalArgumentException("finish " + id + " out of range");
         }
     }
 
@@ -41,20 +46,23 @@ public record Finish(String id, double wear, int pattern, int wearNo) {
         if (t.getInt("v") != VERSION) {
             return null;
         }
-        String id = t.getString("id");
-        double wear = t.getDouble("wear");
-        if (!ID.matcher(id).matches() || !(wear >= 0 && wear <= 1)) {
+        try {
+            return new Finish(t.getString("id"), t.getString("look"), t.getInt("grade"), t.getInt("band"),
+                    t.getDouble("wear"), t.getInt("pattern_no"), t.getInt("wear_no"));
+        } catch (IllegalArgumentException e) {
             return null;
         }
-        return new Finish(id, wear, t.getInt("pattern"), t.getInt("wear_no"));
     }
 
     public void writeTo(ItemStack gun) {
         CompoundTag t = new CompoundTag();
         t.putInt("v", VERSION);
         t.putString("id", id);
+        t.putString("look", look);
+        t.putInt("grade", grade);
+        t.putInt("band", band);
         t.putDouble("wear", wear);
-        t.putInt("pattern", pattern);
+        t.putInt("pattern_no", patternNo);
         t.putInt("wear_no", wearNo);
         gun.getOrCreateTag().put(TAG, t);
     }

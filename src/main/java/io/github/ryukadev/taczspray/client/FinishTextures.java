@@ -36,7 +36,7 @@ import java.util.Set;
  * <p>The finish's data comes from this mod's resources, {@code taczspray:finishes/<finish>/}: {@code pattern.png},
  * {@code finish.json}, and the painted texels {@code main.bin}, {@code lod.bin} there or, when {@code finish.json}
  * names a directory under {@code texels}, in the shared {@code finishes/<texels>/} that every finish on that gun and
- * region uses. TaCZ's own textures are never shipped; they are read from the player's game.
+ * region uses (one per TaCZ release where the releases' models differ). TaCZ's own textures are never shipped; they are read from the player's game.
  *
  * <p>A moving finish ({@code anim}) keeps what the wear made of it and repaints only its painted texels, at most every
  * {@value #FRAME_MS} ms and only on the full-detail model, uploading the box they lie in. New textures are composed one
@@ -160,7 +160,7 @@ public final class FinishTextures implements GunTextures.Source, ResourceManager
         if (finish == null || !Minecraft.getInstance().isSameThread()) {
             return null;
         }
-        Key key = new Key(finish.id(), original, lod, Double.doubleToLongBits(finish.wear()), finish.pattern(),
+        Key key = new Key(finish.id(), original, lod, Double.doubleToLongBits(finish.wear()), finish.patternNo(),
                 finish.wearNo());
         Made found = made.get(key);
         long now = Util.getMillis();
@@ -268,7 +268,7 @@ public final class FinishTextures implements GunTextures.Source, ResourceManager
             // the texels: the finish's own, or a directory every finish on that gun and region shares
             SkinTexels[] models;
             if (json.has("texels")) {
-                String from = json.get("texels").getAsString();
+                String from = texelsFor(json.get("texels"));
                 if (!from.matches("[a-z0-9_]+")) {
                     throw new IOException("bad texels directory " + from);
                 }
@@ -288,6 +288,22 @@ public final class FinishTextures implements GunTextures.Source, ResourceManager
             report(finish, e.toString());
             return Optional.empty();
         }
+    }
+
+    /**
+     * The texels directory for the installed TaCZ release: one name when every release shares it, else
+     * {release family: name}, where the installed family's own is taken, or the newest one older than it.
+     */
+    private static String texelsFor(JsonElement texels) throws IOException {
+        if (texels.isJsonPrimitive()) {
+            return texels.getAsString();
+        }
+        JsonObject byFamily = texels.getAsJsonObject();
+        String chosen = TaczRelease.choose(byFamily.keySet());
+        if (chosen == null) {
+            throw new IOException("no texels for TaCZ " + TaczRelease.family());
+        }
+        return byFamily.get(chosen).getAsString();
     }
 
     /** A moving finish's effects; none for a still one. A bad list is refused with the rest of the finish. */

@@ -1,11 +1,24 @@
 package io.github.ryukadev.taczspray.client;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import io.github.ryukadev.taczspray.PaintableGuns;
 import io.github.ryukadev.taczspray.TaczSpray;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Mod.EventBusSubscriber(modid = TaczSpray.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ClientSetup {
@@ -20,5 +33,22 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void reloadListeners(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(FinishTextures.instance());
+        event.registerReloadListener((ResourceManagerReloadListener) ClientSetup::readPaintableGuns);
+    }
+
+    private static void readPaintableGuns(ResourceManager manager) {
+        Set<String> guns = new HashSet<>();
+        Optional<Resource> resource = manager.getResource(TaczSpray.id("finishes/guns.json"));
+        if (resource.isPresent()) {
+            try (InputStream in = resource.get().open()) {
+                for (JsonElement e : JsonParser.parseReader(new InputStreamReader(in, StandardCharsets.UTF_8))
+                        .getAsJsonArray()) {
+                    guns.add(e.getAsString());
+                }
+            } catch (Exception e) {
+                TaczSpray.LOG.error("Could not read the list of guns that have finishes", e);
+            }
+        }
+        PaintableGuns.setClient(guns);
     }
 }
