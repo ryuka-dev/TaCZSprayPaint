@@ -1,6 +1,7 @@
 package io.github.ryukadev.taczspray;
 
 import com.mojang.logging.LogUtils;
+import io.github.ryukadev.taczspray.dev.DevKit;
 import io.github.ryukadev.taczspray.dev.SelfTest;
 import io.github.ryukadev.taczspray.item.ModItems;
 import io.github.ryukadev.taczspray.net.Network;
@@ -29,6 +30,9 @@ public final class TaczSpray {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModItems.register(modBus);
         modBus.addListener((FMLCommonSetupEvent event) -> event.enqueueWork(Network::register));
+        if (DevKit.enabled()) {
+            DevKit.start();
+        }
         if (FMLEnvironment.dist == Dist.CLIENT && SelfTest.enabled()) {
             modBus.addListener((FMLLoadCompleteEvent event) -> SelfTest.audit());
             SelfTest.start();
