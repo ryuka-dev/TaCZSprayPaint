@@ -61,6 +61,11 @@ public final class FinishTable {
         return entries.size();
     }
 
+    /** Every finish in the table, in the file's order. */
+    public List<Entry> entries() {
+        return entries;
+    }
+
     public boolean paints(String gun) {
         return ready() && entries.stream().anyMatch(e -> e.gun().equals(gun));
     }
