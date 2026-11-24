@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "pattern": "brushed",
+  "pixel": 0.25,
+  "lod_pixel": 0.25,
+  "texels": {
+    "1.1": "mk14_shell_11",
+    "1.2": "mk14_shell_12"
+  },
+  "anim": [
+    {
+      "type": "sweep",
+      "period": 4.0,
+      "width": 5,
+      "strength": 0.35
+    }
+  ],
+  "projection": "side"
+}

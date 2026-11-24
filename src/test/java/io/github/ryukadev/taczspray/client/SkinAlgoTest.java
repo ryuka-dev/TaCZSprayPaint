@@ -103,4 +103,20 @@ class SkinAlgoTest {
             assertEquals(0, differ, "pixels that differ from the reference in " + c);
         }
     }
+
+    /** The sweep: a bright band that runs along the gun (model z) over its period, brightest at its middle. */
+    @Test
+    void theSweepRunsAlongTheGun() {
+        List<SkinAlgo.Effect> sweep = List.of(new SkinAlgo.Effect("sweep", 0, 4.0, 0, 0, 5, 0.5));
+        // over z 0..40 the band's middle runs from -5 to 45 in 4 seconds: at 7.5 after 1 s, at 20 after 2 s
+        double[] early = {100, 100, 100};
+        new SkinAlgo.Frame(sweep, 1.0, 0, 40).apply(early, 20);
+        assertEquals(100, early[0], 1e-9, "the band has not reached z 20 yet");
+        double[] there = {100, 100, 100};
+        new SkinAlgo.Frame(sweep, 2.0, 0, 40).apply(there, 20);
+        assertEquals(100 + 155 * 0.5, there[0], 1e-9, "the middle of the band lightens by its strength");
+        double[] edge = {100, 100, 100};
+        new SkinAlgo.Frame(sweep, 2.0, 0, 40).apply(edge, 22.5);
+        assertEquals(100 + 155 * 0.25, edge[0], 1e-9, "half as much halfway to its edge");
+    }
 }

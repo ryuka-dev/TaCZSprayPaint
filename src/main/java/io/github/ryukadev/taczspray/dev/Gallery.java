@@ -36,6 +36,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -44,7 +45,8 @@ import java.util.function.Consumer;
  * has, each at its least wear, hung in an item frame in front of a stone wall; then the rarest one in hand. On TaCZ
  * releases with the gun display case, one painted gun in a case last (finishes are not drawn there yet). Screenshots
  * are {@code taczspray-gallery-<n>-<gun>-<shot>.png}; then it quits. {@code -Dtaczspray.gallery.guns=<id>,<id>} shoots only
- * those guns; {@code -Dtaczspray.gallery.plain=true} leaves them unpainted, to tell the mod's doing from TaCZ's own.
+ * those guns; {@code -Dtaczspray.gallery.plain=true} leaves them unpainted, to tell the mod's doing from TaCZ's own;
+ * {@code -Dtaczspray.gallery.looks=<a>,<b>} hangs pattern a and pattern b instead (guns without both are skipped).
  * Not part of the mod's behaviour.
  */
 public final class Gallery {
@@ -133,9 +135,16 @@ public final class Gallery {
         if (!only.isBlank()) {
             byGun.keySet().retainAll(List.of(only.split(",")));
         }
-        byGun.forEach((gun, entries) -> guns.add(new Gun(gun,
-                entries.stream().min(Comparator.comparingInt(FinishTable.Entry::grade)).orElseThrow(),
-                entries.stream().max(Comparator.comparingInt(FinishTable.Entry::grade)).orElseThrow())));
+        String[] looks = System.getProperty("taczspray.gallery.looks", "").split(",");
+        byGun.forEach((gun, entries) -> {
+            if (looks.length == 2) {
+                look(entries, looks[0]).ifPresent(a -> look(entries, looks[1]).ifPresent(b -> guns.add(new Gun(gun, a, b))));
+            } else {
+                guns.add(new Gun(gun,
+                        entries.stream().min(Comparator.comparingInt(FinishTable.Entry::grade)).orElseThrow(),
+                        entries.stream().max(Comparator.comparingInt(FinishTable.Entry::grade)).orElseThrow()));
+            }
+        });
 
         ServerLevel level = player.serverLevel();
         level.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(32)).forEach(Entity::discard);
@@ -172,6 +181,10 @@ public final class Gallery {
         player.setItemInHand(InteractionHand.MAIN_HAND, painted(gun.id(), gun.high()));
         lookAtWall(player);
         TaczSpray.LOG.info("[gallery] {}: {} (grade {})", gun.id(), entry.id(), entry.grade());
+    }
+
+    private static Optional<FinishTable.Entry> look(List<FinishTable.Entry> entries, String look) {
+        return entries.stream().filter(e -> e.look().equals(look)).findFirst();
     }
 
     private void lookAtWall(ServerPlayer player) {

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "pattern": "gold",
+  "pixel": 0.25,
+  "lod_pixel": 0.25,
+  "texels": "rpg7_full",
+  "anim": [
+    {
+      "type": "sweep",
+      "period": 3.0,
+      "width": 5,
+      "strength": 0.55
+    }
+  ],
+  "projection": "side"
+}

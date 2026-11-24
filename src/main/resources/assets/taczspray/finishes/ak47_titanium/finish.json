@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "pattern": "titanium",
+  "pixel": 0.25,
+  "lod_pixel": 0.25,
+  "texels": {
+    "1.1": "ak47_full_11",
+    "1.2": "ak47_full_12"
+  },
+  "anim": [
+    {
+      "type": "sweep",
+      "period": 4.0,
+      "width": 5,
+      "strength": 0.45
+    }
+  ],
+  "projection": "side"
+}

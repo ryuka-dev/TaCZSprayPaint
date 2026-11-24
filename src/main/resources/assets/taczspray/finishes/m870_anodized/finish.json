@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "pattern": "anodized",
+  "pixel": 0.25,
+  "lod_pixel": 0.25,
+  "texels": "m870_full",
+  "anim": [
+    {
+      "type": "sweep",
+      "period": 3.5,
+      "width": 5,
+      "strength": 0.45
+    }
+  ],
+  "projection": "side"
+}

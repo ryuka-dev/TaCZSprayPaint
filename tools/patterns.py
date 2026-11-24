@@ -184,12 +184,16 @@ def dots(spec, seed, size):
 
 
 def bands(spec, seed, size):
-    """晚霞、海浪：沿一个方向的色带（三角波，首尾相接），被噪声与正弦扭弯；可再加一点逐格抖动。"""
+    """晚霞、海浪：沿一个方向的色带（三角波，首尾相接），被噪声与正弦扭弯；可再加一点逐格抖动。
+    across 为真时色带转 90 度：侧面投影下顺着枪身（镀铬的反光带），否则沿枪身变色。"""
     colours = rgb(spec["colours"])
     wave = spec.get("wave", 0.0)
     warp = spec.get("warp", 0.6)
+    across = spec.get("across", False)
 
     def f(x, y):
+        if across:
+            x, y = y, x
         t = y / size + wave * math.sin(2 * math.pi * x / size * 2) / 8 + warp * (fbm(seed, x, y, size, 3) - 0.5) / 4
         t = 1 - abs(((t % 1) * 2) - 1)
         return ramp(colours, t + jitter(seed, x, y, 0.08))
@@ -218,6 +222,24 @@ def plaid(spec, seed, size):
     return draw(size, f)
 
 
+def brushed(spec, seed, size):
+    """拉丝金属：顺着一个方向的细纹（每列一个明暗，半个边长一段），叠一层随列缓慢起伏的明暗当反光带。
+    streak 是细纹的深浅，sheen 是反光带的深浅；配 projection side 让纹顺着枪身，再配扫光（anim sweep）像反光。"""
+    colours = rgb(spec["colours"])
+    streak = spec.get("streak", 0.35)
+    sheen = spec.get("sheen", 0.45)
+    if size % 2:
+        raise SystemExit(f"brushed：边长 {size} 要是偶数")
+
+    # 侧面投影时图的第二根轴（y）是枪身方向：纹顺着 y 走，反光带随 x（枪的高度方向）起伏
+    def f(x, y):
+        row = algo.unit(algo.h32(seed, 21, x % size, (y // (size // 2)) % 2)) - 0.5
+        band = 0.5 + 0.5 * math.cos(2 * math.pi * x / size)
+        t = 0.5 + sheen * (band - 0.5) + streak * row
+        return ramp(colours, t + jitter(seed, x, y, 0.04))
+    return draw(size, f)
+
+
 def draw(size, f):
     tile = Image.new("RGB", (size, size))
     px = tile.load()
@@ -228,7 +250,7 @@ def draw(size, f):
 
 
 KINDS = {"leaves": leaves, "crackle": crackle, "blotches": blotches, "veins": veins, "stripes": stripes,
-         "dots": dots, "bands": bands, "plaid": plaid}
+         "dots": dots, "bands": bands, "plaid": plaid, "brushed": brushed}
 
 
 def tile(spec, seed):

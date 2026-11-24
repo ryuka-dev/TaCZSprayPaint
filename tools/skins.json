@@ -334,6 +334,136 @@
         ]
       },
       "projection": "side"
+    },
+    {
+      "id": "brushed",
+      "name": "拉丝钢",
+      "cover": "shell",
+      "pattern": {
+        "kind": "brushed",
+        "size": 32,
+        "colours": [
+          "7d848c",
+          "9aa1a9",
+          "b9bfc6",
+          "d6dade"
+        ],
+        "streak": 0.35,
+        "sheen": 0.45
+      },
+      "anim": [
+        {
+          "type": "sweep",
+          "period": 4.0,
+          "width": 5,
+          "strength": 0.35
+        }
+      ],
+      "projection": "side"
+    },
+    {
+      "id": "chrome",
+      "name": "镀铬",
+      "cover": "full",
+      "pattern": {
+        "kind": "bands",
+        "size": 64,
+        "colours": [
+          "4a525c",
+          "8d97a2",
+          "dfe5ea",
+          "ffffff"
+        ],
+        "warp": 0.25,
+        "across": true
+      },
+      "anim": [
+        {
+          "type": "sweep",
+          "period": 3.0,
+          "width": 4,
+          "strength": 0.6
+        }
+      ],
+      "projection": "side"
+    },
+    {
+      "id": "anodized",
+      "name": "阳极蓝",
+      "cover": "full",
+      "pattern": {
+        "kind": "brushed",
+        "size": 32,
+        "colours": [
+          "1c3a86",
+          "2a56b8",
+          "3f7ae0",
+          "7aa8f5"
+        ],
+        "streak": 0.3,
+        "sheen": 0.5
+      },
+      "anim": [
+        {
+          "type": "sweep",
+          "period": 3.5,
+          "width": 5,
+          "strength": 0.45
+        }
+      ],
+      "projection": "side"
+    },
+    {
+      "id": "gold",
+      "name": "金",
+      "cover": "full",
+      "pattern": {
+        "kind": "brushed",
+        "size": 32,
+        "colours": [
+          "8c6a1c",
+          "b88d2c",
+          "dfb848",
+          "fbe79a"
+        ],
+        "streak": 0.3,
+        "sheen": 0.5
+      },
+      "anim": [
+        {
+          "type": "sweep",
+          "period": 3.0,
+          "width": 5,
+          "strength": 0.55
+        }
+      ],
+      "projection": "side"
+    },
+    {
+      "id": "titanium",
+      "name": "烧钛",
+      "cover": "full",
+      "pattern": {
+        "kind": "bands",
+        "size": 64,
+        "colours": [
+          "d4b25a",
+          "c07a3e",
+          "7a3f8c",
+          "3e5fb4",
+          "72a8dc"
+        ],
+        "warp": 0.5
+      },
+      "anim": [
+        {
+          "type": "sweep",
+          "period": 4.0,
+          "width": 5,
+          "strength": 0.45
+        }
+      ],
+      "projection": "side"
     }
   ]
 }

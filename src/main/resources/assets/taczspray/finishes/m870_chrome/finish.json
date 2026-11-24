@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "pattern": "chrome",
+  "pixel": 0.25,
+  "lod_pixel": 0.25,
+  "texels": "m870_full",
+  "anim": [
+    {
+      "type": "sweep",
+      "period": 3.0,
+      "width": 4,
+      "strength": 0.6
+    }
+  ],
+  "projection": "side"
+}

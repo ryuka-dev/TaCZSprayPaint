@@ -3253,6 +3253,718 @@
    "grade": 1,
    "wear_min": 0.0,
    "wear_max": 1.0
+  },
+  {
+   "id": "aa12_brushed",
+   "gun": "tacz:aa12",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "ai_awp_brushed",
+   "gun": "tacz:ai_awp",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "ak47_brushed",
+   "gun": "tacz:ak47",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "aug_brushed",
+   "gun": "tacz:aug",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "cz75_brushed",
+   "gun": "tacz:cz75",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "deagle_brushed",
+   "gun": "tacz:deagle",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "fn_evolys_brushed",
+   "gun": "tacz:fn_evolys",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "fn_fal_brushed",
+   "gun": "tacz:fn_fal",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "g36k_brushed",
+   "gun": "tacz:g36k",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "hk416d_brushed",
+   "gun": "tacz:hk416d",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "hk_g3_brushed",
+   "gun": "tacz:hk_g3",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "hk_mp5a5_brushed",
+   "gun": "tacz:hk_mp5a5",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m1014_brushed",
+   "gun": "tacz:m1014",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m107_brushed",
+   "gun": "tacz:m107",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m16a1_brushed",
+   "gun": "tacz:m16a1",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m16a4_brushed",
+   "gun": "tacz:m16a4",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m249_brushed",
+   "gun": "tacz:m249",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m320_brushed",
+   "gun": "tacz:m320",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m4a1_brushed",
+   "gun": "tacz:m4a1",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m700_brushed",
+   "gun": "tacz:m700",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m870_brushed",
+   "gun": "tacz:m870",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m95_brushed",
+   "gun": "tacz:m95",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "minigun_brushed",
+   "gun": "tacz:minigun",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "mk14_brushed",
+   "gun": "tacz:mk14",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "p90_brushed",
+   "gun": "tacz:p90",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "qbz_191_brushed",
+   "gun": "tacz:qbz_191",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "qbz_95_brushed",
+   "gun": "tacz:qbz_95",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "rpg7_brushed",
+   "gun": "tacz:rpg7",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "rpk_brushed",
+   "gun": "tacz:rpk",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "scar_h_brushed",
+   "gun": "tacz:scar_h",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "scar_l_brushed",
+   "gun": "tacz:scar_l",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "spas_12_brushed",
+   "gun": "tacz:spas_12",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "spr15hb_brushed",
+   "gun": "tacz:spr15hb",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "taurus500_brushed",
+   "gun": "tacz:taurus500",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "type_81_brushed",
+   "gun": "tacz:type_81",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "ump45_brushed",
+   "gun": "tacz:ump45",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "vector45_brushed",
+   "gun": "tacz:vector45",
+   "look": "brushed",
+   "grade": 2,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "aa12_chrome",
+   "gun": "tacz:aa12",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "deagle_chrome",
+   "gun": "tacz:deagle",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "fn_evolys_chrome",
+   "gun": "tacz:fn_evolys",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "fn_fal_chrome",
+   "gun": "tacz:fn_fal",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "hk_g3_chrome",
+   "gun": "tacz:hk_g3",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m1014_chrome",
+   "gun": "tacz:m1014",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m107_chrome",
+   "gun": "tacz:m107",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m16a1_chrome",
+   "gun": "tacz:m16a1",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m249_chrome",
+   "gun": "tacz:m249",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m320_chrome",
+   "gun": "tacz:m320",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m870_chrome",
+   "gun": "tacz:m870",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m95_chrome",
+   "gun": "tacz:m95",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "minigun_chrome",
+   "gun": "tacz:minigun",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "rpg7_chrome",
+   "gun": "tacz:rpg7",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "rpk_chrome",
+   "gun": "tacz:rpk",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "spas_12_chrome",
+   "gun": "tacz:spas_12",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "taurus500_chrome",
+   "gun": "tacz:taurus500",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "type_81_chrome",
+   "gun": "tacz:type_81",
+   "look": "chrome",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "aa12_anodized",
+   "gun": "tacz:aa12",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "deagle_anodized",
+   "gun": "tacz:deagle",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "fn_evolys_anodized",
+   "gun": "tacz:fn_evolys",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "fn_fal_anodized",
+   "gun": "tacz:fn_fal",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "hk_g3_anodized",
+   "gun": "tacz:hk_g3",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m1014_anodized",
+   "gun": "tacz:m1014",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m107_anodized",
+   "gun": "tacz:m107",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m16a1_anodized",
+   "gun": "tacz:m16a1",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m249_anodized",
+   "gun": "tacz:m249",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m320_anodized",
+   "gun": "tacz:m320",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m870_anodized",
+   "gun": "tacz:m870",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m95_anodized",
+   "gun": "tacz:m95",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "minigun_anodized",
+   "gun": "tacz:minigun",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "rpg7_anodized",
+   "gun": "tacz:rpg7",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "rpk_anodized",
+   "gun": "tacz:rpk",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "spas_12_anodized",
+   "gun": "tacz:spas_12",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "taurus500_anodized",
+   "gun": "tacz:taurus500",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "type_81_anodized",
+   "gun": "tacz:type_81",
+   "look": "anodized",
+   "grade": 3,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "aa12_gold",
+   "gun": "tacz:aa12",
+   "look": "gold",
+   "grade": 4,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "ak47_gold",
+   "gun": "tacz:ak47",
+   "look": "gold",
+   "grade": 4,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "deagle_gold",
+   "gun": "tacz:deagle",
+   "look": "gold",
+   "grade": 4,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m107_gold",
+   "gun": "tacz:m107",
+   "look": "gold",
+   "grade": 4,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m249_gold",
+   "gun": "tacz:m249",
+   "look": "gold",
+   "grade": 4,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "minigun_gold",
+   "gun": "tacz:minigun",
+   "look": "gold",
+   "grade": 4,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "rpg7_gold",
+   "gun": "tacz:rpg7",
+   "look": "gold",
+   "grade": 4,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "rpk_gold",
+   "gun": "tacz:rpk",
+   "look": "gold",
+   "grade": 4,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "aa12_titanium",
+   "gun": "tacz:aa12",
+   "look": "titanium",
+   "grade": 4,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "ak47_titanium",
+   "gun": "tacz:ak47",
+   "look": "titanium",
+   "grade": 4,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "deagle_titanium",
+   "gun": "tacz:deagle",
+   "look": "titanium",
+   "grade": 4,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m107_titanium",
+   "gun": "tacz:m107",
+   "look": "titanium",
+   "grade": 4,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "m249_titanium",
+   "gun": "tacz:m249",
+   "look": "titanium",
+   "grade": 4,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "minigun_titanium",
+   "gun": "tacz:minigun",
+   "look": "titanium",
+   "grade": 4,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "rpg7_titanium",
+   "gun": "tacz:rpg7",
+   "look": "titanium",
+   "grade": 4,
+   "wear_min": 0.0,
+   "wear_max": 1.0
+  },
+  {
+   "id": "rpk_titanium",
+   "gun": "tacz:rpk",
+   "look": "titanium",
+   "grade": 4,
+   "wear_min": 0.0,
+   "wear_max": 1.0
   }
  ]
 }

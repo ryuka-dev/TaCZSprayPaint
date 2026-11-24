@@ -41,7 +41,8 @@ CELL = 0.25
 REGION_VERSION = 10
 ENGLISH = {"sakura": "Sakura", "celadon": "Celadon", "ice": "Ice Crackle", "rust": "Rust", "lava": "Lava", "neon": "Neon",
            "hazard": "Hazard", "candy": "Candy", "marble": "Marble", "brass": "Brass", "dots": "Polka Dots",
-           "sunset": "Sunset", "waves": "Waves", "tartan": "Tartan"}
+           "sunset": "Sunset", "waves": "Waves", "tartan": "Tartan", "brushed": "Brushed Steel", "chrome": "Chrome",
+           "anodized": "Anodized Blue", "gold": "Gold", "titanium": "Heat-Tinted Titanium"}
 
 
 def rows():

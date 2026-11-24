@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "pattern": "anodized",
+  "pixel": 0.25,
+  "lod_pixel": 0.25,
+  "texels": {
+    "1.1": "fn_fal_full_11",
+    "1.2": "fn_fal_full_12"
+  },
+  "anim": [
+    {
+      "type": "sweep",
+      "period": 3.5,
+      "width": 5,
+      "strength": 0.45
+    }
+  ],
+  "projection": "side"
+}
