@@ -1,9 +1,7 @@
 package io.github.ryukadev.taczspray.dev;
 
-import com.tacz.guns.api.item.builder.GunItemBuilder;
 import io.github.ryukadev.taczspray.TaczSpray;
 import io.github.ryukadev.taczspray.item.ModItems;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,9 +34,7 @@ public final class DevKit {
         player.getInventory().add(new ItemStack(ModItems.SPRAY_CAN.get()));
         player.getInventory().add(new ItemStack(ModItems.PAINT_REMOVER.get()));
         for (String id : GUNS) {
-            ResourceLocation gun = ResourceLocation.tryParse(id);
-            ItemStack stack = GunItemBuilder.create().setId(gun).build();
-            player.getInventory().add(stack.isEmpty() ? GunItemBuilder.create().setId(gun).forceBuild() : stack);
+            player.getInventory().add(DevGuns.make(id));
         }
         TaczSpray.LOG.info("[devkit] gave {} the spray can, the remover and {} guns", player.getName().getString(),
                 GUNS.length);

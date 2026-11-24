@@ -1,6 +1,5 @@
 package io.github.ryukadev.taczspray.dev;
 
-import com.tacz.guns.api.item.builder.GunItemBuilder;
 import io.github.ryukadev.taczspray.Finish;
 import io.github.ryukadev.taczspray.FinishTable;
 import io.github.ryukadev.taczspray.FinishTables;
@@ -215,11 +214,7 @@ public final class Gallery {
     }
 
     private static ItemStack painted(String gunId, FinishTable.Entry entry) {
-        ResourceLocation id = ResourceLocation.tryParse(gunId);
-        ItemStack stack = GunItemBuilder.create().setId(id).build();
-        if (stack.isEmpty()) {
-            stack = GunItemBuilder.create().setId(id).forceBuild();
-        }
+        ItemStack stack = DevGuns.make(gunId);
         if (!Boolean.getBoolean("taczspray.gallery.plain")) {
             new Finish(entry.id(), entry.look(), entry.grade(), 1, entry.wearMin(), 500, 500).writeTo(stack);
         }

@@ -1,13 +1,11 @@
 package io.github.ryukadev.taczspray.dev;
 
-import com.tacz.guns.api.item.builder.GunItemBuilder;
 import io.github.ryukadev.taczspray.Finish;
 import io.github.ryukadev.taczspray.FinishTables;
 import io.github.ryukadev.taczspray.TaczSpray;
 import io.github.ryukadev.taczspray.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -141,9 +139,7 @@ public final class SelfTest {
     }
 
     private static ItemStack gun(String gunId) {
-        ResourceLocation id = ResourceLocation.tryParse(gunId);
-        ItemStack stack = GunItemBuilder.create().setId(id).build();
-        return stack.isEmpty() ? GunItemBuilder.create().setId(id).forceBuild() : stack;
+        return DevGuns.make(gunId);
     }
 
     private static void drop(ServerPlayer player, ItemStack stack, Vec3 offset) {
