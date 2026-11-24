@@ -25,10 +25,16 @@ public final class Network {
     public static void register() {
         CHANNEL.registerMessage(0, RevealMessage.class, RevealMessage::encode, RevealMessage::decode,
                 Network::onReveal, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        CHANNEL.registerMessage(1, CatalogMessage.class, CatalogMessage::encode, CatalogMessage::decode,
+                Network::onCatalog, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
 
-    public static void sendTo(ServerPlayer player, RevealMessage message) {
+    public static void sendTo(ServerPlayer player, Object message) {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), message);
+    }
+
+    public static void sendToAll(Object message) {
+        CHANNEL.send(PacketDistributor.ALL.noArg(), message);
     }
 
     // DistExecutor keeps the client-only screen class off a dedicated server
@@ -36,6 +42,13 @@ public final class Network {
     private static void onReveal(RevealMessage message, Supplier<NetworkEvent.Context> context) {
         context.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
                 () -> () -> io.github.ryukadev.taczspray.client.RevealScreen.open(message)));
+        context.get().setPacketHandled(true);
+    }
+
+    @SuppressWarnings("removal")
+    private static void onCatalog(CatalogMessage message, Supplier<NetworkEvent.Context> context) {
+        context.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
+                () -> () -> io.github.ryukadev.taczspray.client.ClientCatalog.accept(message)));
         context.get().setPacketHandled(true);
     }
 }

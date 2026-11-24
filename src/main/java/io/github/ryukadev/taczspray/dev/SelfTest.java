@@ -3,9 +3,12 @@ package io.github.ryukadev.taczspray.dev;
 import io.github.ryukadev.taczspray.Finish;
 import io.github.ryukadev.taczspray.FinishTables;
 import io.github.ryukadev.taczspray.TaczSpray;
+import io.github.ryukadev.taczspray.client.ClientCatalog;
+import io.github.ryukadev.taczspray.item.CanLabel;
 import io.github.ryukadev.taczspray.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -13,6 +16,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
@@ -32,6 +36,7 @@ import java.util.function.Consumer;
 public final class SelfTest {
     public static final String PROPERTY = "taczspray.selftest";
     private static final String NO_FINISHES = "tacz:glock_17";
+    private static final String SERIES = "selftest_metal";
 
     private int ticks = -1;
 
@@ -94,7 +99,17 @@ public final class SelfTest {
                 TaczSpray.LOG.info("[selftest] after the remover: {}; removers left {} (expect 0)",
                         Finish.of(player.getOffhandItem()), player.getMainHandItem().getCount());
             });
-            case 380 -> {
+            case 370 -> onServer(mc, SelfTest::labels);
+            case 400 -> {
+                ItemStack can = new ItemStack(ModItems.SPRAY_CAN.get());
+                CanLabel.ofSeries(SERIES).writeTo(can);
+                TaczSpray.LOG.info("[selftest] client: series {} is called \"{}\"; a can of it says {}", SERIES,
+                        ClientCatalog.seriesName(SERIES), can.getTooltipLines(mc.player, TooltipFlag.NORMAL).stream()
+                                .map(Component::getString).toList());
+                TaczSpray.LOG.info("[selftest] reveal open for the one-finish can: {}", mc.screen != null);
+                shot(mc, "reveal-one");
+            }
+            case 420 -> {
                 TaczSpray.LOG.info("[selftest] done");
                 mc.stop();
             }
@@ -125,6 +140,54 @@ public final class SelfTest {
         TaczSpray.LOG.info("[selftest] sprayed: {}", Finish.of(player.getOffhandItem()));
         TaczSpray.LOG.info("[selftest] cans 2 -> {} on a gun with no finishes, {} after a spray, {} after one in "
                 + "creative (expect 2, 1, 1)", refused, sprayed, creative);
+    }
+
+    /**
+     * Labelled cans, in survival: one of the series sprays one of its patterns; one for a single finish sprays that
+     * (and its reveal has nothing to scroll past); a series the server lacks, a finish the gun lacks and a damaged label
+     * spray nothing and take no can. Then {@code /taczspray give}. The series comes from the test game's
+     * {@code config/taczspray/series/}, which the self-test script writes.
+     */
+    private static void labels(ServerPlayer player) {
+        GameType mode = player.gameMode.getGameModeForPlayer();
+        player.setGameMode(GameType.SURVIVAL);
+        TaczSpray.LOG.info("[selftest] series loaded: {}", FinishTables.series().keySet());
+        TaczSpray.LOG.info("[selftest] series can: {}", sprayWith(player, CanLabel.ofSeries(SERIES), "tacz:ak47"));
+        TaczSpray.LOG.info("[selftest] missing series: {}", sprayWith(player, CanLabel.ofSeries("no_such_series"),
+                "tacz:ak47"));
+        TaczSpray.LOG.info("[selftest] finish the gun lacks: {}", sprayWith(player, CanLabel.ofLook("gold"),
+                "tacz:m4a1"));
+        ItemStack damaged = new ItemStack(ModItems.SPRAY_CAN.get());
+        damaged.getOrCreateTag().putString(CanLabel.TAG, "not a label");
+        TaczSpray.LOG.info("[selftest] damaged label: {}", sprayWith(player, damaged, "tacz:ak47"));
+        TaczSpray.LOG.info("[selftest] one-finish can: {}", sprayWith(player, CanLabel.ofLook("gold"), "tacz:ak47"));
+        player.setGameMode(mode);
+        player.getInventory().clearContent();
+        player.server.getCommands().performPrefixedCommand(player.createCommandSourceStack().withPermission(4),
+                "taczspray give " + player.getGameProfile().getName() + " series " + SERIES + " 20");
+        int given = 0;
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack s = player.getInventory().getItem(i);
+            if (s.is(ModItems.SPRAY_CAN.get()) && CanLabel.of(s).map(l -> SERIES.equals(l.series())).orElse(false)) {
+                given += s.getCount();
+            }
+        }
+        TaczSpray.LOG.info("[selftest] /taczspray give ... 20: {} labelled cans in the inventory (expect 20)", given);
+    }
+
+    private static String sprayWith(ServerPlayer player, CanLabel label, String gunId) {
+        ItemStack can = new ItemStack(ModItems.SPRAY_CAN.get());
+        label.writeTo(can);
+        return sprayWith(player, can, gunId);
+    }
+
+    /** One spray with this can on a fresh gun: what the gun got, and whether the can was used up. */
+    private static String sprayWith(ServerPlayer player, ItemStack can, String gunId) {
+        player.setItemInHand(InteractionHand.MAIN_HAND, can);
+        player.setItemInHand(InteractionHand.OFF_HAND, gun(gunId));
+        can.getItem().finishUsingItem(can, player.level(), player);
+        Finish f = Finish.of(player.getOffhandItem());
+        return (f == null ? "nothing" : f.look() + " (" + f.id() + ")") + ", can " + (can.isEmpty() ? "used up" : "kept");
     }
 
     private static void setUp(ServerPlayer player) {

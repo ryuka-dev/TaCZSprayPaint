@@ -2,6 +2,7 @@ package io.github.ryukadev.taczspray.dev;
 
 import io.github.ryukadev.taczspray.Finish;
 import io.github.ryukadev.taczspray.TaczSpray;
+import io.github.ryukadev.taczspray.client.ClientCatalog;
 import io.github.ryukadev.taczspray.client.RevealScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
@@ -33,6 +34,7 @@ public final class MultiplayerWatch {
     private boolean revealSeen;
     private int closeRevealAt = -1;
     private int quitAt = -1;
+    private boolean catalogLogged;
 
     private MultiplayerWatch() {
     }
@@ -69,6 +71,11 @@ public final class MultiplayerWatch {
             return;
         }
         String me = mc.player.getGameProfile().getName();
+        if (!catalogLogged && ticks > 100) {
+            catalogLogged = true;
+            TaczSpray.LOG.info("[mp] client {}: series selftest_metal is called \"{}\"", me,
+                    ClientCatalog.seriesName("selftest_metal"));
+        }
         if (!revealSeen && mc.screen instanceof RevealScreen) {
             revealSeen = true;
             TaczSpray.LOG.info("[mp] client {}: reveal opened", me);

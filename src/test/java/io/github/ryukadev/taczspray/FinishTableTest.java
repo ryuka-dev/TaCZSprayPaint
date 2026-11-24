@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -89,5 +90,49 @@ class FinishTableTest {
         assertThrows(IllegalArgumentException.class, () -> FinishTable.parse(bad));
         JsonObject badId = JsonParser.parseString(TABLE.replace("ak47_rust", "AK-47 rust")).getAsJsonObject();
         assertThrows(IllegalArgumentException.class, () -> FinishTable.parse(badId));
+    }
+
+    @Test
+    void aSeriesDrawsOnlyItsPatternsByItsOwnWeights() {
+        FinishTable t = table();
+        // rust (grade 1) and lava (grade 4), weighed evenly
+        FinishTable.Pool pool = new FinishTable.Pool(Set.of("rust", "lava"), new double[]{1, 1, 1, 1, 1});
+        Random random = new Random(4);
+        int lava = 0;
+        int n = 100_000;
+        for (int i = 0; i < n; i++) {
+            Finish f = t.roll("tacz:ak47", pool, random::nextDouble).orElseThrow();
+            assertTrue(f.look().equals("rust") || f.look().equals("lava"), f.look());
+            lava += f.look().equals("lava") ? 1 : 0;
+        }
+        assertEquals(0.5, lava / (double) n, 0.01);
+        FinishTable.Reel reel = t.reel("tacz:ak47", pool, t.roll("tacz:ak47", pool, random::nextDouble).orElseThrow(),
+                random::nextDouble);
+        assertTrue(reel.cells().stream().allMatch(e -> e.look().equals("rust") || e.look().equals("lava")),
+                "the reel scrolls past the series only");
+    }
+
+    @Test
+    void aGradeThatWeighsNothingIsNeverRolled() {
+        FinishTable.Pool noRare = new FinishTable.Pool(null, new double[]{1, 1, 1, 0, 0});
+        Random random = new Random(5);
+        for (int i = 0; i < 20_000; i++) {
+            assertTrue(table().roll("tacz:ak47", noRare, random::nextDouble).orElseThrow().grade() < 4);
+        }
+        assertFalse(table().paints("tacz:ak47", new FinishTable.Pool(Set.of("lava"), new double[]{1, 1, 1, 0, 0})));
+    }
+
+    @Test
+    void oneFinishOnlyHasNothingToScrollPast() {
+        FinishTable t = table();
+        FinishTable.Pool gold = FinishTable.Pool.of("lava");
+        Finish won = t.roll("tacz:ak47", gold, new Random(6)::nextDouble).orElseThrow();
+        assertEquals("ak47_lava", won.id());
+        FinishTable.Reel reel = t.reel("tacz:ak47", gold, won, new Random(7)::nextDouble);
+        assertEquals(1, reel.cells().size());
+        assertEquals(0, reel.winAt());
+        assertEquals(0, reel.land());
+        assertFalse(t.paints("tacz:m4a1", gold), "the M4A1 has no lava finish");
+        assertTrue(t.roll("tacz:m4a1", gold, Math::random).isEmpty());
     }
 }

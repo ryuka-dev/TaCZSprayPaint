@@ -5,8 +5,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import javax.annotation.Nullable;
 
 /** Takes the finish off the off-hand gun, leaving it exactly as it was before it was sprayed. One a use. */
 public final class PaintRemoverItem extends PaintingItem {
@@ -14,18 +17,14 @@ public final class PaintRemoverItem extends PaintingItem {
         super(properties);
     }
 
+    @Nullable
     @Override
-    protected boolean canStart(ItemStack gun, Level level) {
-        return Finish.of(gun) != null;
+    protected Component refusal(Player player, ItemStack self, ItemStack gun) {
+        return Finish.of(gun) != null ? null : Component.translatable("taczspray.message.no_paint");
     }
 
     @Override
-    protected Component refusal(ItemStack gun) {
-        return Component.translatable("taczspray.message.no_paint");
-    }
-
-    @Override
-    protected boolean apply(ServerPlayer player, ItemStack gun) {
+    protected boolean apply(ServerPlayer player, ItemStack self, ItemStack gun) {
         Finish.remove(gun);
         player.getInventory().setChanged();
         player.displayClientMessage(Component.translatable("taczspray.message.removed"), true);

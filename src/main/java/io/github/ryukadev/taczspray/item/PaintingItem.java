@@ -36,14 +36,18 @@ public abstract class PaintingItem extends Item {
         super(properties.stacksTo(STACK));
     }
 
-    /** Client and server: whether to start on this gun at all. */
-    protected abstract boolean canStart(ItemStack gun, Level level);
+    /**
+     * Client and server: why this item cannot work on this TaCZ gun, or null when it can. The client only decides
+     * whether to start the motion and may know less; the server's answer stands.
+     */
+    @Nullable
+    protected abstract Component refusal(Player player, ItemStack self, ItemStack gun);
 
-    /** Server only, when the time is up: change the gun, tell the player. False when nothing changed. */
-    protected abstract boolean apply(ServerPlayer player, ItemStack gun);
-
-    /** The message when {@link #canStart} says no. */
-    protected abstract Component refusal(ItemStack gun);
+    /**
+     * Server only, when the time is up and {@link #refusal} said yes: change the gun, tell the player. False when
+     * nothing changed.
+     */
+    protected abstract boolean apply(ServerPlayer player, ItemStack self, ItemStack gun);
 
     protected abstract SoundEvent sound();
 
@@ -63,9 +67,10 @@ public abstract class PaintingItem extends Item {
             }
             return InteractionResultHolder.fail(self);
         }
-        if (!canStart(gun, level)) {
+        Component no = refusal(player, self, gun);
+        if (no != null) {
             if (!level.isClientSide) {
-                player.displayClientMessage(refusal(gun), true);
+                player.displayClientMessage(no, true);
             }
             return InteractionResultHolder.fail(self);
         }
@@ -102,11 +107,11 @@ public abstract class PaintingItem extends Item {
         if (!level.isClientSide && entity instanceof ServerPlayer player) {
             ItemStack gun = player.getOffhandItem();
             // checked again: the gun may have been swapped while spraying
-            if (FinishTables.gunId(gun) == null) {
-                player.displayClientMessage(Component.translatable("taczspray.message.gun_in_off_hand"), true);
-            } else if (!canStart(gun, level)) {
-                player.displayClientMessage(refusal(gun), true);
-            } else if (apply(player, gun) && !player.getAbilities().instabuild) {
+            Component no = FinishTables.gunId(gun) == null
+                    ? Component.translatable("taczspray.message.gun_in_off_hand") : refusal(player, stack, gun);
+            if (no != null) {
+                player.displayClientMessage(no, true);
+            } else if (apply(player, stack, gun) && !player.getAbilities().instabuild) {
                 stack.shrink(1);
             }
         }

@@ -4,11 +4,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.DoubleSupplier;
 
@@ -19,6 +21,9 @@ import java.util.function.DoubleSupplier;
  * that grade's finishes evenly; then a wear band by its odds, a number evenly inside the band, scaled into the
  * finish's own wear range; last a pattern number and a wear number, which place the pattern and the scratches so that
  * no two guns look alike.
+ *
+ * <p>A roll draws from a {@link Pool}: every finish (a plain can), a series' patterns with the series' grade weights,
+ * or one pattern (a can for one finish). Only the finishes the gun has in the pool take part.
  */
 public final class FinishTable {
     /** Pattern and wear numbers run 1..SEEDS. */
@@ -27,6 +32,37 @@ public final class FinishTable {
 
     /** One finish a gun can get. {@code gun} is TaCZ's gun id, {@code look} the pattern. */
     public record Entry(String id, String gun, String look, int grade, double wearMin, double wearMax) {
+    }
+
+    /**
+     * Which finishes a roll may give: those whose pattern is in {@code looks} (every pattern when null), by
+     * {@code grades} (five weights, commonest first; the table's when null).
+     */
+    public record Pool(@Nullable Set<String> looks, @Nullable double[] grades) {
+        public static final Pool ALL = new Pool(null, null);
+
+        public Pool {
+            looks = looks == null ? null : Set.copyOf(looks);
+            if (grades != null) {
+                if (grades.length != Finish.GRADES) {
+                    throw new IllegalArgumentException("need " + Finish.GRADES + " grade weights");
+                }
+                for (double g : grades) {
+                    if (!(g >= 0)) {
+                        throw new IllegalArgumentException("grade weights must not be negative");
+                    }
+                }
+                grades = grades.clone();
+            }
+        }
+
+        public static Pool of(String look) {
+            return new Pool(Set.of(look), null);
+        }
+
+        boolean has(Entry e) {
+            return looks == null || looks.contains(e.look());
+        }
     }
 
     /** A wear band: up to {@code upper} (the last up to 1.0), rolled with {@code weight}. */
@@ -67,23 +103,45 @@ public final class FinishTable {
     }
 
     public boolean paints(String gun) {
-        return ready() && entries.stream().anyMatch(e -> e.gun().equals(gun));
+        return paints(gun, Pool.ALL);
     }
 
-    /** The finishes a gun may get, by grade. */
-    Map<Integer, List<Entry>> forGun(String gun) {
+    /** Whether the gun has a finish in the pool (one whose grade weighs something). */
+    public boolean paints(String gun, Pool pool) {
+        return ready() && !forGun(gun, pool).isEmpty();
+    }
+
+    /** Every pattern in the table. */
+    public Set<String> looks() {
+        Set<String> out = new TreeSet<>();
+        entries.forEach(e -> out.add(e.look()));
+        return out;
+    }
+
+    /** The finishes a gun may get from the pool, by grade; grades that weigh nothing are left out. */
+    Map<Integer, List<Entry>> forGun(String gun, Pool pool) {
+        double[] weights = weights(pool);
         Map<Integer, List<Entry>> out = new LinkedHashMap<>();
         for (Entry e : entries) {
-            if (e.gun().equals(gun)) {
+            if (e.gun().equals(gun) && pool.has(e) && weights[e.grade() - 1] > 0) {
                 out.computeIfAbsent(e.grade(), g -> new ArrayList<>()).add(e);
             }
         }
         return out;
     }
 
+    private double[] weights(Pool pool) {
+        return pool.grades() == null ? gradeWeights : pool.grades();
+    }
+
     /** A finish for this gun, or empty when the table has not loaded or the gun has none. */
     public Optional<Finish> roll(String gun, DoubleSupplier random) {
-        return pick(gun, random).map(entry -> finishOf(entry, random));
+        return roll(gun, Pool.ALL, random);
+    }
+
+    /** A finish for this gun from the pool, or empty when the table has not loaded or the gun has none in it. */
+    public Optional<Finish> roll(String gun, Pool pool, DoubleSupplier random) {
+        return pick(gun, pool, random).map(entry -> finishOf(entry, random));
     }
 
     Finish finishOf(Entry entry, DoubleSupplier random) {
@@ -96,18 +154,19 @@ public final class FinishTable {
         return new Finish(entry.id(), entry.look(), entry.grade(), bandOf(wear) + 1, wear, pattern, wearNo);
     }
 
-    /** One of a gun's finishes by the grades' odds: the rolled one, and the reveal's other cells. */
-    Optional<Entry> pick(String gun, DoubleSupplier random) {
+    /** One of a gun's finishes in the pool by the grades' odds: the rolled one, and the reveal's other cells. */
+    Optional<Entry> pick(String gun, Pool pool, DoubleSupplier random) {
         if (!ready()) {
             return Optional.empty();
         }
-        Map<Integer, List<Entry>> mine = forGun(gun);
+        Map<Integer, List<Entry>> mine = forGun(gun, pool);
         if (mine.isEmpty()) {
             return Optional.empty();
         }
+        double[] weights = weights(pool);
         double total = 0;
         for (int g : mine.keySet()) {
-            total += gradeWeights[g - 1];
+            total += weights[g - 1];
         }
         double pick = random.getAsDouble() * total;
         int grade = -1;
@@ -116,7 +175,7 @@ public final class FinishTable {
                 continue;
             }
             grade = g;
-            pick -= gradeWeights[g - 1];
+            pick -= weights[g - 1];
             if (pick < 0) {
                 break;
             }
@@ -126,13 +185,24 @@ public final class FinishTable {
 
     /** The reveal's reel for a gun that got {@code won}. */
     public Reel reel(String gun, Finish won, DoubleSupplier random) {
+        return reel(gun, Pool.ALL, won, random);
+    }
+
+    /**
+     * The reveal's reel for a gun that got {@code won} from the pool, drawn from the same pool. When the gun has one
+     * finish in it there is nothing to scroll past: the reel is that one cell.
+     */
+    public Reel reel(String gun, Pool pool, Finish won, DoubleSupplier random) {
         Entry winner = entries.stream().filter(e -> e.id().equals(won.id())).findFirst().orElseThrow();
+        Map<Integer, List<Entry>> mine = forGun(gun, pool);
+        if (mine.values().stream().mapToInt(List::size).sum() <= 1) {
+            return new Reel(List.of(winner), 0, 0);
+        }
         List<Entry> cells = new ArrayList<>(Reel.CELLS);
         for (int i = 0; i < Reel.CELLS; i++) {
-            cells.add(i == Reel.WIN_AT ? winner : pick(gun, random).orElse(winner));
+            cells.add(i == Reel.WIN_AT ? winner : pick(gun, pool, random).orElse(winner));
         }
         // the near miss: one or two grades up, among those the gun has
-        Map<Integer, List<Entry>> mine = forGun(gun);
         TreeSet<Integer> rarer = new TreeSet<>(mine.keySet().stream().filter(g -> g > winner.grade()).toList());
         if (!rarer.isEmpty() && random.getAsDouble() < Reel.NEAR_MISS) {
             List<Integer> up = new ArrayList<>(rarer);

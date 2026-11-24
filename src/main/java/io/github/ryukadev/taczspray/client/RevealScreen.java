@@ -65,7 +65,8 @@ public final class RevealScreen extends Screen {
         // only the show, so drawn here; the reel and where it stops are the server's
         float u = (float) Math.random();
         power = CRISP + (CREEP - CRISP) * u;
-        reelMs = SHORTEST_MS + Math.round((LONGEST_MS - SHORTEST_MS) * u);
+        // a can for one finish has nothing to scroll past: the reel is that one cell, shown at once
+        reelMs = reveal.reel().size() > 1 ? SHORTEST_MS + Math.round((LONGEST_MS - SHORTEST_MS) * u) : 1;
         landedAt = DIM_MS + reelMs;
         revealAt = landedAt + 150;
         textAt = revealAt + 300;
