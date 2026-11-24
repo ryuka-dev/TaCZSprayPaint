@@ -2,6 +2,7 @@ package io.github.ryukadev.taczspray.dev;
 
 import io.github.ryukadev.taczspray.TaczSpray;
 import io.github.ryukadev.taczspray.item.ModItems;
+import io.github.ryukadev.taczspray.item.PaintingItem;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -9,8 +10,8 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 
 /**
  * Development help, off unless the game is started with {@code -Dtaczspray.devkit=true}: a player who joins gets a
- * spray can, a paint remover and a few guns to try them on, one of them a gun with no finishes (to see the refusal).
- * Not part of the mod's behaviour.
+ * stack of spray cans, one of paint remover and a few guns to try them on, one of them a gun with no finishes (to see
+ * the refusal). Not part of the mod's behaviour.
  */
 public final class DevKit {
     public static final String PROPERTY = "taczspray.devkit";
@@ -31,12 +32,12 @@ public final class DevKit {
         if (!(event.getEntity() instanceof ServerPlayer player)) {
             return;
         }
-        player.getInventory().add(new ItemStack(ModItems.SPRAY_CAN.get()));
-        player.getInventory().add(new ItemStack(ModItems.PAINT_REMOVER.get()));
+        player.getInventory().add(new ItemStack(ModItems.SPRAY_CAN.get(), PaintingItem.STACK));
+        player.getInventory().add(new ItemStack(ModItems.PAINT_REMOVER.get(), PaintingItem.STACK));
         for (String id : GUNS) {
             player.getInventory().add(DevGuns.make(id));
         }
-        TaczSpray.LOG.info("[devkit] gave {} the spray can, the remover and {} guns", player.getName().getString(),
+        TaczSpray.LOG.info("[devkit] gave {} the spray cans, the removers and {} guns", player.getName().getString(),
                 GUNS.length);
     }
 }

@@ -15,7 +15,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
-/** Sprays the off-hand gun with a finish rolled anew every time: pattern, grade and wear. Never used up. */
+/** Sprays the off-hand gun with a finish rolled anew every time: pattern, grade and wear. One can a spray. */
 public final class SprayCanItem extends PaintingItem {
     private static final int[] MIST = {0xE04848, 0xF2C14E, 0x58B368, 0x4A8FE0, 0xB060D0, 0xF08CB0};
 
@@ -35,19 +35,20 @@ public final class SprayCanItem extends PaintingItem {
     }
 
     @Override
-    protected void apply(ServerPlayer player, ItemStack gun) {
+    protected boolean apply(ServerPlayer player, ItemStack gun) {
         String id = FinishTables.gunId(gun);
         FinishTable table = FinishTables.current();
         var random = player.getRandom();
         Optional<Finish> rolled = table.roll(id, random::nextDouble);
         if (rolled.isEmpty()) {
             player.displayClientMessage(refusal(gun), true);
-            return;
+            return false;
         }
         Finish finish = rolled.get();
         finish.writeTo(gun);
         player.getInventory().setChanged();
         Network.sendTo(player, new RevealMessage(finish, table.reel(id, finish, random::nextDouble)));
+        return true;
     }
 
     @Override

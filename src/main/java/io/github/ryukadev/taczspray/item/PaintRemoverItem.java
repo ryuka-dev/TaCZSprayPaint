@@ -8,7 +8,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-/** Takes the finish off the off-hand gun, leaving it exactly as it was before it was sprayed. Never used up. */
+/** Takes the finish off the off-hand gun, leaving it exactly as it was before it was sprayed. One a use. */
 public final class PaintRemoverItem extends PaintingItem {
     public PaintRemoverItem(Properties properties) {
         super(properties);
@@ -25,10 +25,11 @@ public final class PaintRemoverItem extends PaintingItem {
     }
 
     @Override
-    protected void apply(ServerPlayer player, ItemStack gun) {
+    protected boolean apply(ServerPlayer player, ItemStack gun) {
         Finish.remove(gun);
         player.getInventory().setChanged();
         player.displayClientMessage(Component.translatable("taczspray.message.removed"), true);
+        return true;
     }
 
     @Override

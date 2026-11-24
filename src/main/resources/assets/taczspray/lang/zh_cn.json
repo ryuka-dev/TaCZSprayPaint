@@ -1,8 +1,8 @@
 {
   "item.taczspray.paint_remover": "去漆剂",
-  "item.taczspray.paint_remover.desc": "副手拿枪，按住右键：去掉枪上的外观",
+  "item.taczspray.paint_remover.desc": "副手拿枪，按住右键：去掉枪上的外观，用掉一瓶",
   "item.taczspray.spray_can": "喷漆罐",
-  "item.taczspray.spray_can.desc": "副手拿枪，按住右键：每次随机喷一个新外观",
+  "item.taczspray.spray_can.desc": "副手拿枪，按住右键：随机喷一个新外观，用掉一罐",
   "taczspray.band.1": "崭新出厂",
   "taczspray.band.2": "略有磨损",
   "taczspray.band.3": "久经沙场",

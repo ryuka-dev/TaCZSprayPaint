@@ -1,8 +1,8 @@
 {
   "item.taczspray.paint_remover": "Paint Remover",
-  "item.taczspray.paint_remover.desc": "Hold use with a gun in your off hand to take its finish off",
+  "item.taczspray.paint_remover.desc": "Hold use with a gun in your off hand to take its finish off, using up the bottle",
   "item.taczspray.spray_can": "Spray Can",
-  "item.taczspray.spray_can.desc": "Hold use with a gun in your off hand: a new random finish every time",
+  "item.taczspray.spray_can.desc": "Hold use with a gun in your off hand: a new random finish, using up the can",
   "taczspray.band.1": "Factory New",
   "taczspray.band.2": "Minimal Wear",
   "taczspray.band.3": "Field-Tested",

@@ -3,7 +3,8 @@
 Spray paint for [Timeless and Classics Zero](https://modrinth.com/mod/timeless-and-classics-zero) guns.
 
 A spray can gives the gun in your off hand a random finish: the pattern, its grade and how worn it looks are rolled
-every time, and no two guns come out the same. Spray again as often as you like. Paint remover takes the finish off.
+every time, and no two guns come out the same. Each spray uses up one can, and a gun can be sprayed again as often as
+you like. Paint remover takes the finish off, one bottle at a time.
 
 Finishes only change colours. Models, animations, sounds and stats stay exactly as they are.
 

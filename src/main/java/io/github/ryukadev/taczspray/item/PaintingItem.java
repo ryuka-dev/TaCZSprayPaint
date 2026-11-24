@@ -24,21 +24,23 @@ import java.util.List;
 
 /**
  * An item held in the main hand and worked on the TaCZ gun in the off hand: hold use for {@link #USE_TICKS}, with
- * sound and coloured mist at the gun; letting go early does nothing. The item is never used up. Whether the gun can
- * be worked on is the server's call when the time is up; the client only decides whether to start the motion.
+ * sound and coloured mist at the gun; letting go early does nothing. One is used up each time the work is done (not in
+ * creative mode); a gun can be worked on again and again, one item each time. Whether the gun can be worked on is the
+ * server's call when the time is up; the client only decides whether to start the motion.
  */
 public abstract class PaintingItem extends Item {
     public static final int USE_TICKS = 30;
+    public static final int STACK = 16;
 
     protected PaintingItem(Properties properties) {
-        super(properties.stacksTo(1));
+        super(properties.stacksTo(STACK));
     }
 
     /** Client and server: whether to start on this gun at all. */
     protected abstract boolean canStart(ItemStack gun, Level level);
 
-    /** Server only, when the time is up: change the gun, tell the player. */
-    protected abstract void apply(ServerPlayer player, ItemStack gun);
+    /** Server only, when the time is up: change the gun, tell the player. False when nothing changed. */
+    protected abstract boolean apply(ServerPlayer player, ItemStack gun);
 
     /** The message when {@link #canStart} says no. */
     protected abstract Component refusal(ItemStack gun);
@@ -104,8 +106,8 @@ public abstract class PaintingItem extends Item {
                 player.displayClientMessage(Component.translatable("taczspray.message.gun_in_off_hand"), true);
             } else if (!canStart(gun, level)) {
                 player.displayClientMessage(refusal(gun), true);
-            } else {
-                apply(player, gun);
+            } else if (apply(player, gun) && !player.getAbilities().instabuild) {
+                stack.shrink(1);
             }
         }
         return stack;
