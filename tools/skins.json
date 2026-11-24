@@ -46,7 +46,7 @@
       }
     }
   ],
-  "_说明_patterns": "正式的图案：cover 是上漆范围（shell 只漆外壳，外壳按 guns.json；full 整把漆）；pattern 是 patterns.py 的画法与参数；anim 是会动的效果；projection 为 side 的从侧面整体投影（条纹、色带、格纹这类有方向的图案）。name 是中文名，英文名在 pack.py 的 ENGLISH。",
+  "_说明_patterns": "正式的图案：cover 是上漆范围（shell 只漆外壳，外壳按 guns.json；full 整把漆）；pattern 是 patterns.py 的画法与参数；anim 是会动的效果；projection 为 side 的从侧面整体投影（条纹、色带、格纹这类有方向的图案）。name 是中文名，英文名在 pack.py 的 ENGLISH。 material 是光影（LabPBR 高光贴图）下漆面的材质：smoothness 光滑度 0–1，metal 是否金属；不写就是普通漆（光滑度 0.35，非金属）。",
   "patterns": [
     {
       "id": "sakura",
@@ -245,6 +245,10 @@
           "f2d98a"
         ],
         "cells": 8
+      },
+      "material": {
+        "smoothness": 0.5,
+        "metal": true
       }
     },
     {
@@ -359,7 +363,11 @@
           "strength": 0.35
         }
       ],
-      "projection": "side"
+      "projection": "side",
+      "material": {
+        "smoothness": 0.55,
+        "metal": true
+      }
     },
     {
       "id": "chrome",
@@ -385,7 +393,11 @@
           "strength": 0.6
         }
       ],
-      "projection": "side"
+      "projection": "side",
+      "material": {
+        "smoothness": 0.92,
+        "metal": true
+      }
     },
     {
       "id": "anodized",
@@ -411,7 +423,11 @@
           "strength": 0.45
         }
       ],
-      "projection": "side"
+      "projection": "side",
+      "material": {
+        "smoothness": 0.65,
+        "metal": true
+      }
     },
     {
       "id": "gold",
@@ -437,7 +453,11 @@
           "strength": 0.55
         }
       ],
-      "projection": "side"
+      "projection": "side",
+      "material": {
+        "smoothness": 0.78,
+        "metal": true
+      }
     },
     {
       "id": "titanium",
@@ -463,7 +483,11 @@
           "strength": 0.45
         }
       ],
-      "projection": "side"
+      "projection": "side",
+      "material": {
+        "smoothness": 0.72,
+        "metal": true
+      }
     }
   ]
 }

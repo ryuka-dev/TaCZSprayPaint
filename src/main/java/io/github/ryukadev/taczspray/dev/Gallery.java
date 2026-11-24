@@ -46,7 +46,8 @@ import java.util.function.Consumer;
  * releases with the gun display case, one painted gun in a case last (finishes are not drawn there yet). Screenshots
  * are {@code taczspray-gallery-<n>-<gun>-<shot>.png}; then it quits. {@code -Dtaczspray.gallery.guns=<id>,<id>} shoots only
  * those guns; {@code -Dtaczspray.gallery.plain=true} leaves them unpainted, to tell the mod's doing from TaCZ's own;
- * {@code -Dtaczspray.gallery.looks=<a>,<b>} hangs pattern a and pattern b instead (guns without both are skipped).
+ * {@code -Dtaczspray.gallery.looks=<a>,<b>} hangs pattern a and pattern b instead (guns without both are skipped);
+ * {@code -Dtaczspray.gallery.pbr=true} also logs the specular textures Oculus gives each gun ({@link PbrProbe}).
  * Not part of the mod's behaviour.
  */
 public final class Gallery {
@@ -107,7 +108,12 @@ public final class Gallery {
                     onServer(mc, player -> clearFrames(player.serverLevel()));
                     mc.options.hideGui = false;
                 }
-                case 85 -> shot(mc, name + "-hand");
+                case 85 -> {
+                    shot(mc, name + "-hand");
+                    if (PbrProbe.enabled()) {
+                        PbrProbe.probe(mc.player.getMainHandItem());
+                    }
+                }
                 default -> {
                 }
             }

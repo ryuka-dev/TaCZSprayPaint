@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import io.github.ryukadev.taczspray.PaintableGuns;
 import io.github.ryukadev.taczspray.TaczSpray;
+import io.github.ryukadev.taczspray.client.compat.OculusPbr;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -28,6 +29,7 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void setup(FMLClientSetupEvent event) {
         GunTextures.setSource(FinishTextures.instance());
+        event.enqueueWork(OculusPbr::registerIfPresent);
     }
 
     @SubscribeEvent

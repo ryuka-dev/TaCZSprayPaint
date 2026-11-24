@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -43,6 +44,10 @@ import java.util.Set;
  * at a time, at most one every {@value #COMPOSE_GAP_MS} ms, so that many guns coming into view together do not all
  * cost the same frame.
  *
+ * <p>Each texture is a {@link FinishTexture}, which also knows where the paint shows and the finish's
+ * {@code material}, so that under an Oculus shader pack painted guns keep the gun pack's LabPBR maps ({@code
+ * client/compat/OculusPbr}).
+ *
  * <p>Textures are kept for the {@value #KEPT} guns drawn last and released after; a full-detail one is as large as the
  * gun's texture drawn up (4 MB for a 1024 square). Anything missing or wrong (no data, a texture of another size, a
  * newer format) draws the gun's own texture and is logged once. Render thread only.
@@ -59,7 +64,8 @@ public final class FinishTextures implements GunTextures.Source, ResourceManager
 
     /** One finish's data; either model may be missing (a gun without a LOD model). */
     private record FinishData(@Nullable SkinTexels main, @Nullable SkinTexels lod, int[] tile, int tileSize,
-                              double pixel, double lodPixel, List<SkinAlgo.Effect> anim, boolean side) {
+                              double pixel, double lodPixel, List<SkinAlgo.Effect> anim, boolean side,
+                              FinishTexture.Material material) {
     }
 
     /** A composed texture; a moving one also keeps what it needs to repaint. */
@@ -229,11 +235,22 @@ public final class FinishTextures implements GunTextures.Source, ResourceManager
             }
         }
         ResourceLocation id = TaczSpray.id("finish/" + next++);
-        DynamicTexture texture = new DynamicTexture(image);
+        DynamicTexture texture = new FinishTexture(image, key.original(), paintShowing(prepared), d.material());
         Minecraft.getInstance().getTextureManager().register(id, texture);
         Moving moving = d.anim().isEmpty() ? null
                 : new Moving(prepared, d.tile(), d.tileSize(), d.anim(), texture, argb, width);
         return new Made(id, moving);
+    }
+
+    /** The texels where the paint shows: painted, not worn through, not hidden under another part. */
+    private static BitSet paintShowing(SkinAlgo.Prepared p) {
+        BitSet out = new BitSet();
+        for (int k = 0; k < p.n; k++) {
+            if (!p.hidden[k] && !p.chipped[k]) {
+                out.set(p.at[k]);
+            }
+        }
+        return out;
     }
 
     private void evict() {
@@ -283,7 +300,7 @@ public final class FinishTextures implements GunTextures.Source, ResourceManager
             }
             return Optional.of(new FinishData(models[0], models[1], tile[0], tile[1][0], json.get("pixel").getAsDouble(),
                     json.get("lod_pixel").getAsDouble(), anim(json),
-                    json.has("projection") && "side".equals(json.get("projection").getAsString())));
+                    json.has("projection") && "side".equals(json.get("projection").getAsString()), material(json)));
         } catch (IOException | RuntimeException e) {
             report(finish, e.toString());
             return Optional.empty();
@@ -318,6 +335,17 @@ public final class FinishTextures implements GunTextures.Source, ResourceManager
                     num(o, "degrees"), num(o, "width"), num(o, "strength")));
         }
         return List.copyOf(out);
+    }
+
+    /** How the paint looks under a LabPBR shader pack; plain paint when the finish does not say. */
+    private static FinishTexture.Material material(JsonObject json) {
+        if (!json.has("material")) {
+            return FinishTexture.Material.PAINT;
+        }
+        JsonObject m = json.getAsJsonObject("material");
+        return new FinishTexture.Material(
+                m.has("smoothness") ? m.get("smoothness").getAsDouble() : FinishTexture.Material.PAINT.smoothness(),
+                m.has("metal") && m.get("metal").getAsBoolean());
     }
 
     private static double num(JsonObject o, String name) {

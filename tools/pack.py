@@ -210,6 +210,8 @@ def write(mapping):
             meta["anim"] = pat["anim"]
         if pat.get("projection", "box") != "box":
             meta["projection"] = pat["projection"]
+        if pat.get("material"):
+            meta["material"] = pat["material"]
         out = ASSETS / "finishes" / r["id"]
         out.mkdir(parents=True, exist_ok=True)
         (out / "finish.json").write_text(json.dumps(meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

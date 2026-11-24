@@ -6,5 +6,9 @@
   "texels": {
     "1.1": "taurus500_shell_11",
     "1.2": "taurus500_shell_12"
+  },
+  "material": {
+    "smoothness": 0.5,
+    "metal": true
   }
 }

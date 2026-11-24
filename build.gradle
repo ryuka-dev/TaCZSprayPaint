@@ -27,11 +27,17 @@ mixin {
 repositories {
     // TaCZ is compiled against from the jar in libs/, never bundled
     flatDir { dirs 'libs' }
+    // Oculus, compiled against for the optional LabPBR hook only (client/compat), never bundled
+    maven {
+        url = 'https://api.modrinth.com/maven'
+        content { includeGroup 'maven.modrinth' }
+    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     compileOnly fg.deobf("local:tacz-forge-1.20.1:${tacz_compile_version}")
+    compileOnly fg.deobf("maven.modrinth:oculus:${oculus_compile_version}")
     // MixinExtras ships inside TaCZ, which is a required dependency
     compileOnly annotationProcessor('io.github.llamalad7:mixinextras-common:0.3.6')
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'

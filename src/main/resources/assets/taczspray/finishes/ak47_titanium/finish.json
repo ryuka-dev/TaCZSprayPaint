@@ -15,5 +15,9 @@
       "strength": 0.45
     }
   ],
-  "projection": "side"
+  "projection": "side",
+  "material": {
+    "smoothness": 0.72,
+    "metal": true
+  }
 }
