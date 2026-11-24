@@ -12,7 +12,7 @@ Work in progress: nothing is released yet.
 ## Requirements
 
 - Minecraft 1.20.1, Forge 47
-- Timeless and Classics Zero 1.1.8-hotfix or 1.2.0-hotfix (the unmodified release)
+- Timeless and Classics Zero 1.1.8-hotfix, 1.1.8-hotfix2 or 1.2.0-hotfix (the unmodified release)
 - Install on both the server and the clients
 
 ## License
