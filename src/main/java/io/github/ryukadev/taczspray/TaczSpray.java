@@ -3,6 +3,8 @@ package io.github.ryukadev.taczspray;
 import com.mojang.logging.LogUtils;
 import io.github.ryukadev.taczspray.dev.DevKit;
 import io.github.ryukadev.taczspray.dev.Gallery;
+import io.github.ryukadev.taczspray.dev.MultiplayerCheck;
+import io.github.ryukadev.taczspray.dev.MultiplayerWatch;
 import io.github.ryukadev.taczspray.dev.SelfTest;
 import io.github.ryukadev.taczspray.item.ModItems;
 import io.github.ryukadev.taczspray.net.Network;
@@ -39,6 +41,11 @@ public final class TaczSpray {
             SelfTest.start();
         } else if (FMLEnvironment.dist == Dist.CLIENT && Gallery.enabled()) {
             Gallery.start();
+        } else if (FMLEnvironment.dist == Dist.CLIENT && MultiplayerWatch.enabled()) {
+            MultiplayerWatch.start();
+        }
+        if (MultiplayerCheck.enabled()) {
+            MultiplayerCheck.start();
         }
     }
 }
