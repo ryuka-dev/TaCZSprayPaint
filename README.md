@@ -6,6 +6,9 @@ A spray can gives the gun in your off hand a random finish: the pattern, its gra
 every time, and no two guns come out the same. Each spray uses up one can, and a gun can be sprayed again as often as
 you like. Paint remover takes the finish off, one bottle at a time.
 
+With ten or more cans, sneak while spraying to roll ten finishes at once and keep the one you like. The reveal shows
+the painted gun and how worn it is; press any key to skip it and get the result in the chat.
+
 Finishes only change colours. Models, animations, sounds and stats stay exactly as they are.
 
 ## For server owners and modpack makers
