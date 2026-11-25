@@ -44,7 +44,9 @@
   "taczspray.pattern.tartan": "Tartan",
   "taczspray.pattern.titanium": "Heat-Tinted Titanium",
   "taczspray.pattern.waves": "Waves",
+  "taczspray.reveal.chat": "New finish: %1$s · %2$s · %3$s %4$s",
   "taczspray.reveal.continue": "Click to continue",
+  "taczspray.reveal.skip": "Press any key to skip",
   "taczspray.reveal.title": "New finish",
   "taczspray.tooltip.look": "Finish: %s",
   "taczspray.tooltip.series": "Series: %s"

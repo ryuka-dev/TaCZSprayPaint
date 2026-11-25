@@ -2,11 +2,15 @@ package io.github.ryukadev.taczspray.client;
 
 import io.github.ryukadev.taczspray.Finish;
 import net.minecraft.ChatFormatting;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -49,5 +53,22 @@ public final class FinishText {
         int at = Math.min(1, lines.size());
         lines.add(at, wear);
         lines.add(at, name);
+    }
+
+    /** Under the band and wear line, the wear bar (a tooltip can only draw such a part at this later stage). */
+    @SubscribeEvent
+    public static void wearBar(RenderTooltipEvent.GatherComponents event) {
+        Finish finish = Finish.of(event.getItemStack());
+        if (finish == null) {
+            return;
+        }
+        String line = band(finish.band()).getString() + " " + wear(finish.wear());
+        List<Either<FormattedText, TooltipComponent>> parts = event.getTooltipElements();
+        for (int i = 0; i < parts.size(); i++) {
+            if (parts.get(i).left().map(t -> t.getString().equals(line)).orElse(false)) {
+                parts.add(i + 1, Either.right(new WearBar.Tooltip(finish.band(), finish.wear())));
+                return;
+            }
+        }
     }
 }

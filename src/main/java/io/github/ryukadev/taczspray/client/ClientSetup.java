@@ -10,6 +10,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -33,6 +34,11 @@ public final class ClientSetup {
     }
 
     @SubscribeEvent
+    public static void tooltipParts(RegisterClientTooltipComponentFactoriesEvent event) {
+        event.register(WearBar.Tooltip.class, WearBar.Line::new);
+    }
+
+    @SubscribeEvent
     public static void reloadListeners(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(FinishTextures.instance());
         event.registerReloadListener((ResourceManagerReloadListener) ClientSetup::readPaintableGuns);
@@ -52,5 +58,6 @@ public final class ClientSetup {
             }
         }
         PaintableGuns.setClient(guns);
+        GunModel.forget();
     }
 }

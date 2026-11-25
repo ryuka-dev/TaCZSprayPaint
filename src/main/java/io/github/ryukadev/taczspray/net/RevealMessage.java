@@ -3,15 +3,16 @@ package io.github.ryukadev.taczspray.net;
 import io.github.ryukadev.taczspray.Finish;
 import io.github.ryukadev.taczspray.FinishTable;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Server to client after a spray: the finish the gun got and the reel to scroll past before showing it. The reel is
- * drawn on the server from the real odds; the client only plays it.
+ * Server to client after a spray: the gun as it now is (to show it), the finish it got and the reel to scroll past
+ * before showing it. The reel is drawn on the server from the real odds; the client only plays it.
  */
-public record RevealMessage(Finish won, List<Cell> reel, int winAt, double land) {
+public record RevealMessage(ItemStack gun, Finish won, List<Cell> reel, int winAt, double land) {
     static final int MAX_CELLS = 64;
     private static final int MAX_NAME = 64;
 
@@ -19,12 +20,13 @@ public record RevealMessage(Finish won, List<Cell> reel, int winAt, double land)
     public record Cell(String id, String look, int grade) {
     }
 
-    public RevealMessage(Finish won, FinishTable.Reel reel) {
-        this(won, reel.cells().stream().map(e -> new Cell(e.id(), e.look(), e.grade())).toList(), reel.winAt(),
+    public RevealMessage(ItemStack gun, Finish won, FinishTable.Reel reel) {
+        this(gun, won, reel.cells().stream().map(e -> new Cell(e.id(), e.look(), e.grade())).toList(), reel.winAt(),
                 reel.land());
     }
 
     public RevealMessage {
+        gun = gun.copy();
         reel = List.copyOf(reel);
         if (reel.isEmpty() || reel.size() > MAX_CELLS || winAt < 0 || winAt >= reel.size() || !(Math.abs(land) <= 0.5)) {
             throw new IllegalArgumentException("bad reel");
@@ -37,6 +39,7 @@ public record RevealMessage(Finish won, List<Cell> reel, int winAt, double land)
     }
 
     void encode(FriendlyByteBuf buf) {
+        buf.writeItem(gun);
         buf.writeUtf(won.id(), MAX_NAME);
         buf.writeUtf(won.look(), MAX_NAME);
         buf.writeVarInt(won.grade());
@@ -55,6 +58,7 @@ public record RevealMessage(Finish won, List<Cell> reel, int winAt, double land)
     }
 
     static RevealMessage decode(FriendlyByteBuf buf) {
+        ItemStack gun = buf.readItem();
         Finish won = new Finish(buf.readUtf(MAX_NAME), buf.readUtf(MAX_NAME), buf.readVarInt(), buf.readVarInt(),
                 buf.readDouble(), buf.readVarInt(), buf.readVarInt());
         int n = buf.readVarInt();
@@ -65,7 +69,7 @@ public record RevealMessage(Finish won, List<Cell> reel, int winAt, double land)
         for (int i = 0; i < n; i++) {
             cells.add(new Cell(buf.readUtf(MAX_NAME), buf.readUtf(MAX_NAME), buf.readVarInt()));
         }
-        return new RevealMessage(won, cells, buf.readVarInt(), buf.readDouble());
+        return new RevealMessage(gun, won, cells, buf.readVarInt(), buf.readDouble());
     }
 
     public Cell wonCell() {

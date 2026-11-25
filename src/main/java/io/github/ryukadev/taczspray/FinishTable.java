@@ -92,6 +92,11 @@ public final class FinishTable {
         this.entries = List.copyOf(entries);
     }
 
+    /** Where each wear band ends, factory new first; the last is 1. */
+    public double[] bandUppers() {
+        return bands.stream().mapToDouble(Band::upper).toArray();
+    }
+
     public boolean ready() {
         return !bands.isEmpty();
     }

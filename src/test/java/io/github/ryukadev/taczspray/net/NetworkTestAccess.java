@@ -24,7 +24,8 @@ public final class NetworkTestAccess {
 
     public static Set<String> roundTripCatalog(Set<String> custom) {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        new CatalogMessage(Map.of("metal", Map.of("en_us", "Metal")), custom).encode(buf);
+        new CatalogMessage(Map.of("metal", Map.of("en_us", "Metal")), custom,
+                io.github.ryukadev.taczspray.Finish.defaultBandUppers()).encode(buf);
         return CatalogMessage.decode(buf).custom();
     }
 }

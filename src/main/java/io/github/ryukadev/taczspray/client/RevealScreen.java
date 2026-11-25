@@ -11,6 +11,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -23,7 +25,12 @@ import java.util.List;
  * seconds onto the one the gun got, the marker not always mid-cell; each reveal its own ending, from a crisp stop to a
  * long slow creep over the last cell. Then that cell grows in the middle, rings of its grade's colour spread, the name
  * twice the size and under it the grade, wear band and wear. A tick for each cell passing the marker, the landing's
- * sound by grade. A click, or Esc, closes it once the finish is shown. The reel is the server's; this only plays it.
+ * sound by grade. Then the winning cell grows into a stage with the pattern and the gun itself, turning (the gun is
+ * in the off hand, which TaCZ does not draw in first person), and the wear bar under the text.
+ * <p>
+ * Any key or click skips it (but not in its first moments, so the click that finished the spray does not); taking
+ * damage closes it. Either way, if the finish was not shown yet it is put in the chat. Once shown, any key or click
+ * closes it. The reel is the server's; this only plays it.
  */
 public final class RevealScreen extends Screen {
     private static final long DIM_MS = 300;
@@ -34,6 +41,8 @@ public final class RevealScreen extends Screen {
     private static final long GROW_MS = 400;
     private static final long RINGS_MS = 700;
     private static final long TWINKLE_MS = 250;
+    /** Input in the first moments is the spray's own, not a skip. */
+    private static final long GRACE_MS = 300;
 
     private static final int TILE = 60;
     private static final int STEP = TILE + 4;
@@ -46,6 +55,9 @@ public final class RevealScreen extends Screen {
     private static final int GOLD = 0xF2C14E;
     private static final int SUB = 0xD0D0D0;
     private static final int HINT = 0x8A8A8A;
+    private static final int STAGE_W = 300;
+    private static final int STAGE_H = 96;
+    private static final int WEAR_W = 160;
 
     private final RevealMessage reveal;
     private final List<ResourceLocation> patterns = new ArrayList<>();
@@ -59,6 +71,7 @@ public final class RevealScreen extends Screen {
     private int ticks = -1;
     private boolean landed;
     private boolean twinkled;
+    private int lastHurt = -1;
 
     private RevealScreen(RevealMessage reveal) {
         super(Component.translatable("taczspray.reveal.title"));
@@ -102,17 +115,52 @@ public final class RevealScreen extends Screen {
     }
 
     @Override
-    public boolean shouldCloseOnEsc() {
-        return elapsed() >= revealAt;
+    public boolean keyPressed(int key, int scanCode, int modifiers) {
+        return input();
     }
 
     @Override
     public boolean mouseClicked(double x, double y, int button) {
-        if (elapsed() >= revealAt) {
-            onClose();
-            return true;
+        return input();
+    }
+
+    /** A skip while it plays, a close once the finish is shown; nothing in its first moments. */
+    private boolean input() {
+        long t = elapsed();
+        if (t >= GRACE_MS) {
+            close(t < textAt);
         }
-        return false;
+        return true;
+    }
+
+    /** Taking damage closes it: there may be someone to deal with. */
+    @Override
+    public void tick() {
+        var player = Minecraft.getInstance().player;
+        if (player == null) {
+            return;
+        }
+        if (lastHurt >= 0 && player.hurtTime > lastHurt) {
+            close(elapsed() < textAt);
+            return;
+        }
+        lastHurt = player.hurtTime;
+    }
+
+    private void close(boolean unseen) {
+        if (unseen) {
+            Minecraft.getInstance().gui.getChat().addMessage(resultLine(reveal.won()));
+        }
+        onClose();
+    }
+
+    /** The finish as one chat line: its name and grade in the grade's colour, the wear band and wear. */
+    public static Component resultLine(Finish finish) {
+        Style colour = Style.EMPTY.withColor(TextColor.fromRgb(gradeColour(finish.grade())));
+        return Component.translatable("taczspray.reveal.chat",
+                ClientCatalog.lookName(finish.look()).copy().withStyle(colour),
+                FinishText.grade(finish.grade()).copy().withStyle(colour),
+                FinishText.band(finish.band()), FinishText.wear(finish.wear()));
     }
 
     @Override
@@ -125,6 +173,11 @@ public final class RevealScreen extends Screen {
         int ry = Math.max(8, (height - BLOCK_H) / 2);
         drawReel(g, t, rx, ry, rw);
         sounds(t);
+        if (t < textAt) {
+            Font font = Minecraft.getInstance().font;
+            String skip = Component.translatable("taczspray.reveal.skip").getString();
+            g.drawString(font, skip, (width - font.width(skip)) / 2, ry + 164, HINT, true);
+        }
         if (t >= revealAt) {
             // above the reel's names: text sits a little in front of the fills drawn at the same depth
             g.pose().pushPose();
@@ -207,13 +260,23 @@ public final class RevealScreen extends Screen {
                 ring(g, cx, cy, r, argb(1 - r / 140, colour));
             }
         }
-        // the winner, grown in the middle
-        float p = clamp01((t - revealAt) / (float) GROW_MS);
-        int size = Math.round(TILE + 40 * outQuart(p));
-        int x = cx - size / 2;
-        int y = cy - size / 2;
-        g.fill(x - 2, y - 2, x + size + 2, y + size + 2, opaque(colour));
-        drawCell(g, reveal.winAt(), x, y, size, false);
+        // the winning cell grows into a stage: the pattern on the left, the gun turning to the right of it
+        float p = outQuart(clamp01((t - revealAt) / (float) GROW_MS));
+        int sw = Math.round(TILE + (Math.min(STAGE_W, width - 24) - TILE) * p);
+        int sh = Math.round(TILE + (STAGE_H - TILE) * p);
+        int x = cx - sw / 2;
+        int y = cy - sh / 2;
+        g.fill(x - 2, y - 2, x + sw + 2, y + sh + 2, opaque(colour));
+        g.fill(x, y, x + sw, y + sh, opaque(BACKGROUND));
+        int swatch = sh - 12;
+        drawCell(g, reveal.winAt(), x + 6, y + 6, swatch, false);
+        if (p > 0.6f) {
+            int gx = x + 6 + swatch + (sw - swatch - 6) / 2;
+            float yaw = (float) Math.sin((t - revealAt) / 1100.0) * 28;
+            g.enableScissor(x, y, x + sw, y + sh);
+            GunModel.draw(g, reveal.gun(), gx, cy, sw - swatch - 30, sh - 20, yaw);
+            g.disableScissor();
+        }
         if (t < textAt) {
             return;
         }
@@ -233,8 +296,9 @@ public final class RevealScreen extends Screen {
         int sx = cx - (font.width(grade) + font.width(rest)) / 2;
         g.drawString(font, grade, sx, ry + 128, colour, true);
         g.drawString(font, rest, sx + font.width(grade), ry + 128, SUB, true);
+        WearBar.draw(g, cx - WEAR_W / 2, ry + 144, WEAR_W, 4, won.band(), won.wear(), ClientCatalog.bands());
         String hint = Component.translatable("taczspray.reveal.continue").getString();
-        g.drawString(font, hint, cx - font.width(hint) / 2, ry + 160, HINT, true);
+        g.drawString(font, hint, cx - font.width(hint) / 2, ry + 164, HINT, true);
     }
 
     /** The landing: the first three grades one sound, the fourth with a twinkle after it, the fifth its own. */

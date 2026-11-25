@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 /** The mod's one channel. Server and client must run the same protocol version, or the client cannot join. */
 public final class Network {
     // 2: the server owner's own finishes (CustomLookMessage, CatalogMessage's list of them)
-    private static final String PROTOCOL = "2";
+    private static final String PROTOCOL = "3";
     private static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(TaczSpray.id("main"),
             () -> PROTOCOL, PROTOCOL::equals, PROTOCOL::equals);
 

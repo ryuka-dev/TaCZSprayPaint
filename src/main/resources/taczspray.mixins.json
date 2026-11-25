@@ -9,7 +9,8 @@
     "BedrockModelMixin",
     "ExternalGunItemVboRendererMixin",
     "GunDisplayInstanceMixin",
-    "GunItemRendererWrapperMixin"
+    "GunItemRendererWrapperMixin",
+    "RenderBuffersAccess"
   ],
   "injectors": {
     "defaultRequire": 1

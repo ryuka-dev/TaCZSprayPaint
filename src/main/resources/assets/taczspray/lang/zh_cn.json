@@ -44,7 +44,9 @@
   "taczspray.pattern.tartan": "格纹",
   "taczspray.pattern.titanium": "烧钛",
   "taczspray.pattern.waves": "海浪",
+  "taczspray.reveal.chat": "新外观：%1$s · %2$s · %3$s %4$s",
   "taczspray.reveal.continue": "点击继续",
+  "taczspray.reveal.skip": "按任意键跳过",
   "taczspray.reveal.title": "新外观",
   "taczspray.tooltip.look": "外观：%s",
   "taczspray.tooltip.series": "系列：%s"

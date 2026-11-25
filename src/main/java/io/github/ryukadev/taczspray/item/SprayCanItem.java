@@ -92,7 +92,7 @@ public final class SprayCanItem extends PaintingItem {
         Finish finish = rolled.get();
         finish.writeTo(gun);
         player.getInventory().setChanged();
-        Network.sendTo(player, new RevealMessage(finish, table.reel(id, draw.pool(), finish, random::nextDouble)));
+        Network.sendTo(player, new RevealMessage(gun, finish, table.reel(id, draw.pool(), finish, random::nextDouble)));
         return true;
     }
 

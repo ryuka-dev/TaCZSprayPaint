@@ -2,6 +2,7 @@ package io.github.ryukadev.taczspray.client;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import io.github.ryukadev.taczspray.CustomLook;
+import io.github.ryukadev.taczspray.Finish;
 import io.github.ryukadev.taczspray.Series;
 import io.github.ryukadev.taczspray.TaczSpray;
 import io.github.ryukadev.taczspray.net.CatalogMessage;
@@ -29,6 +30,7 @@ import java.util.Set;
 public final class ClientCatalog {
     private static volatile Map<String, Map<String, String>> series = Map.of();
     private static Set<String> listed = Set.of();
+    private static volatile double[] bands = Finish.defaultBandUppers();
     private static final Map<String, CustomLook> custom = new HashMap<>();
     private static final Map<String, ResourceLocation> patterns = new HashMap<>();
 
@@ -38,6 +40,7 @@ public final class ClientCatalog {
     public static void accept(CatalogMessage message) {
         series = message.series();
         listed = message.custom();
+        bands = message.bands();
         boolean dropped = custom.keySet().removeIf(look -> !listed.contains(look));
         patterns.entrySet().removeIf(e -> {
             if (listed.contains(e.getKey())) {
@@ -78,10 +81,16 @@ public final class ClientCatalog {
     public static void loggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
         series = Map.of();
         listed = Set.of();
+        bands = Finish.defaultBandUppers();
         custom.clear();
         patterns.values().forEach(id -> Minecraft.getInstance().getTextureManager().release(id));
         patterns.clear();
         FinishTextures.instance().forgetSoon();
+    }
+
+    /** Where each wear band ends on this server, factory new first. */
+    public static double[] bands() {
+        return bands.clone();
     }
 
     /** The series' name in the game's language. */

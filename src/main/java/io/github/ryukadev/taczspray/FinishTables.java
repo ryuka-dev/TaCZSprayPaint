@@ -124,7 +124,8 @@ public final class FinishTables extends SimplePreparableReloadListener<FinishTab
     @SubscribeEvent
     public static void sync(OnDatapackSyncEvent event) {
         List<Object> messages = new ArrayList<>();
-        messages.add(CatalogMessage.of(series, custom.keySet()));
+        messages.add(CatalogMessage.of(series, custom.keySet(),
+                current.ready() ? current.bandUppers() : Finish.defaultBandUppers()));
         custom.values().forEach(c -> messages.add(new CustomLookMessage(c.look())));
         for (Object message : messages) {
             if (event.getPlayer() != null) {

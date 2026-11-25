@@ -23,6 +23,8 @@ public record Finish(String id, String look, int grade, int band, double wear, i
     public static final String TAG = "TaczSprayFinish";
     public static final int GRADES = 5;
     public static final int BANDS = 5;
+    /** Where each wear band ends by default (Counter-Strike's), factory new first. */
+    private static final double[] BAND_UPPERS = {0.07, 0.15, 0.38, 0.45, 1.0};
     static final int VERSION = 1;
     static final Pattern NAME = Pattern.compile("[a-z0-9_]{1,64}");
 
@@ -33,6 +35,25 @@ public record Finish(String id, String look, int grade, int band, double wear, i
         if (!(wear >= 0 && wear <= 1) || grade < 1 || grade > GRADES || band < 1 || band > BANDS) {
             throw new IllegalArgumentException("finish " + id + " out of range");
         }
+    }
+
+    public static double[] defaultBandUppers() {
+        return BAND_UPPERS.clone();
+    }
+
+    /** Five band ends rising to 1, as a finish table has. */
+    public static boolean validBandUppers(double[] uppers) {
+        if (uppers.length != BANDS || uppers[BANDS - 1] != 1.0) {
+            return false;
+        }
+        double last = 0;
+        for (double u : uppers) {
+            if (!(u > last && u <= 1)) {
+                return false;
+            }
+            last = u;
+        }
+        return true;
     }
 
     /** The gun's finish, or null when it has none or the tag is not one this version reads. */

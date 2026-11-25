@@ -4,6 +4,7 @@ import io.github.ryukadev.taczspray.Finish;
 import io.github.ryukadev.taczspray.FinishTables;
 import io.github.ryukadev.taczspray.TaczSpray;
 import io.github.ryukadev.taczspray.client.ClientCatalog;
+import io.github.ryukadev.taczspray.client.RevealScreen;
 import io.github.ryukadev.taczspray.item.CanLabel;
 import io.github.ryukadev.taczspray.item.ModItems;
 import net.minecraft.client.Minecraft;
@@ -24,6 +25,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.event.TickEvent;
+import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.util.function.Consumer;
@@ -153,7 +155,29 @@ public final class SelfTest {
             case 550 -> shot(mc, "tooltip-can");
             case 551 -> showTooltip(mc, mc.player.getMainHandItem().copy());
             case 556 -> shot(mc, "tooltip-gun");
-            case 560 -> {
+            // skipping a reveal, and being hurt during one: both close it and put the result in the chat
+            case 560 -> onServer(mc, SelfTest::sprayOnce);
+            case 572 -> {
+                boolean open = mc.screen instanceof RevealScreen;
+                if (open) {
+                    mc.screen.keyPressed(GLFW.GLFW_KEY_SPACE, 0, 0);
+                }
+                TaczSpray.LOG.info("[selftest] skip: reveal was open {}, closed after a key {} (expect true, true)",
+                        open, mc.screen == null);
+            }
+            case 576 -> shot(mc, "skipped");
+            case 580 -> onServer(mc, SelfTest::sprayOnce);
+            case 590 -> onServer(mc, player -> {
+                GameType mode = player.gameMode.getGameModeForPlayer();
+                player.setGameMode(GameType.SURVIVAL);
+                player.hurt(player.damageSources().generic(), 1f);
+                player.setGameMode(mode);
+            });
+            case 595 -> {
+                TaczSpray.LOG.info("[selftest] hurt during a reveal: closed {} (expect true)", mc.screen == null);
+                shot(mc, "hurt");
+            }
+            case 600 -> {
                 TaczSpray.LOG.info("[selftest] done");
                 mc.stop();
             }
@@ -166,6 +190,15 @@ public final class SelfTest {
      * In survival: a gun with no finishes takes no can; a spray takes one; then in creative a spray takes none. The
      * player's game mode is put back after.
      */
+    /** One plain can on the AK-47 in the off hand, for a reveal to skip. */
+    private static void sprayOnce(ServerPlayer player) {
+        ItemStack can = new ItemStack(ModItems.SPRAY_CAN.get());
+        player.getInventory().setItem(0, can);
+        player.getInventory().selected = 0;
+        player.setItemInHand(InteractionHand.OFF_HAND, gun("tacz:ak47"));
+        can.getItem().finishUsingItem(can, player.level(), player);
+    }
+
     private static void spray(ServerPlayer player) {
         ItemStack can = player.getMainHandItem();
         ItemStack gun = player.getOffhandItem();

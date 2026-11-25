@@ -2,9 +2,11 @@ package io.github.ryukadev.taczspray.net;
 
 import io.github.ryukadev.taczspray.CustomFinish;
 import io.github.ryukadev.taczspray.CustomLook;
+import io.github.ryukadev.taczspray.Finish;
 import io.github.ryukadev.taczspray.Series;
 import net.minecraft.network.FriendlyByteBuf;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -17,8 +19,9 @@ import java.util.Set;
  *
  * @param series series id to {language: name} ({@code ""} for a name in any language)
  * @param custom the owner's finishes, {@code custom_<folder>}
+ * @param bands  where each wear band ends, factory new first (a data pack may move them), for the wear bar
  */
-public record CatalogMessage(Map<String, Map<String, String>> series, Set<String> custom) {
+public record CatalogMessage(Map<String, Map<String, String>> series, Set<String> custom, double[] bands) {
     static final int MAX_SERIES = 256;
     static final int MAX_LANGUAGES = 16;
     private static final int MAX_ID = 64;
@@ -39,9 +42,10 @@ public record CatalogMessage(Map<String, Map<String, String>> series, Set<String
                     throw new IllegalArgumentException("bad name for series " + id);
                 }
             });
-            copy.put(id, Map.copyOf(names));
+            // in the file's order: a name's fallback takes the first variety of a language
+            copy.put(id, Collections.unmodifiableMap(new LinkedHashMap<>(names)));
         });
-        series = Map.copyOf(copy);
+        series = Collections.unmodifiableMap(copy);
         if (custom.size() > CustomFinish.MAX) {
             throw new IllegalArgumentException("too many custom finishes");
         }
@@ -51,12 +55,16 @@ public record CatalogMessage(Map<String, Map<String, String>> series, Set<String
             }
         }
         custom = Set.copyOf(custom);
+        if (!Finish.validBandUppers(bands)) {
+            throw new IllegalArgumentException("bad wear bands");
+        }
+        bands = bands.clone();
     }
 
-    public static CatalogMessage of(Map<String, Series> series, Set<String> custom) {
+    public static CatalogMessage of(Map<String, Series> series, Set<String> custom, double[] bands) {
         Map<String, Map<String, String>> names = new LinkedHashMap<>();
         series.forEach((id, s) -> names.put(id, s.names()));
-        return new CatalogMessage(names, custom);
+        return new CatalogMessage(names, custom, bands);
     }
 
     void encode(FriendlyByteBuf buf) {
@@ -71,6 +79,9 @@ public record CatalogMessage(Map<String, Map<String, String>> series, Set<String
         });
         buf.writeVarInt(custom.size());
         custom.forEach(look -> buf.writeUtf(look, MAX_ID));
+        for (double b : bands) {
+            buf.writeDouble(b);
+        }
     }
 
     static CatalogMessage decode(FriendlyByteBuf buf) {
@@ -99,6 +110,10 @@ public record CatalogMessage(Map<String, Map<String, String>> series, Set<String
         for (int i = 0; i < c; i++) {
             custom.add(buf.readUtf(MAX_ID));
         }
-        return new CatalogMessage(series, custom);
+        double[] bands = new double[Finish.BANDS];
+        for (int i = 0; i < bands.length; i++) {
+            bands[i] = buf.readDouble();
+        }
+        return new CatalogMessage(series, custom, bands);
     }
 }
