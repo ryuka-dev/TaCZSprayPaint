@@ -1,0 +1,22 @@
+{
+  "v": 1,
+  "name": {
+    "en_us": "Metal Collection",
+    "zh_cn": "金属收藏"
+  },
+  "looks": [
+    "brushed",
+    "chrome",
+    "anodized",
+    "gold",
+    "titanium",
+    "custom_example_copper"
+  ],
+  "grades": [
+    0,
+    50,
+    35,
+    15,
+    0
+  ]
+}

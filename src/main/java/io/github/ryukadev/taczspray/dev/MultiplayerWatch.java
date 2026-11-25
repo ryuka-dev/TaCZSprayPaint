@@ -34,7 +34,6 @@ public final class MultiplayerWatch {
     private boolean revealSeen;
     private int closeRevealAt = -1;
     private int quitAt = -1;
-    private boolean catalogLogged;
 
     private MultiplayerWatch() {
     }
@@ -51,7 +50,9 @@ public final class MultiplayerWatch {
 
     private void chat(ClientChatReceivedEvent event) {
         if (quitAt < 0 && event.getMessage().getString().contains(MultiplayerCheck.DONE)) {
-            TaczSpray.LOG.info("[mp] client: the server says done");
+            TaczSpray.LOG.info("[mp] client: the server says done; series metal is called \"{}\", {} \"{}\"",
+                    ClientCatalog.seriesName("metal"), MultiplayerCheck.LOOK,
+                    ClientCatalog.lookName(MultiplayerCheck.LOOK).getString());
             quitAt = ticks + 20;
         }
     }
@@ -71,11 +72,6 @@ public final class MultiplayerWatch {
             return;
         }
         String me = mc.player.getGameProfile().getName();
-        if (!catalogLogged && ticks > 100) {
-            catalogLogged = true;
-            TaczSpray.LOG.info("[mp] client {}: series selftest_metal is called \"{}\"", me,
-                    ClientCatalog.seriesName("selftest_metal"));
-        }
         if (!revealSeen && mc.screen instanceof RevealScreen) {
             revealSeen = true;
             TaczSpray.LOG.info("[mp] client {}: reveal opened", me);
@@ -89,7 +85,8 @@ public final class MultiplayerWatch {
             String name = p.getGameProfile().getName();
             Finish finish = Finish.of(p.getMainHandItem());
             String now = p.getMainHandItem().isEmpty() ? "nothing"
-                    : p.getMainHandItem().getItem().toString() + " " + (finish == null ? "unpainted" : finish);
+                    : p.getMainHandItem().getItem().toString() + " " + (finish == null ? "unpainted"
+                    : finish + " named \"" + ClientCatalog.lookName(finish.look()).getString() + "\"");
             if (!now.equals(held.put(name, now))) {
                 TaczSpray.LOG.info("[mp] client {}: {} holds {}", me, name, now);
                 if (!name.equals(me) && !p.getMainHandItem().isEmpty()) {

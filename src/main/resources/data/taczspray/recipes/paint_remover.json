@@ -1,4 +1,5 @@
 {
+  "conditions": [{"type": "taczspray:craftable", "item": "paint_remover"}],
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [

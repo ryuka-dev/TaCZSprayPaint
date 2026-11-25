@@ -24,7 +24,8 @@ import java.util.Optional;
 
 /**
  * Sprays the off-hand gun with a finish rolled anew every time: pattern, grade and wear. One can a spray. A plain can
- * draws from every finish; a labelled one ({@link CanLabel}) from a series or gives one finish.
+ * draws from every finish (or the series the server owner set for plain cans); a labelled one ({@link CanLabel}) from
+ * a series or gives one finish.
  */
 public final class SprayCanItem extends PaintingItem {
     private static final int[] MIST = {0xE04848, 0xF2C14E, 0x58B368, 0x4A8FE0, 0xB060D0, 0xF08CB0};
@@ -58,7 +59,7 @@ public final class SprayCanItem extends PaintingItem {
         if (l.look() != null) {
             FinishTable.Pool pool = FinishTable.Pool.of(l.look());
             return table.paints(id, pool) ? new Draw(pool, null) : new Draw(null,
-                    Component.translatable("taczspray.message.no_look", patternName(l.look())));
+                    Component.translatable("taczspray.message.no_look", FinishTables.lookName(l.look(), language)));
         }
         if (l.series() != null) {
             Series series = FinishTables.series().get(l.series());
@@ -68,7 +69,11 @@ public final class SprayCanItem extends PaintingItem {
             return table.paints(id, series.pool()) ? new Draw(series.pool(), null) : new Draw(null,
                     Component.translatable("taczspray.message.series_no_gun", series.name(language)));
         }
-        return table.paints(id) ? new Draw(FinishTable.Pool.ALL, null)
+        FinishTables.Plain plain = FinishTables.plain();
+        if (plain.pool() == null) {
+            return new Draw(null, Component.translatable("taczspray.message.no_series", plain.missingSeries()));
+        }
+        return table.paints(id, plain.pool()) ? new Draw(plain.pool(), null)
                 : new Draw(null, Component.translatable("taczspray.message.no_finishes"));
     }
 
@@ -100,14 +105,10 @@ public final class SprayCanItem extends PaintingItem {
                 tooltip.add(Component.translatable("taczspray.tooltip.series", ClientCatalog.seriesName(l.series()))
                         .withStyle(ChatFormatting.AQUA));
             } else if (l.look() != null) {
-                tooltip.add(Component.translatable("taczspray.tooltip.look", patternName(l.look()))
+                tooltip.add(Component.translatable("taczspray.tooltip.look", ClientCatalog.lookName(l.look()))
                         .withStyle(ChatFormatting.AQUA));
             }
         }, () -> tooltip.add(Component.translatable("taczspray.message.bad_can").withStyle(ChatFormatting.RED)));
-    }
-
-    static Component patternName(String look) {
-        return Component.translatable("taczspray.pattern." + look);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package io.github.ryukadev.taczspray.dev;
 
 import io.github.ryukadev.taczspray.Finish;
+import io.github.ryukadev.taczspray.FinishTables;
+import io.github.ryukadev.taczspray.item.CanLabel;
 import io.github.ryukadev.taczspray.TaczSpray;
 import io.github.ryukadev.taczspray.item.ModItems;
 import net.minecraft.network.chat.Component;
@@ -14,11 +16,17 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 /**
  * Development check for a dedicated server, off unless it is started with {@code -Dtaczspray.mpcheck=true}. Once two
- * players are on: the first sprays the gun in their off hand for real (the server's roll, the reveal sent to them),
+ * players are on: puts the example finish {@value #LOOK} (which the first start wrote into {@code examples/}) in the
+ * owner's folder and runs {@code /reload}, so that the clients learn of it while connected; then the first player
+ * sprays the gun in their off hand for real with a can of that finish (the server's roll, the reveal sent to them),
  * then holds it, facing the second; later takes the paint off with the remover. Then it says {@link #DONE} to
  * everyone (clients running {@link MultiplayerWatch} quit on it) and stops the server. Not part of the mod's behaviour.
  */
@@ -26,6 +34,7 @@ public final class MultiplayerCheck {
     public static final String PROPERTY = "taczspray.mpcheck";
     public static final String DONE = "[taczspray] multiplayer check done";
     private static final int SETTLE = 200;
+    static final String LOOK = "custom_example_copper";
 
     private int ticks = -1;
 
@@ -58,6 +67,7 @@ public final class MultiplayerCheck {
         ServerPlayer a = players.get(0);
         ServerPlayer b = players.get(1);
         switch (ticks) {
+            case SETTLE - 100 -> addExample(server);
             case SETTLE -> setUp(a, b);
             case SETTLE + 20 -> {
                 ItemStack can = a.getMainHandItem();
@@ -96,7 +106,9 @@ public final class MultiplayerCheck {
             p.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 60 * 5, 0, false, false));
         }
         a.serverLevel().setDayTime(6000);
-        a.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SPRAY_CAN.get()));
+        ItemStack can = new ItemStack(ModItems.SPRAY_CAN.get());
+        CanLabel.ofLook(LOOK).writeTo(can);
+        a.setItemInHand(InteractionHand.MAIN_HAND, can);
         a.setItemInHand(InteractionHand.OFF_HAND, DevGuns.make("tacz:ak47"));
         double x = a.getX();
         double y = a.getY();
@@ -104,6 +116,26 @@ public final class MultiplayerCheck {
         a.connection.teleport(x, y, z, 0f, 0f);
         b.connection.teleport(x, y, z + 2.5, 180f, 10f);
         TaczSpray.LOG.info("[mp] server: set up {} (sprays) and {} (watches)", name(a), name(b));
+    }
+
+    /** Copies the example finish and series out of {@code examples/} as a server owner would, and reloads. */
+    private static void addExample(MinecraftServer server) {
+        Path examples = FinishTables.folder().resolve("examples");
+        Path from = examples.resolve("finishes/example_copper");
+        Path to = FinishTables.folder().resolve("finishes/example_copper");
+        try {
+            Files.createDirectories(to);
+            for (String f : List.of("finish.json", "pattern.png")) {
+                Files.copy(from.resolve(f), to.resolve(f), StandardCopyOption.REPLACE_EXISTING);
+            }
+            Files.createDirectories(FinishTables.folder().resolve("series"));
+            Files.copy(examples.resolve("series/metal.json"), FinishTables.folder().resolve("series/metal.json"),
+                    StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            TaczSpray.LOG.error("[mp] server: could not copy the example: {}", e.toString());
+        }
+        TaczSpray.LOG.info("[mp] server: examples written on the first start: {}", Files.isDirectory(from));
+        server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), "reload");
     }
 
     /** The holder turns side-on to the watcher, so the gun is seen from its side. */

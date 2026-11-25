@@ -15,7 +15,8 @@ import java.util.function.Supplier;
 
 /** The mod's one channel. Server and client must run the same protocol version, or the client cannot join. */
 public final class Network {
-    private static final String PROTOCOL = "1";
+    // 2: the server owner's own finishes (CustomLookMessage, CatalogMessage's list of them)
+    private static final String PROTOCOL = "2";
     private static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(TaczSpray.id("main"),
             () -> PROTOCOL, PROTOCOL::equals, PROTOCOL::equals);
 
@@ -27,6 +28,8 @@ public final class Network {
                 Network::onReveal, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
         CHANNEL.registerMessage(1, CatalogMessage.class, CatalogMessage::encode, CatalogMessage::decode,
                 Network::onCatalog, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        CHANNEL.registerMessage(2, CustomLookMessage.class, CustomLookMessage::encode, CustomLookMessage::decode,
+                Network::onCustomLook, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
 
     public static void sendTo(ServerPlayer player, Object message) {
@@ -49,6 +52,13 @@ public final class Network {
     private static void onCatalog(CatalogMessage message, Supplier<NetworkEvent.Context> context) {
         context.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
                 () -> () -> io.github.ryukadev.taczspray.client.ClientCatalog.accept(message)));
+        context.get().setPacketHandled(true);
+    }
+
+    @SuppressWarnings("removal")
+    private static void onCustomLook(CustomLookMessage message, Supplier<NetworkEvent.Context> context) {
+        context.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
+                () -> () -> io.github.ryukadev.taczspray.client.ClientCatalog.accept(message.look())));
         context.get().setPacketHandled(true);
     }
 }

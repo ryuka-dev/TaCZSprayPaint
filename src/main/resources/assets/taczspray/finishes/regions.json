@@ -1,0 +1,237 @@
+{
+ "aa12": {
+  "full": "aa12_full",
+  "shell": "aa12_shell"
+ },
+ "ai_awp": {
+  "full": {
+   "1.1": "ai_awp_full_11",
+   "1.2": "ai_awp_full_12"
+  },
+  "shell": {
+   "1.1": "ai_awp_shell_11",
+   "1.2": "ai_awp_shell_12"
+  }
+ },
+ "ak47": {
+  "full": {
+   "1.1": "ak47_full_11",
+   "1.2": "ak47_full_12"
+  },
+  "shell": {
+   "1.1": "ak47_shell_11",
+   "1.2": "ak47_shell_12"
+  }
+ },
+ "aug": {
+  "full": {
+   "1.1": "aug_full_11",
+   "1.2": "aug_full_12"
+  },
+  "shell": "aug_shell"
+ },
+ "cz75": {
+  "full": "cz75_full",
+  "shell": "cz75_shell"
+ },
+ "deagle": {
+  "full": "deagle_full",
+  "shell": "deagle_shell"
+ },
+ "fn_evolys": {
+  "full": "fn_evolys_full",
+  "shell": "fn_evolys_shell"
+ },
+ "fn_fal": {
+  "full": {
+   "1.1": "fn_fal_full_11",
+   "1.2": "fn_fal_full_12"
+  },
+  "shell": "fn_fal_shell"
+ },
+ "g36k": {
+  "full": "g36k_full",
+  "shell": "g36k_shell"
+ },
+ "hk416d": {
+  "full": {
+   "1.1": "hk416d_full_11",
+   "1.2": "hk416d_full_12"
+  },
+  "shell": "hk416d_shell"
+ },
+ "hk_g3": {
+  "full": {
+   "1.1": "hk_g3_full_11",
+   "1.2": "hk_g3_full_12"
+  },
+  "shell": {
+   "1.1": "hk_g3_shell_11",
+   "1.2": "hk_g3_shell_12"
+  }
+ },
+ "hk_mp5a5": {
+  "full": "hk_mp5a5_full",
+  "shell": "hk_mp5a5_shell"
+ },
+ "m1014": {
+  "full": "m1014_full",
+  "shell": "m1014_shell"
+ },
+ "m107": {
+  "full": {
+   "1.1": "m107_full_11",
+   "1.2": "m107_full_12"
+  },
+  "shell": {
+   "1.1": "m107_shell_11",
+   "1.2": "m107_shell_12"
+  }
+ },
+ "m16a1": {
+  "full": {
+   "1.1": "m16a1_full_11",
+   "1.2": "m16a1_full_12"
+  },
+  "shell": {
+   "1.1": "m16a1_shell_11",
+   "1.2": "m16a1_shell_12"
+  }
+ },
+ "m16a4": {
+  "full": "m16a4_full",
+  "shell": "m16a4_shell"
+ },
+ "m249": {
+  "full": "m249_full",
+  "shell": "m249_shell"
+ },
+ "m320": {
+  "full": "m320_full",
+  "shell": "m320_shell"
+ },
+ "m4a1": {
+  "full": {
+   "1.1": "m4a1_full_11",
+   "1.2": "m4a1_full_12"
+  },
+  "shell": {
+   "1.1": "m4a1_shell_11",
+   "1.2": "m4a1_shell_12"
+  }
+ },
+ "m700": {
+  "full": "m700_full",
+  "shell": "m700_shell"
+ },
+ "m870": {
+  "full": "m870_full",
+  "shell": "m870_shell"
+ },
+ "m95": {
+  "full": {
+   "1.1": "m95_full_11",
+   "1.2": "m95_full_12"
+  },
+  "shell": "m95_shell"
+ },
+ "minigun": {
+  "full": "minigun_full",
+  "shell": "minigun_shell"
+ },
+ "mk14": {
+  "full": {
+   "1.1": "mk14_full_11",
+   "1.2": "mk14_full_12"
+  },
+  "shell": {
+   "1.1": "mk14_shell_11",
+   "1.2": "mk14_shell_12"
+  }
+ },
+ "p90": {
+  "full": "p90_full",
+  "shell": "p90_shell"
+ },
+ "qbz_191": {
+  "full": "qbz_191_full",
+  "shell": "qbz_191_shell"
+ },
+ "qbz_95": {
+  "full": "qbz_95_full",
+  "shell": "qbz_95_shell"
+ },
+ "rpg7": {
+  "full": "rpg7_full",
+  "shell": "rpg7_shell"
+ },
+ "rpk": {
+  "full": {
+   "1.1": "rpk_full_11",
+   "1.2": "rpk_full_12"
+  },
+  "shell": {
+   "1.1": "rpk_shell_11",
+   "1.2": "rpk_shell_12"
+  }
+ },
+ "scar_h": {
+  "full": {
+   "1.1": "scar_h_full_11",
+   "1.2": "scar_h_full_12"
+  },
+  "shell": {
+   "1.1": "scar_h_shell_11",
+   "1.2": "scar_h_shell_12"
+  }
+ },
+ "scar_l": {
+  "full": {
+   "1.1": "scar_l_full_11",
+   "1.2": "scar_l_full_12"
+  },
+  "shell": {
+   "1.1": "scar_l_shell_11",
+   "1.2": "scar_l_shell_12"
+  }
+ },
+ "spas_12": {
+  "full": "spas_12_full",
+  "shell": "spas_12_shell"
+ },
+ "spr15hb": {
+  "full": "spr15hb_full",
+  "shell": "spr15hb_shell"
+ },
+ "taurus500": {
+  "full": {
+   "1.1": "taurus500_full_11",
+   "1.2": "taurus500_full_12"
+  },
+  "shell": {
+   "1.1": "taurus500_shell_11",
+   "1.2": "taurus500_shell_12"
+  }
+ },
+ "type_81": {
+  "full": {
+   "1.1": "type_81_full_11",
+   "1.2": "type_81_full_12"
+  },
+  "shell": "type_81_shell"
+ },
+ "ump45": {
+  "full": "ump45_full",
+  "shell": "ump45_shell"
+ },
+ "vector45": {
+  "full": {
+   "1.1": "vector45_full_11",
+   "1.2": "vector45_full_12"
+  },
+  "shell": {
+   "1.1": "vector45_shell_11",
+   "1.2": "vector45_shell_12"
+  }
+ }
+}

@@ -37,6 +37,9 @@ public final class SelfTest {
     public static final String PROPERTY = "taczspray.selftest";
     private static final String NO_FINISHES = "tacz:glock_17";
     private static final String SERIES = "selftest_metal";
+    /** The self-test script's own finishes: one for a can, one kept out of plain cans. */
+    private static final String CUSTOM = "custom_selftest_stripes";
+    private static final String KEPT = "custom_selftest_kept";
 
     private int ticks = -1;
 
@@ -110,6 +113,26 @@ public final class SelfTest {
                 shot(mc, "reveal-one");
             }
             case 420 -> {
+                mc.setScreen(null);
+                onServer(mc, SelfTest::owner);
+            }
+            case 470 -> {
+                TaczSpray.LOG.info("[selftest] reveal open for the custom finish: {}", mc.screen != null);
+                shot(mc, "reveal-custom");
+            }
+            case 480 -> {
+                mc.setScreen(null);
+                mc.player.getInventory().selected = 0;
+                mc.player.setXRot(55f);
+            }
+            case 540 -> {
+                ItemStack held = mc.player.getMainHandItem();
+                TaczSpray.LOG.info("[selftest] client: holds {}; the server sent {}: {}; tooltip {}", Finish.of(held),
+                        CUSTOM, ClientCatalog.custom(CUSTOM) != null, held.getTooltipLines(mc.player,
+                                TooltipFlag.NORMAL).stream().map(Component::getString).limit(3).toList());
+                shot(mc, "custom");
+            }
+            case 560 -> {
                 TaczSpray.LOG.info("[selftest] done");
                 mc.stop();
             }
@@ -173,6 +196,38 @@ public final class SelfTest {
             }
         }
         TaczSpray.LOG.info("[selftest] /taczspray give ... 20: {} labelled cans in the inventory (expect 20)", given);
+    }
+
+    /**
+     * The server owner's files, which the self-test script writes: settings.toml (spray cans not craftable, only the
+     * two least worn bands), finishes/ (one kept out of plain cans, one broken). Ends holding an AK-47 sprayed with
+     * a can of the owner's finish.
+     */
+    private static void owner(ServerPlayer player) {
+        var recipes = player.server.getRecipeManager();
+        TaczSpray.LOG.info("[selftest] recipes: spray can {}, paint remover {} (expect false, true)",
+                recipes.byKey(TaczSpray.id("spray_can")).isPresent(),
+                recipes.byKey(TaczSpray.id("paint_remover")).isPresent());
+        TaczSpray.LOG.info("[selftest] custom finishes loaded: {}", FinishTables.custom().keySet());
+        FinishTables.Plain plain = FinishTables.plain();
+        int kept = 0;
+        double worst = 0;
+        for (int i = 0; i < 500; i++) {
+            Finish f = FinishTables.current().roll("tacz:ak47", plain.pool(), player.getRandom()::nextDouble)
+                    .orElseThrow();
+            kept += f.look().equals(KEPT) ? 1 : 0;
+            worst = Math.max(worst, f.wear());
+        }
+        TaczSpray.LOG.info("[selftest] 500 plain cans: {} gave {} (expect 0); most worn {} (expect under 0.15)", kept,
+                KEPT, worst);
+        GameType mode = player.gameMode.getGameModeForPlayer();
+        player.setGameMode(GameType.SURVIVAL);
+        TaczSpray.LOG.info("[selftest] custom finish can: {}", sprayWith(player, CanLabel.ofLook(CUSTOM), "tacz:ak47"));
+        player.setGameMode(mode);
+        ItemStack gun = player.getOffhandItem().copy();
+        player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+        player.getInventory().setItem(0, gun);
+        player.getInventory().selected = 0;
     }
 
     private static String sprayWith(ServerPlayer player, CanLabel label, String gunId) {

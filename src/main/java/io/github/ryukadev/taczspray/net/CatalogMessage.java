@@ -1,18 +1,24 @@
 package io.github.ryukadev.taczspray.net;
 
+import io.github.ryukadev.taczspray.CustomFinish;
+import io.github.ryukadev.taczspray.CustomLook;
 import io.github.ryukadev.taczspray.Series;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Server to client, on joining and after every {@code /reload}: the names of the server owner's series, so that a
- * labelled can's tooltip can say which series it is. Only names; what a can gives is the server's call.
+ * labelled can's tooltip can say which series it is, and which finishes of the owner's there are (each follows in a
+ * {@link CustomLookMessage}; a client forgets those not listed). Only names; what a can gives is the server's call.
  *
  * @param series series id to {language: name} ({@code ""} for a name in any language)
+ * @param custom the owner's finishes, {@code custom_<folder>}
  */
-public record CatalogMessage(Map<String, Map<String, String>> series) {
+public record CatalogMessage(Map<String, Map<String, String>> series, Set<String> custom) {
     static final int MAX_SERIES = 256;
     static final int MAX_LANGUAGES = 16;
     private static final int MAX_ID = 64;
@@ -36,12 +42,21 @@ public record CatalogMessage(Map<String, Map<String, String>> series) {
             copy.put(id, Map.copyOf(names));
         });
         series = Map.copyOf(copy);
+        if (custom.size() > CustomFinish.MAX) {
+            throw new IllegalArgumentException("too many custom finishes");
+        }
+        for (String look : custom) {
+            if (!CustomLook.isValid(look)) {
+                throw new IllegalArgumentException("bad custom finish " + look);
+            }
+        }
+        custom = Set.copyOf(custom);
     }
 
-    public static CatalogMessage of(Map<String, Series> series) {
+    public static CatalogMessage of(Map<String, Series> series, Set<String> custom) {
         Map<String, Map<String, String>> names = new LinkedHashMap<>();
         series.forEach((id, s) -> names.put(id, s.names()));
-        return new CatalogMessage(names);
+        return new CatalogMessage(names, custom);
     }
 
     void encode(FriendlyByteBuf buf) {
@@ -54,6 +69,8 @@ public record CatalogMessage(Map<String, Map<String, String>> series) {
                 buf.writeUtf(name, MAX_NAME);
             });
         });
+        buf.writeVarInt(custom.size());
+        custom.forEach(look -> buf.writeUtf(look, MAX_ID));
     }
 
     static CatalogMessage decode(FriendlyByteBuf buf) {
@@ -74,6 +91,14 @@ public record CatalogMessage(Map<String, Map<String, String>> series) {
             }
             series.put(id, names);
         }
-        return new CatalogMessage(series);
+        int c = buf.readVarInt();
+        if (c < 0 || c > CustomFinish.MAX) {
+            throw new IllegalArgumentException("bad custom finish count " + c);
+        }
+        Set<String> custom = new LinkedHashSet<>();
+        for (int i = 0; i < c; i++) {
+            custom.add(buf.readUtf(MAX_ID));
+        }
+        return new CatalogMessage(series, custom);
     }
 }

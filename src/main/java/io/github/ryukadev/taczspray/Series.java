@@ -69,22 +69,7 @@ public record Series(String id, Map<String, String> names, Set<String> looks, @N
         if (!json.has("v") || json.get("v").getAsInt() != 1) {
             throw new IllegalArgumentException("\"v\" must be 1");
         }
-        Map<String, String> names = new LinkedHashMap<>();
-        // no name: the id stands in
-        JsonElement name = json.get("name");
-        if (name != null && name.isJsonPrimitive()) {
-            names.put("", text(name.getAsString()));
-        } else if (name != null) {
-            for (Map.Entry<String, JsonElement> e : name.getAsJsonObject().entrySet()) {
-                if (!e.getKey().matches("[a-z]{2,3}_[a-z]{2,3}")) {
-                    throw new IllegalArgumentException("language " + e.getKey() + " (like zh_cn, en_us)");
-                }
-                names.put(e.getKey(), text(e.getValue().getAsString()));
-            }
-            if (names.size() > MAX_LANGUAGES) {
-                throw new IllegalArgumentException("at most " + MAX_LANGUAGES + " languages");
-            }
-        }
+        Map<String, String> names = names(json.get("name"));
         JsonArray list = json.getAsJsonArray("looks");
         if (list == null) {
             throw new IllegalArgumentException("no \"looks\" list");
@@ -120,6 +105,25 @@ public record Series(String id, Map<String, String> names, Set<String> looks, @N
             }
         }
         return new Series(id, names, looks, grades);
+    }
+
+    /** A name: one text for every language, or {"zh_cn": "...", "en_us": "..."}; none (null) leaves it empty. */
+    static Map<String, String> names(@Nullable JsonElement name) {
+        Map<String, String> names = new LinkedHashMap<>();
+        if (name != null && name.isJsonPrimitive()) {
+            names.put("", text(name.getAsString()));
+        } else if (name != null) {
+            for (Map.Entry<String, JsonElement> e : name.getAsJsonObject().entrySet()) {
+                if (!e.getKey().matches("[a-z]{2,3}_[a-z]{2,3}")) {
+                    throw new IllegalArgumentException("language " + e.getKey() + " (like zh_cn, en_us)");
+                }
+                names.put(e.getKey(), text(e.getValue().getAsString()));
+            }
+            if (names.size() > MAX_LANGUAGES) {
+                throw new IllegalArgumentException("at most " + MAX_LANGUAGES + " languages");
+            }
+        }
+        return names;
     }
 
     private static String text(String s) {

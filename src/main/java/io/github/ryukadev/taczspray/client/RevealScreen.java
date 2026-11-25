@@ -71,8 +71,8 @@ public final class RevealScreen extends Screen {
         revealAt = landedAt + 150;
         textAt = revealAt + 300;
         for (RevealMessage.Cell c : reveal.reel()) {
-            patterns.add(TaczSpray.id("finishes/" + c.id() + "/pattern.png"));
-            names.add(Component.translatable("taczspray.pattern." + c.look()).getString());
+            patterns.add(ClientCatalog.pattern(c.id(), c.look()));
+            names.add(ClientCatalog.lookName(c.look()).getString());
         }
     }
 

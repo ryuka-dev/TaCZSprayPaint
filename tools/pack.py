@@ -13,6 +13,8 @@ Writes (and owns) these in src/main/resources:
 - assets/taczspray/finishes/<finish>/finish.json, pattern.png
 - assets/taczspray/lang/en_us.json, zh_cn.json: the pattern names (taczspray.pattern.<pattern>); other keys are kept
 - assets/taczspray/finishes/guns.json: the guns that have finishes, so that a client knows when to start spraying
+- assets/taczspray/finishes/regions.json: each of those guns' two regions, {gun: {"shell": texels, "full": texels}}
+  (texels as in finish.json), where a server owner's own finishes (config/taczspray/finishes/) are painted
 - data/taczspray/finish_table.json: which finishes each gun can get, their grades and wear ranges, and the odds; the
   server rolls from it
 
@@ -37,6 +39,8 @@ CACHE = ROOT / "build/regions-cache"
 STAGE = ROOT / "build/regions-out"
 TSV = TOOLS / "finishes.tsv"
 CELL = 0.25
+# a server owner's own finishes are named custom_<folder>; none of ours may start so
+CUSTOM = "custom_"
 # bump when skingen.paint_region changes what it computes: every cached region is recomputed
 REGION_VERSION = 10
 ENGLISH = {"sakura": "Sakura", "celadon": "Celadon", "ice": "Ice Crackle", "rust": "Rust", "lava": "Lava", "neon": "Neon",
@@ -191,19 +195,26 @@ def merge():
     return mapping
 
 
+def texels_of(mapping, region):
+    """finish.json's "texels" for a region: one directory, or {family: directory} when the releases differ."""
+    by_family = mapping[region]
+    return next(iter(by_family.values())) if len(set(by_family.values())) == 1 else dict(sorted(by_family.items()))
+
+
 def write(mapping):
     sys.path.insert(0, str(TOOLS))
     import skinalgo as algo
     import skingen
     spec = json.loads((TOOLS / "skins.json").read_text(encoding="utf-8"))
     patterns = {p["id"]: p for p in spec["patterns"]}
+    for pid in patterns:
+        if pid.startswith(CUSTOM):
+            raise SystemExit(f"skins.json: {pid}: {CUSTOM}* is kept for server owners' own finishes")
     tiles = {pid: skingen.pattern_tile(p["pattern"], algo.str_hash(pid)) for pid, p in patterns.items()}
     table = []
     for r in rows():
         pat = patterns[r["pattern"]]
-        region = f"{r['short']}_{pat['cover']}"
-        by_family = mapping[region]
-        texels = next(iter(by_family.values())) if len(set(by_family.values())) == 1 else dict(sorted(by_family.items()))
+        texels = texels_of(mapping, f"{r['short']}_{pat['cover']}")
         pixel = pat.get("cell", CELL)
         meta = {"v": 1, "pattern": r["pattern"], "pixel": pixel, "lod_pixel": pixel, "texels": texels}
         if pat.get("anim"):
@@ -227,6 +238,16 @@ def write(mapping):
     # the guns a spray can works on, for the client to decide whether to start spraying; the server's table decides
     guns = sorted({r["gun"] for r in table})
     (ASSETS / "finishes" / "guns.json").write_text(json.dumps(guns, indent=1) + "\n", encoding="utf-8")
+    # where a server owner's own finishes are painted: every gun's two regions
+    regions = {}
+    for gun in guns:
+        short = gun.split(":")[1]
+        missing = [c for c in ("shell", "full") if f"{short}_{c}" not in mapping]
+        if missing:
+            raise SystemExit(f"{gun} has no {missing} region: give it a finish of that cover in finishes.tsv")
+        regions[short] = {c: texels_of(mapping, f"{short}_{c}") for c in ("shell", "full")}
+    (ASSETS / "finishes" / "regions.json").write_text(json.dumps(regions, indent=1, sort_keys=True) + "\n",
+                                                      encoding="utf-8")
     for lang, names in (("zh_cn", {p: patterns[p]["name"] for p in patterns}),
                         ("en_us", {p: ENGLISH.get(p, patterns[p]["name"]) for p in patterns})):
         path = ASSETS / "lang" / f"{lang}.json"

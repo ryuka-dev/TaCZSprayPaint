@@ -11,7 +11,9 @@ import io.github.ryukadev.taczspray.net.Network;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -31,6 +33,9 @@ public final class TaczSpray {
     @SuppressWarnings("removal")
     public TaczSpray() {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        // before Forge writes settings.toml there: the folder not being there yet is how a first start shows
+        OwnerFolder.writeExamplesIfNew();
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Settings.SPEC, Settings.FILE);
         ModItems.register(modBus);
         modBus.addListener((FMLCommonSetupEvent event) -> event.enqueueWork(Network::register));
         if (DevKit.enabled()) {

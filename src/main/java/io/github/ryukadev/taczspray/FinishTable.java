@@ -56,8 +56,11 @@ public final class FinishTable {
             }
         }
 
+        /** Every grade weighs the same: a can for one finish gives it whatever the owner's grade odds say. */
+        private static final double[] ANY_GRADE = {1, 1, 1, 1, 1};
+
         public static Pool of(String look) {
-            return new Pool(Set.of(look), null);
+            return new Pool(Set.of(look), ANY_GRADE);
         }
 
         boolean has(Entry e) {
@@ -111,6 +114,68 @@ public final class FinishTable {
         return ready() && !forGun(gun, pool).isEmpty();
     }
 
+    /** Every gun that has a finish. */
+    public Set<String> guns() {
+        Set<String> out = new TreeSet<>();
+        entries.forEach(e -> out.add(e.gun()));
+        return out;
+    }
+
+    /**
+     * This table with the server owner's odds: grade and wear band weights (null keeps the table's). A weight may be
+     * 0, so long as one of the five is not.
+     */
+    public FinishTable withOdds(@Nullable double[] grades, @Nullable double[] bandWeights) {
+        double[] g = grades == null ? gradeWeights : checkWeights(grades, "grade");
+        List<Band> b = bands;
+        if (bandWeights != null) {
+            checkWeights(bandWeights, "wear band");
+            if (bandWeights.length != bands.size()) {
+                throw new IllegalArgumentException("need " + bands.size() + " wear band weights");
+            }
+            b = new ArrayList<>();
+            for (int i = 0; i < bands.size(); i++) {
+                b.add(new Band(bands.get(i).upper(), bandWeights[i]));
+            }
+        }
+        return new FinishTable(g, b, entries);
+    }
+
+    private static double[] checkWeights(double[] w, String what) {
+        double total = 0;
+        for (double x : w) {
+            if (!(x >= 0 && x < 1e9)) {
+                throw new IllegalArgumentException(what + " weights must be 0 or more");
+            }
+            total += x;
+        }
+        if (w.length != Finish.GRADES || !(total > 0)) {
+            throw new IllegalArgumentException("need " + Finish.GRADES + " " + what + " weights, one over 0");
+        }
+        return w;
+    }
+
+    /**
+     * This table with the server owner's own finishes added, each on its guns (every gun in the table when it names
+     * none; guns the table lacks are skipped and returned in {@code skipped}, by finish). The finish on a gun is
+     * {@code <gun's path>_<look>}, as ours are.
+     */
+    public FinishTable withCustom(List<CustomFinish> custom, Map<String, Set<String>> skipped) {
+        Set<String> guns = guns();
+        List<Entry> out = new ArrayList<>(entries);
+        for (CustomFinish c : custom) {
+            for (String gun : c.guns() == null ? guns : c.guns()) {
+                String id = gun.substring(gun.indexOf(':') + 1) + "_" + c.look().look();
+                if (!guns.contains(gun) || !Finish.NAME.matcher(id).matches()) {
+                    skipped.computeIfAbsent(c.look().look(), k -> new TreeSet<>()).add(gun);
+                    continue;
+                }
+                out.add(new Entry(id, gun, c.look().look(), c.grade(), c.wearMin(), c.wearMax()));
+            }
+        }
+        return new FinishTable(gradeWeights, bands, out);
+    }
+
     /** Every pattern in the table. */
     public Set<String> looks() {
         Set<String> out = new TreeSet<>();
@@ -145,10 +210,7 @@ public final class FinishTable {
     }
 
     Finish finishOf(Entry entry, DoubleSupplier random) {
-        int bandIndex = rollBand(random);
-        double lower = bandIndex == 0 ? 0 : bands.get(bandIndex - 1).upper();
-        double x = lower + random.getAsDouble() * (bands.get(bandIndex).upper() - lower);
-        double wear = clamp(entry.wearMin() + x * (entry.wearMax() - entry.wearMin()), entry.wearMin(), entry.wearMax());
+        double wear = clamp(rollWear(entry.wearMin(), entry.wearMax(), random), entry.wearMin(), entry.wearMax());
         int pattern = 1 + Math.min(SEEDS - 1, (int) (random.getAsDouble() * SEEDS));
         int wearNo = 1 + Math.min(SEEDS - 1, (int) (random.getAsDouble() * SEEDS));
         return new Finish(entry.id(), entry.look(), entry.grade(), bandOf(wear) + 1, wear, pattern, wearNo);
@@ -213,16 +275,64 @@ public final class FinishTable {
         return new Reel(cells, Reel.WIN_AT, land);
     }
 
-    private int rollBand(DoubleSupplier random) {
-        double total = bands.stream().mapToDouble(Band::weight).sum();
-        double pick = random.getAsDouble() * total;
+    /**
+     * A wear in {@code [lo, hi]} by the bands' odds, as if rolled over 0..1 and kept only when it falls in the range:
+     * each band weighs its odds times the share of it inside the range, and the wear is even within its part. Over
+     * the whole range (all our finishes) that is the bands' odds as they are; a band weighted 0 never comes out. When
+     * the range lies wholly in bands weighted 0, the range wins: the bands' odds are laid over it instead.
+     */
+    private double rollWear(double lo, double hi, DoubleSupplier random) {
+        double[] w = new double[bands.size()];
         for (int i = 0; i < bands.size(); i++) {
-            pick -= bands.get(i).weight();
+            double a = lower(i);
+            double b = bands.get(i).upper();
+            double inside = Math.min(b, hi) - Math.max(a, lo);
+            w[i] = inside > 0 && b > a ? bands.get(i).weight() * inside / (b - a) : 0;
+        }
+        if (!(sum(w) > 0)) {
+            if (!(hi > lo)) {
+                return lo;
+            }
+            for (int i = 0; i < bands.size(); i++) {
+                w[i] = bands.get(i).weight();
+            }
+            int band = pickBand(w, random);
+            double x = lower(band) + random.getAsDouble() * (bands.get(band).upper() - lower(band));
+            return lo + x * (hi - lo);
+        }
+        int band = pickBand(w, random);
+        double a = Math.max(lower(band), lo);
+        double b = Math.min(bands.get(band).upper(), hi);
+        return a + random.getAsDouble() * (b - a);
+    }
+
+    private double lower(int band) {
+        return band == 0 ? 0 : bands.get(band - 1).upper();
+    }
+
+    private static double sum(double[] w) {
+        double total = 0;
+        for (double x : w) {
+            total += x;
+        }
+        return total;
+    }
+
+    private static int pickBand(double[] w, DoubleSupplier random) {
+        double pick = random.getAsDouble() * sum(w);
+        for (int i = 0; i < w.length; i++) {
+            pick -= w[i];
             if (pick < 0) {
                 return i;
             }
         }
-        return bands.size() - 1;
+        // rounding left a little over: the last band that can come out at all
+        for (int i = w.length - 1; i > 0; i--) {
+            if (w[i] > 0) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     /** Which band a wear falls in, from 0 for the least worn. */
@@ -286,6 +396,10 @@ public final class FinishTable {
                     grade, min, max);
             // the same checks a finish on a gun gets
             new Finish(entry.id(), entry.look(), grade, 1, min, 0, 0);
+            if (CustomLook.isCustom(entry.look())) {
+                throw new IllegalArgumentException("finish " + entry.id() + ": " + CustomLook.PREFIX
+                        + "* is kept for server owners' own finishes");
+            }
             entries.add(entry);
         }
         return new FinishTable(weights, bands, entries);

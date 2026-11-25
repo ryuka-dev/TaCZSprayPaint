@@ -40,7 +40,7 @@ public final class FinishText {
             return;
         }
         Style colour = Style.EMPTY.withColor(TextColor.fromRgb(RevealScreen.gradeColour(finish.grade())));
-        MutableComponent name = Component.translatable("taczspray.pattern." + finish.look()).withStyle(colour)
+        MutableComponent name = ClientCatalog.lookName(finish.look()).copy().withStyle(colour)
                 .append(Component.literal(" · ").withStyle(ChatFormatting.DARK_GRAY))
                 .append(grade(finish.grade()).copy().withStyle(colour));
         MutableComponent wear = band(finish.band()).copy().withStyle(ChatFormatting.GRAY)

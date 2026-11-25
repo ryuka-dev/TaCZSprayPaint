@@ -1,4 +1,5 @@
 {
+  "conditions": [{"type": "taczspray:craftable", "item": "spray_can"}],
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "pattern": [

@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.blaze3d.platform.NativeImage;
+import io.github.ryukadev.taczspray.CustomLook;
 import io.github.ryukadev.taczspray.Finish;
 import io.github.ryukadev.taczspray.TaczSpray;
 import net.minecraft.Util;
@@ -39,6 +40,9 @@ import java.util.Set;
  * names a directory under {@code texels}, in the shared {@code finishes/<texels>/} that every finish on that gun and
  * region uses (one per TaCZ release where the releases' models differ). TaCZ's own textures are never shipped; they are read from the player's game.
  *
+ * <p>A server owner's own finish ({@code custom_<folder>}) comes from the server instead ({@link ClientCatalog}), and
+ * is painted where ours of the same cover are on that gun: {@code finishes/regions.json} names the directory.
+ *
  * <p>A moving finish ({@code anim}) keeps what the wear made of it and repaints only its painted texels, at most every
  * {@value #FRAME_MS} ms and only on the full-detail model, uploading the box they lie in. New textures are composed one
  * at a time, at most one every {@value #COMPOSE_GAP_MS} ms, so that many guns coming into view together do not all
@@ -59,7 +63,8 @@ public final class FinishTextures implements GunTextures.Source, ResourceManager
     static final long COMPOSE_GAP_MS = 15;
     private static final String DATA = "finishes/";
 
-    private record Key(String finish, ResourceLocation original, boolean lod, long wear, int pattern, int wearNo) {
+    private record Key(String finish, String look, ResourceLocation original, boolean lod, long wear, int pattern,
+                       int wearNo) {
     }
 
     /** One finish's data; either model may be missing (a gun without a LOD model). */
@@ -143,9 +148,14 @@ public final class FinishTextures implements GunTextures.Source, ResourceManager
     /** The texels that many finishes share (one gun's region, every pattern on it), by directory. */
     private final Map<String, SkinTexels[]> shared = new HashMap<>();
     private final Map<ResourceLocation, Optional<int[][]>> bases = new LinkedHashMap<>(16, 0.75f, true);
+    /** {@code finishes/regions.json}: each gun's shell and full regions, read when a custom finish first needs it. */
+    @Nullable
+    private JsonObject regions;
     private final Set<String> reported = new HashSet<>();
     private int next;
     private long composedAt;
+    /** The server's finishes changed: forget everything before the next texture (once for a batch of messages). */
+    private boolean stale;
 
     private FinishTextures() {
     }
@@ -166,8 +176,11 @@ public final class FinishTextures implements GunTextures.Source, ResourceManager
         if (finish == null || !Minecraft.getInstance().isSameThread()) {
             return null;
         }
-        Key key = new Key(finish.id(), original, lod, Double.doubleToLongBits(finish.wear()), finish.patternNo(),
-                finish.wearNo());
+        if (stale) {
+            forget();
+        }
+        Key key = new Key(finish.id(), finish.look(), original, lod, Double.doubleToLongBits(finish.wear()),
+                finish.patternNo(), finish.wearNo());
         Made found = made.get(key);
         long now = Util.getMillis();
         if (found == null) {
@@ -194,7 +207,8 @@ public final class FinishTextures implements GunTextures.Source, ResourceManager
     }
 
     private Made make(Key key, double wear) {
-        Optional<FinishData> finish = data.computeIfAbsent(key.finish(), this::load);
+        Optional<FinishData> finish = data.computeIfAbsent(key.finish(), f -> CustomLook.isCustom(key.look())
+                ? loadCustom(f, key.look()) : load(f));
         if (finish.isEmpty()) {
             return NOTHING;
         }
@@ -289,18 +303,78 @@ public final class FinishTextures implements GunTextures.Source, ResourceManager
                 if (!from.matches("[a-z0-9_]+")) {
                     throw new IOException("bad texels directory " + from);
                 }
-                String sdir = DATA + from + "/";
-                models = shared.get(from);
-                if (models == null) {
-                    models = new SkinTexels[]{texels(rm, sdir + "main.bin"), texels(rm, sdir + "lod.bin")};
-                    shared.put(from, models);
-                }
+                models = shared(rm, from);
             } else {
                 models = new SkinTexels[]{texels(rm, dir + "main.bin"), texels(rm, dir + "lod.bin")};
             }
             return Optional.of(new FinishData(models[0], models[1], tile[0], tile[1][0], json.get("pixel").getAsDouble(),
                     json.get("lod_pixel").getAsDouble(), anim(json),
                     json.has("projection") && "side".equals(json.get("projection").getAsString()), material(json)));
+        } catch (IOException | RuntimeException e) {
+            report(finish, e.toString());
+            return Optional.empty();
+        }
+    }
+
+    /** The texels in a directory many finishes share, read once. */
+    private SkinTexels[] shared(ResourceManager rm, String from) throws IOException {
+        SkinTexels[] models = shared.get(from);
+        if (models == null) {
+            String dir = DATA + from + "/";
+            models = new SkinTexels[]{texels(rm, dir + "main.bin"), texels(rm, dir + "lod.bin")};
+            shared.put(from, models);
+        }
+        return models;
+    }
+
+    /**
+     * A server owner's finish on one gun ({@code <gun>_custom_<folder>}): the look the server sent, on the region
+     * {@code finishes/regions.json} gives for that gun and cover.
+     */
+    private Optional<FinishData> loadCustom(String finish, String look) {
+        CustomLook c = ClientCatalog.custom(look);
+        if (c == null) {
+            report(finish, "the server has not sent " + look);
+            return Optional.empty();
+        }
+        String suffix = "_" + look;
+        if (!finish.endsWith(suffix)) {
+            report(finish, "not a finish of " + look);
+            return Optional.empty();
+        }
+        String gun = finish.substring(0, finish.length() - suffix.length());
+        ResourceManager rm = Minecraft.getInstance().getResourceManager();
+        try {
+            if (regions == null) {
+                Resource r = rm.getResource(TaczSpray.id(DATA + "regions.json"))
+                        .orElseThrow(() -> new IOException("no " + DATA + "regions.json"));
+                try (InputStream in = r.open()) {
+                    regions = JsonParser.parseReader(new InputStreamReader(in, StandardCharsets.UTF_8))
+                            .getAsJsonObject();
+                }
+            }
+            JsonObject of = regions.getAsJsonObject(gun);
+            if (of == null) {
+                report(finish, "no finishes of ours on " + gun + ", so nowhere to paint it");
+                return Optional.empty();
+            }
+            String from = texelsFor(of.get(c.full() ? "full" : "shell"));
+            if (!from.matches("[a-z0-9_]+")) {
+                throw new IOException("bad texels directory " + from);
+            }
+            SkinTexels[] models = shared(rm, from);
+            int[] tile = new int[c.size() * c.size()];
+            for (int y = 0; y < c.size(); y++) {
+                for (int x = 0; x < c.size(); x++) {
+                    tile[y * c.size() + x] = 0xFF000000 | c.at(x, y);
+                }
+            }
+            List<SkinAlgo.Effect> anim = c.anim().stream().map(a -> new SkinAlgo.Effect(a.type(), a.speed(), a.period(),
+                    a.amount(), a.degrees(), a.width(), a.strength())).toList();
+            FinishTexture.Material material = c.material() == null ? FinishTexture.Material.PAINT
+                    : new FinishTexture.Material(c.material().smoothness(), c.material().metal());
+            return Optional.of(new FinishData(models[0], models[1], tile, c.size(), c.pixel(), c.pixel(), anim,
+                    c.side(), material));
         } catch (IOException | RuntimeException e) {
             report(finish, e.toString());
             return Optional.empty();
@@ -409,6 +483,18 @@ public final class FinishTextures implements GunTextures.Source, ResourceManager
     /** New resources (a resource pack, F3+T): everything is read and composed again. */
     @Override
     public void onResourceManagerReload(ResourceManager manager) {
+        forget();
+    }
+
+    /** The server's own finishes changed: everything is composed again, once, before the next gun is drawn. */
+    public void forgetSoon() {
+        stale = true;
+    }
+
+    /** Drops every texture and all the data read, to be read and composed again: new resources, or new finishes. */
+    public void forget() {
+        stale = false;
+        regions = null;
         made.values().stream().filter(m -> m.id() != NONE)
                 .forEach(m -> Minecraft.getInstance().getTextureManager().release(m.id()));
         made.clear();

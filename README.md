@@ -8,6 +8,19 @@ you like. Paint remover takes the finish off, one bottle at a time.
 
 Finishes only change colours. Models, animations, sounds and stats stay exactly as they are.
 
+## For server owners and modpack makers
+
+Everything is plain files in `config/taczspray/`, with no code needed, and players install nothing extra:
+
+- **Your own finishes**: drop a small tiling `pattern.png` and a few lines of `finish.json` into a folder. The server
+  sends the pattern to players when they join.
+- **Series**: sets of finishes with their own odds, like weapon cases.
+- **Cans that give one finish**, and `/taczspray give` for shops, crates and rewards.
+- **Switches**: whether cans can be crafted, the grade and wear odds, and what plain cans give.
+
+See the [server owners' guide](docs/server-owners.md) ([中文](docs/server-owners.zh_cn.md)). The first start also
+writes it, with examples, into `config/taczspray/examples/`.
+
 Work in progress: nothing is released yet.
 
 ## Requirements

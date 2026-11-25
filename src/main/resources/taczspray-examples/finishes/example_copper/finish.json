@@ -1,0 +1,25 @@
+{
+  "v": 1,
+  "name": {
+    "en_us": "Polished Copper",
+    "zh_cn": "抛光紫铜"
+  },
+  "grade": 3,
+  "cover": "full",
+  "wear": [0.0, 0.5],
+  "guns": ["tacz:ak47", "tacz:m4a1", "tacz:deagle"],
+  "projection": "side",
+  "anim": [
+    {
+      "type": "sweep",
+      "period": 3.0,
+      "width": 4,
+      "strength": 0.5
+    }
+  ],
+  "material": {
+    "smoothness": 0.8,
+    "metal": true
+  },
+  "plain_cans": false
+}

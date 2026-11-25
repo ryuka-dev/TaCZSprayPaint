@@ -1,0 +1,10 @@
+{
+  "v": 1,
+  "name": {
+    "en_us": "Warning Stripes",
+    "zh_cn": "警示条纹"
+  },
+  "grade": 2,
+  "cover": "shell",
+  "projection": "side"
+}

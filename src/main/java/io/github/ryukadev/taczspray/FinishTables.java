@@ -4,7 +4,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tacz.guns.api.item.IGun;
 import io.github.ryukadev.taczspray.net.CatalogMessage;
+import io.github.ryukadev.taczspray.net.CustomLookMessage;
 import io.github.ryukadev.taczspray.net.Network;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -25,7 +27,11 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,21 +40,30 @@ import java.util.TreeMap;
 import java.util.stream.Stream;
 
 /**
- * The server's finish table and the server owner's series. The table is read from
- * {@code data/taczspray/finish_table.json} with the other data packs (so a data pack can replace it); the series from
- * {@code config/taczspray/series/*.json}. Both on start and on {@code /reload}. A table that fails to read keeps the
- * one before it (until one has read, nothing can be sprayed); a series file that fails to read is left out and logged,
- * the others load.
+ * The server's finish table and what the server owner added to it. The table is read from
+ * {@code data/taczspray/finish_table.json} with the other data packs (so a data pack can replace it); the owner's
+ * series from {@code config/taczspray/series/*.json}, their own finishes from {@code config/taczspray/finishes/}, their
+ * odds and which series a plain can draws from from {@link Settings}. All on start and on {@code /reload}. A table that
+ * fails to read keeps the one before it (until one has read, nothing can be sprayed); a series or a finish that fails
+ * to read is left out and logged, the others load.
  */
 @Mod.EventBusSubscriber(modid = TaczSpray.MOD_ID)
 public final class FinishTables extends SimplePreparableReloadListener<FinishTables.Loaded> {
     private static final ResourceLocation FILE = TaczSpray.id("finish_table.json");
     static final int MAX_SERIES = 256;
+    /** The table as the data pack has it, before the owner's odds and finishes. */
+    private static volatile FinishTable read = FinishTable.EMPTY;
     private static volatile FinishTable current = FinishTable.EMPTY;
     private static volatile Map<String, Series> series = Map.of();
+    private static volatile Map<String, CustomFinish> custom = Map.of();
+    private static volatile Plain plain = new Plain(FinishTable.Pool.ALL, null);
 
-    /** What one reload read: the table (empty when it failed) and the series files that read. */
-    record Loaded(Optional<FinishTable> table, List<Series> series) {
+    /** What one reload read: the table (empty when it failed), and the series and finishes that read. */
+    record Loaded(Optional<FinishTable> table, List<Series> series, List<CustomFinish> custom) {
+    }
+
+    /** What a plain can draws from: a pool, or none because the series the owner named is not there. */
+    public record Plain(@Nullable FinishTable.Pool pool, @Nullable String missingSeries) {
     }
 
     public static FinishTable current() {
@@ -58,6 +73,27 @@ public final class FinishTables extends SimplePreparableReloadListener<FinishTab
     /** The server owner's series, by id. */
     public static Map<String, Series> series() {
         return series;
+    }
+
+    /** The server owner's own finishes, by look ({@code custom_<folder>}). */
+    public static Map<String, CustomFinish> custom() {
+        return custom;
+    }
+
+    public static Plain plain() {
+        return plain;
+    }
+
+    /**
+     * A pattern's name for a message to a player: ours by the game's translation, a server owner's in the player's
+     * language from its file.
+     */
+    public static Component lookName(String look, String language) {
+        CustomFinish c = custom.get(look);
+        if (c != null) {
+            return Component.literal(c.look().name(language));
+        }
+        return CustomLook.isCustom(look) ? Component.literal(look) : Component.translatable("taczspray.pattern." + look);
     }
 
     /** Where the server owner's files live: {@code config/taczspray}. */
@@ -81,20 +117,28 @@ public final class FinishTables extends SimplePreparableReloadListener<FinishTab
         event.addListener(new FinishTables());
     }
 
-    /** A player joining, or everyone after {@code /reload}: tell the clients the series' names. */
+    /**
+     * A player joining, or everyone after {@code /reload}: tell the clients the series' names and which finishes of
+     * the owner's there are, then send each of those (its pattern, names, effects) in a message of its own.
+     */
     @SubscribeEvent
     public static void sync(OnDatapackSyncEvent event) {
-        CatalogMessage message = CatalogMessage.of(series);
-        if (event.getPlayer() != null) {
-            Network.sendTo(event.getPlayer(), message);
-        } else {
-            Network.sendToAll(message);
+        List<Object> messages = new ArrayList<>();
+        messages.add(CatalogMessage.of(series, custom.keySet()));
+        custom.values().forEach(c -> messages.add(new CustomLookMessage(c.look())));
+        for (Object message : messages) {
+            if (event.getPlayer() != null) {
+                Network.sendTo(event.getPlayer(), message);
+            } else {
+                Network.sendToAll(message);
+            }
         }
     }
 
     @Override
     protected Loaded prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return new Loaded(readTable(manager), readSeries(folder().resolve("series")));
+        return new Loaded(readTable(manager), readSeries(folder().resolve("series")),
+                CustomFinish.readAll(folder().resolve("finishes")));
     }
 
     private static Optional<FinishTable> readTable(ResourceManager manager) {
@@ -139,10 +183,57 @@ public final class FinishTables extends SimplePreparableReloadListener<FinishTab
     @Override
     protected void apply(Loaded loaded, ResourceManager manager, ProfilerFiller profiler) {
         loaded.table().ifPresent(t -> {
-            current = t;
+            read = t;
             TaczSpray.LOG.info("{} finishes loaded", t.size());
         });
-        series = check(loaded.series(), current);
+        FinishTable table = read;
+        try {
+            table = table.withOdds(Settings.grades(), Settings.wearBands());
+        } catch (IllegalArgumentException e) {
+            TaczSpray.LOG.error("settings.toml odds not used: {}", e.getMessage());
+        }
+        Map<String, Set<String>> skipped = new TreeMap<>();
+        table = table.withCustom(loaded.custom(), skipped);
+        skipped.forEach((look, guns) -> TaczSpray.LOG.warn("Custom finish {} is not on {}: no finish of ours is on "
+                + "those guns (or the gun's name and the folder's are over 64 characters together)", look, guns));
+        Map<String, CustomFinish> mine = new LinkedHashMap<>();
+        Set<String> placed = table.looks();
+        for (CustomFinish c : loaded.custom()) {
+            if (placed.contains(c.look().look())) {
+                mine.put(c.look().look(), c);
+            } else {
+                TaczSpray.LOG.error("Custom finish {} left out: it is on no gun", c.look().look());
+            }
+        }
+        if (!mine.isEmpty()) {
+            TaczSpray.LOG.info("{} custom finishes loaded: {}", mine.size(), mine.keySet());
+        }
+        current = table;
+        custom = Collections.unmodifiableMap(mine);
+        series = check(loaded.series(), table);
+        plain = plainOf(Settings.plainSeries(), series, mine.values(), table);
+    }
+
+    /** A plain can's pool: the series the owner named, else every finish but the owner's kept out of plain cans. */
+    static Plain plainOf(@Nullable String plainSeries, Map<String, Series> series, Collection<CustomFinish> custom,
+                         FinishTable table) {
+        if (plainSeries != null) {
+            Series s = series.get(plainSeries);
+            if (s == null) {
+                TaczSpray.LOG.error("settings.toml: plain cans draw from series {}, which is not there: they spray "
+                        + "nothing until it is", plainSeries);
+                return new Plain(null, plainSeries);
+            }
+            return new Plain(s.pool(), null);
+        }
+        Set<String> kept = new HashSet<>();
+        custom.stream().filter(c -> !c.plainCans()).forEach(c -> kept.add(c.look().look()));
+        if (kept.isEmpty()) {
+            return new Plain(FinishTable.Pool.ALL, null);
+        }
+        Set<String> looks = new HashSet<>(table.looks());
+        looks.removeAll(kept);
+        return new Plain(new FinishTable.Pool(looks, null), null);
     }
 
     /** The series whose patterns the table knows; unknown patterns are dropped, a series left with none is too. */

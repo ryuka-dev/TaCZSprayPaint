@@ -3,10 +3,12 @@ package io.github.ryukadev.taczspray.item;
 import io.github.ryukadev.taczspray.TaczSpray;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryObject;
 
 public final class ModItems {
@@ -23,6 +25,13 @@ public final class ModItems {
     public static void register(IEventBus modBus) {
         ITEMS.register(modBus);
         modBus.addListener(ModItems::creativeTab);
+        modBus.addListener(ModItems::conditions);
+    }
+
+    private static void conditions(RegisterEvent event) {
+        if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS)) {
+            CraftingHelper.register(CraftableCondition.Serializer.INSTANCE);
+        }
     }
 
     private static void creativeTab(BuildCreativeModeTabContentsEvent event) {

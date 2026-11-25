@@ -24,7 +24,7 @@ public record Finish(String id, String look, int grade, int band, double wear, i
     public static final int GRADES = 5;
     public static final int BANDS = 5;
     static final int VERSION = 1;
-    private static final Pattern NAME = Pattern.compile("[a-z0-9_]{1,64}");
+    static final Pattern NAME = Pattern.compile("[a-z0-9_]{1,64}");
 
     public Finish {
         if (!NAME.matcher(id).matches() || !NAME.matcher(look).matches()) {
