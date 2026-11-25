@@ -22,6 +22,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.event.TickEvent;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
@@ -119,6 +120,13 @@ public final class SelfTest {
                 onServer(mc, SelfTest::owner);
             }
             case 470 -> {
+                // JEI shows the recipes the server sent to the client; a recipe switched off never gets here
+                var recipes = mc.level.getRecipeManager();
+                TaczSpray.LOG.info("[selftest] client recipes (what JEI can show): spray can {}, paint remover {} "
+                                + "(expect false, true); JEI loaded {}",
+                        recipes.byKey(TaczSpray.id("spray_can")).isPresent(),
+                        recipes.byKey(TaczSpray.id("paint_remover")).isPresent(),
+                        ModList.get().isLoaded("jei"));
                 TaczSpray.LOG.info("[selftest] reveal open for the custom finish: {}", mc.screen != null);
                 shot(mc, "reveal-custom");
             }
