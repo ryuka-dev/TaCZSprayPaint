@@ -28,4 +28,12 @@ public final class NetworkTestAccess {
                 io.github.ryukadev.taczspray.Finish.defaultBandUppers()).encode(buf);
         return CatalogMessage.decode(buf).custom();
     }
+
+    /** A pick through the wire: [nonce, index] as the server reads them. */
+    public static java.util.List<Object> choose(long nonce, int index) {
+        FriendlyByteBuf buf = new FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        new ChooseMessage(nonce, index).encode(buf);
+        ChooseMessage read = ChooseMessage.decode(buf);
+        return java.util.List.of(read.nonce(), read.index());
+    }
 }

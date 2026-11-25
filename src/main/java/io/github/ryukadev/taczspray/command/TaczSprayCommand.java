@@ -12,6 +12,7 @@ import io.github.ryukadev.taczspray.TaczSpray;
 import io.github.ryukadev.taczspray.item.CanLabel;
 import io.github.ryukadev.taczspray.item.ModItems;
 import io.github.ryukadev.taczspray.item.PaintingItem;
+import io.github.ryukadev.taczspray.item.TenPullChoices;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -28,19 +29,24 @@ import java.util.Collection;
 import java.util.function.Function;
 
 /**
- * {@code /taczspray give <players> [series <id> | look <pattern>] [count]}: plain or labelled spray cans, for server
- * owners and for anything that runs commands (shops, crates, vote rewards). Needs permission level 2. What does not fit
- * in a player's inventory is dropped at their feet, as with {@code /give}.
+ * The mod's commands.
+ * <ul>
+ * <li>{@code /taczspray give <players> [series <id> | look <pattern>] [count]}: plain or labelled spray cans, for server
+ * owners and for anything that runs commands (shops, crates, vote rewards). Needs permission level 2. What does not
+ * fit in a player's inventory is dropped at their feet, as with {@code /give}.</li>
+ * <li>{@code /taczspray choose}: any player; opens the ten-pull of the gun in either hand again, to pick from (the
+ * chat link after a ten-pull screen was closed runs it).</li>
+ * </ul>
  */
 @Mod.EventBusSubscriber(modid = TaczSpray.MOD_ID)
-public final class GiveCommand {
+public final class TaczSprayCommand {
     static final int MAX_COUNT = 1024;
     private static final DynamicCommandExceptionType NO_SERIES = new DynamicCommandExceptionType(
             id -> Component.translatable("taczspray.command.no_series", id));
     private static final DynamicCommandExceptionType NO_LOOK = new DynamicCommandExceptionType(
             look -> Component.translatable("taczspray.command.no_look", look));
 
-    private GiveCommand() {
+    private TaczSprayCommand() {
     }
 
     @SubscribeEvent
@@ -50,19 +56,21 @@ public final class GiveCommand {
 
     static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal(TaczSpray.MOD_ID)
-                .requires(source -> source.hasPermission(2))
+                .then(Commands.literal("choose")
+                        .executes(c -> TenPullChoices.reopen(c.getSource().getPlayerOrException())))
                 .then(Commands.literal("give")
+                        .requires(source -> source.hasPermission(2))
                         .then(Commands.argument("players", EntityArgument.players())
                                 .executes(c -> give(c, CanLabel.PLAIN, 1))
                                 .then(count(c -> CanLabel.PLAIN))
                                 .then(Commands.literal("series")
                                         .then(withCount(Commands.argument("series", StringArgumentType.word())
                                                 .suggests((c, b) -> SharedSuggestionProvider.suggest(
-                                                        FinishTables.series().keySet(), b)), GiveCommand::series)))
+                                                        FinishTables.series().keySet(), b)), TaczSprayCommand::series)))
                                 .then(Commands.literal("look")
                                         .then(withCount(Commands.argument("look", StringArgumentType.word())
                                                 .suggests((c, b) -> SharedSuggestionProvider.suggest(
-                                                        FinishTables.current().looks(), b)), GiveCommand::look))))));
+                                                        FinishTables.current().looks(), b)), TaczSprayCommand::look))))));
     }
 
     private interface Label {

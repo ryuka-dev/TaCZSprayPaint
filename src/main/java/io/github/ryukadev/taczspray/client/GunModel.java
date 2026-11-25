@@ -18,7 +18,9 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -85,6 +87,14 @@ final class GunModel {
         RenderSystem.restoreProjectionMatrix();
     }
 
+    /**
+     * Measures the gun now, when a screen opens, rather than in the middle of its animation: the first time TaCZ
+     * draws a gun it may set things up, which can spoil that one frame.
+     */
+    static void prepare(ItemStack gun) {
+        bounds(gun);
+    }
+
     private static Bounds bounds(ItemStack gun) {
         String key = FinishTables.gunId(gun);
         if (key == null) {
@@ -147,26 +157,79 @@ final class GunModel {
         }
     }
 
-    /** Takes in vertices only to note how far they reach. */
+    /**
+     * Takes in vertices to note how far the gun reaches. Some models also draw helper faces nobody sees (a transparent
+     * sheet above the gun, a point at the muzzle); they lie apart from the gun. So on each axis, the faces' spans are
+     * joined where they overlap or nearly touch, and the extent is that of the group with the most faces.
+     */
     private static final class Corners implements VertexConsumer {
-        private float minX = Float.MAX_VALUE, maxX = -Float.MAX_VALUE;
-        private float minY = Float.MAX_VALUE, maxY = -Float.MAX_VALUE;
-        private float minZ = Float.MAX_VALUE, maxZ = -Float.MAX_VALUE;
+        /** Spans closer than this share of the whole extent count as touching. */
+        private static final float TOUCH = 0.01f;
+        private final List<float[]> faces = new ArrayList<>();
+        private float[] face;
+        private int corners;
         private int count;
 
         Bounds bounds() {
-            return maxX > minX && maxY > minY ? new Bounds(minX, maxX, minY, maxY, minZ, maxZ) : null;
+            if (faces.isEmpty()) {
+                return null;
+            }
+            float[] x = run(0);
+            float[] y = run(1);
+            float[] z = run(2);
+            return x[1] > x[0] && y[1] > y[0] ? new Bounds(x[0], x[1], y[0], y[1], z[0], z[1]) : null;
+        }
+
+        /** On one axis: the joined spans with the most faces. */
+        private float[] run(int axis) {
+            List<float[]> spans = new ArrayList<>();
+            float lo = Float.MAX_VALUE;
+            float hi = -Float.MAX_VALUE;
+            for (float[] f : faces) {
+                spans.add(new float[]{f[axis * 2], f[axis * 2 + 1]});
+                lo = Math.min(lo, f[axis * 2]);
+                hi = Math.max(hi, f[axis * 2 + 1]);
+            }
+            spans.sort((a, b) -> Float.compare(a[0], b[0]));
+            float touch = Math.max(1e-4f, (hi - lo) * TOUCH);
+            float[] best = null;
+            int bestCount = 0;
+            float[] now = null;
+            int nowCount = 0;
+            for (float[] span : spans) {
+                if (now != null && span[0] <= now[1] + touch) {
+                    now[1] = Math.max(now[1], span[1]);
+                    nowCount++;
+                } else {
+                    now = span.clone();
+                    nowCount = 1;
+                }
+                if (nowCount > bestCount) {
+                    best = now;
+                    bestCount = nowCount;
+                }
+            }
+            return best;
         }
 
         @Override
         public VertexConsumer vertex(double x, double y, double z) {
             count++;
-            minX = Math.min(minX, (float) x);
-            maxX = Math.max(maxX, (float) x);
-            minY = Math.min(minY, (float) y);
-            maxY = Math.max(maxY, (float) y);
-            minZ = Math.min(minZ, (float) z);
-            maxZ = Math.max(maxZ, (float) z);
+            if (face == null) {
+                face = new float[]{Float.MAX_VALUE, -Float.MAX_VALUE, Float.MAX_VALUE, -Float.MAX_VALUE,
+                        Float.MAX_VALUE, -Float.MAX_VALUE};
+            }
+            float[] v = {(float) x, (float) y, (float) z};
+            for (int a = 0; a < 3; a++) {
+                face[a * 2] = Math.min(face[a * 2], v[a]);
+                face[a * 2 + 1] = Math.max(face[a * 2 + 1], v[a]);
+            }
+            // quads: every four corners make a face
+            if (++corners == 4) {
+                faces.add(face);
+                face = null;
+                corners = 0;
+            }
             return this;
         }
 

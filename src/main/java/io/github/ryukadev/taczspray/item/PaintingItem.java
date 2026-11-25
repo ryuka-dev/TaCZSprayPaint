@@ -1,6 +1,7 @@
 package io.github.ryukadev.taczspray.item;
 
 import io.github.ryukadev.taczspray.FinishTables;
+import io.github.ryukadev.taczspray.TenPull;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.chat.Component;
@@ -44,10 +45,10 @@ public abstract class PaintingItem extends Item {
     protected abstract Component refusal(Player player, ItemStack self, ItemStack gun);
 
     /**
-     * Server only, when the time is up and {@link #refusal} said yes: change the gun, tell the player. False when
-     * nothing changed.
+     * Server only, when the time is up and {@link #refusal} said yes: change the gun, tell the player. How many of
+     * this item that used up (outside creative mode); 0 when nothing changed.
      */
-    protected abstract boolean apply(ServerPlayer player, ItemStack self, ItemStack gun);
+    protected abstract int apply(ServerPlayer player, ItemStack self, ItemStack gun);
 
     protected abstract SoundEvent sound();
 
@@ -67,7 +68,8 @@ public abstract class PaintingItem extends Item {
             }
             return InteractionResultHolder.fail(self);
         }
-        Component no = refusal(player, self, gun);
+        Component no = TenPull.of(gun) != null ? Component.translatable("taczspray.message.pending")
+                : refusal(player, self, gun);
         if (no != null) {
             if (!level.isClientSide) {
                 player.displayClientMessage(no, true);
@@ -108,11 +110,16 @@ public abstract class PaintingItem extends Item {
             ItemStack gun = player.getOffhandItem();
             // checked again: the gun may have been swapped while spraying
             Component no = FinishTables.gunId(gun) == null
-                    ? Component.translatable("taczspray.message.gun_in_off_hand") : refusal(player, stack, gun);
+                    ? Component.translatable("taczspray.message.gun_in_off_hand")
+                    : TenPull.of(gun) != null ? Component.translatable("taczspray.message.pending")
+                    : refusal(player, stack, gun);
             if (no != null) {
                 player.displayClientMessage(no, true);
-            } else if (apply(player, stack, gun) && !player.getAbilities().instabuild) {
-                stack.shrink(1);
+            } else {
+                int used = apply(player, stack, gun);
+                if (!player.getAbilities().instabuild) {
+                    stack.shrink(used);
+                }
             }
         }
         return stack;

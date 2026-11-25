@@ -60,10 +60,12 @@ public record Finish(String id, String look, int grade, int band, double wear, i
     @Nullable
     public static Finish of(ItemStack gun) {
         CompoundTag tag = gun.getTag();
-        if (tag == null || !tag.contains(TAG, Tag.TAG_COMPOUND)) {
-            return null;
-        }
-        CompoundTag t = tag.getCompound(TAG);
+        return tag == null || !tag.contains(TAG, Tag.TAG_COMPOUND) ? null : fromTag(tag.getCompound(TAG));
+    }
+
+    /** A finish as {@link #toTag} wrote it, or null when it is not one this version reads. */
+    @Nullable
+    public static Finish fromTag(CompoundTag t) {
         if (t.getInt("v") != VERSION) {
             return null;
         }
@@ -75,7 +77,7 @@ public record Finish(String id, String look, int grade, int band, double wear, i
         }
     }
 
-    public void writeTo(ItemStack gun) {
+    public CompoundTag toTag() {
         CompoundTag t = new CompoundTag();
         t.putInt("v", VERSION);
         t.putString("id", id);
@@ -85,7 +87,11 @@ public record Finish(String id, String look, int grade, int band, double wear, i
         t.putDouble("wear", wear);
         t.putInt("pattern_no", patternNo);
         t.putInt("wear_no", wearNo);
-        gun.getOrCreateTag().put(TAG, t);
+        return t;
+    }
+
+    public void writeTo(ItemStack gun) {
+        gun.getOrCreateTag().put(TAG, toTag());
     }
 
     /** Takes the finish off; the gun is exactly as it was before it was sprayed. */

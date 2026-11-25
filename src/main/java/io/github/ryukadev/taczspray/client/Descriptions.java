@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.List;
 
 /**
- * The spray can's and the remover's description, wrapped to a readable width: one line in English is already long,
+ * The spray can's and the remover's own tooltip lines, wrapped to a readable width: one line in English is already long,
  * and some languages run half as long again.
  */
 @Mod.EventBusSubscriber(modid = TaczSpray.MOD_ID, value = Dist.CLIENT)
@@ -30,18 +30,19 @@ public final class Descriptions {
         if (!(event.getItemStack().getItem() instanceof PaintingItem item)) {
             return;
         }
-        String key = item.getDescriptionId() + ".desc";
+        // the item's own lines: its description, and the spray can's line on ten-pulls
+        String own = item.getDescriptionId() + ".";
         List<Component> lines = event.getToolTip();
         for (int i = 0; i < lines.size(); i++) {
             Component line = lines.get(i);
-            if (line.getContents() instanceof TranslatableContents t && t.getKey().equals(key)) {
+            if (line.getContents() instanceof TranslatableContents t && t.getKey().startsWith(own)) {
                 lines.remove(i);
                 List<FormattedText> parts = Minecraft.getInstance().font.getSplitter()
                         .splitLines(line, WIDTH, Style.EMPTY);
                 for (FormattedText part : parts) {
                     lines.add(i++, Component.literal(part.getString()).withStyle(line.getStyle()));
                 }
-                return;
+                i--;
             }
         }
     }

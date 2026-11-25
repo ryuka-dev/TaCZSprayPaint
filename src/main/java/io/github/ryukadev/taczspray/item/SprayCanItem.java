@@ -5,7 +5,9 @@ import io.github.ryukadev.taczspray.FinishTable;
 import io.github.ryukadev.taczspray.FinishTables;
 import io.github.ryukadev.taczspray.PaintableGuns;
 import io.github.ryukadev.taczspray.Series;
+import io.github.ryukadev.taczspray.TenPull;
 import io.github.ryukadev.taczspray.client.ClientCatalog;
+import io.github.ryukadev.taczspray.net.ChoiceMessage;
 import io.github.ryukadev.taczspray.net.Network;
 import io.github.ryukadev.taczspray.net.RevealMessage;
 import net.minecraft.ChatFormatting;
@@ -19,6 +21,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +29,9 @@ import java.util.Optional;
  * Sprays the off-hand gun with a finish rolled anew every time: pattern, grade and wear. One can a spray. A plain can
  * draws from every finish (or the series the server owner set for plain cans); a labelled one ({@link CanLabel}) from
  * a series or gives one finish.
+ * <p>
+ * Sneaking with at least {@link TenPull#SIZE} cans (any number in creative mode) rolls ten at once from the same pool
+ * and uses ten cans; the gun keeps its finish until its owner picks one of the ten ({@link TenPull}).
  */
 public final class SprayCanItem extends PaintingItem {
     private static final int[] MIST = {0xE04848, 0xF2C14E, 0x58B368, 0x4A8FE0, 0xB060D0, 0xF08CB0};
@@ -78,28 +84,41 @@ public final class SprayCanItem extends PaintingItem {
     }
 
     @Override
-    protected boolean apply(ServerPlayer player, ItemStack self, ItemStack gun) {
+    protected int apply(ServerPlayer player, ItemStack self, ItemStack gun) {
         Draw draw = draw(self, gun, player.getLanguage());
         String id = FinishTables.gunId(gun);
         FinishTable table = FinishTables.current();
         var random = player.getRandom();
-        Optional<Finish> rolled = draw.pool() == null ? Optional.empty() : table.roll(id, draw.pool(), random::nextDouble);
-        if (rolled.isEmpty()) {
+        boolean ten = player.isShiftKeyDown()
+                && (self.getCount() >= TenPull.SIZE || player.getAbilities().instabuild);
+        List<Finish> rolled = new ArrayList<>();
+        for (int i = 0; draw.pool() != null && i < (ten ? TenPull.SIZE : 1); i++) {
+            table.roll(id, draw.pool(), random::nextDouble).ifPresent(rolled::add);
+        }
+        if (rolled.size() != (ten ? TenPull.SIZE : 1)) {
             player.displayClientMessage(draw.refusal() != null ? draw.refusal()
                     : Component.translatable("taczspray.message.no_finishes"), true);
-            return false;
+            return 0;
         }
-        Finish finish = rolled.get();
+        if (ten) {
+            TenPull pull = new TenPull(random.nextLong(), rolled);
+            pull.writeTo(gun);
+            player.getInventory().setChanged();
+            Network.sendTo(player, new ChoiceMessage(gun, pull, true));
+            return TenPull.SIZE;
+        }
+        Finish finish = rolled.get(0);
         finish.writeTo(gun);
         player.getInventory().setChanged();
         Network.sendTo(player, new RevealMessage(gun, finish, table.reel(id, draw.pool(), finish, random::nextDouble)));
-        return true;
+        return 1;
     }
 
     /** The series or the finish a labelled can gives. Client only (tooltips), with the names the server sent. */
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
+        tooltip.add(Component.translatable("item.taczspray.spray_can.ten", TenPull.SIZE).withStyle(ChatFormatting.GRAY));
         CanLabel.of(stack).ifPresentOrElse(l -> {
             if (l.series() != null) {
                 tooltip.add(Component.translatable("taczspray.tooltip.series", ClientCatalog.seriesName(l.series()))

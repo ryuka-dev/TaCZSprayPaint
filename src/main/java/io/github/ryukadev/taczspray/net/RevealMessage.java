@@ -40,13 +40,7 @@ public record RevealMessage(ItemStack gun, Finish won, List<Cell> reel, int winA
 
     void encode(FriendlyByteBuf buf) {
         buf.writeItem(gun);
-        buf.writeUtf(won.id(), MAX_NAME);
-        buf.writeUtf(won.look(), MAX_NAME);
-        buf.writeVarInt(won.grade());
-        buf.writeVarInt(won.band());
-        buf.writeDouble(won.wear());
-        buf.writeVarInt(won.patternNo());
-        buf.writeVarInt(won.wearNo());
+        writeFinish(buf, won);
         buf.writeVarInt(reel.size());
         for (Cell c : reel) {
             buf.writeUtf(c.id(), MAX_NAME);
@@ -59,8 +53,7 @@ public record RevealMessage(ItemStack gun, Finish won, List<Cell> reel, int winA
 
     static RevealMessage decode(FriendlyByteBuf buf) {
         ItemStack gun = buf.readItem();
-        Finish won = new Finish(buf.readUtf(MAX_NAME), buf.readUtf(MAX_NAME), buf.readVarInt(), buf.readVarInt(),
-                buf.readDouble(), buf.readVarInt(), buf.readVarInt());
+        Finish won = readFinish(buf);
         int n = buf.readVarInt();
         if (n < 1 || n > MAX_CELLS) {
             throw new IllegalArgumentException("bad reel length " + n);
@@ -70,6 +63,22 @@ public record RevealMessage(ItemStack gun, Finish won, List<Cell> reel, int winA
             cells.add(new Cell(buf.readUtf(MAX_NAME), buf.readUtf(MAX_NAME), buf.readVarInt()));
         }
         return new RevealMessage(gun, won, cells, buf.readVarInt(), buf.readDouble());
+    }
+
+    static void writeFinish(FriendlyByteBuf buf, Finish f) {
+        buf.writeUtf(f.id(), MAX_NAME);
+        buf.writeUtf(f.look(), MAX_NAME);
+        buf.writeVarInt(f.grade());
+        buf.writeVarInt(f.band());
+        buf.writeDouble(f.wear());
+        buf.writeVarInt(f.patternNo());
+        buf.writeVarInt(f.wearNo());
+    }
+
+    /** A finish as {@link #writeFinish} wrote it; one out of range throws (the record checks it). */
+    static Finish readFinish(FriendlyByteBuf buf) {
+        return new Finish(buf.readUtf(MAX_NAME), buf.readUtf(MAX_NAME), buf.readVarInt(), buf.readVarInt(),
+                buf.readDouble(), buf.readVarInt(), buf.readVarInt());
     }
 
     public Cell wonCell() {

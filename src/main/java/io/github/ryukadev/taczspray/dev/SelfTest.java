@@ -3,7 +3,9 @@ package io.github.ryukadev.taczspray.dev;
 import io.github.ryukadev.taczspray.Finish;
 import io.github.ryukadev.taczspray.FinishTables;
 import io.github.ryukadev.taczspray.TaczSpray;
+import io.github.ryukadev.taczspray.TenPull;
 import io.github.ryukadev.taczspray.client.ClientCatalog;
+import io.github.ryukadev.taczspray.client.PickScreen;
 import io.github.ryukadev.taczspray.client.RevealScreen;
 import io.github.ryukadev.taczspray.item.CanLabel;
 import io.github.ryukadev.taczspray.item.ModItems;
@@ -75,6 +77,12 @@ public final class SelfTest {
         }
         ticks++;
         switch (ticks) {
+            // the test world is reused; a player who died in it (an earlier run, or anything else) starts again
+            case 40 -> {
+                if (mc.player.isDeadOrDying()) {
+                    mc.player.respawn();
+                }
+            }
             case 60 -> onServer(mc, SelfTest::setUp);
             case 80 -> onServer(mc, SelfTest::spray);
             case 250 -> {
@@ -172,12 +180,53 @@ public final class SelfTest {
                 player.setGameMode(GameType.SURVIVAL);
                 player.hurt(player.damageSources().generic(), 1f);
                 player.setGameMode(mode);
+                player.setHealth(player.getMaxHealth());
             });
             case 595 -> {
                 TaczSpray.LOG.info("[selftest] hurt during a reveal: closed {} (expect true)", mc.screen == null);
                 shot(mc, "hurt");
             }
-            case 600 -> {
+            // a ten-pull: ten cans gone, the gun keeps its finish until one of the ten is kept; closing leaves them
+            case 600 -> onServer(mc, SelfTest::tenPull);
+            case 614 -> {
+                boolean open = mc.screen instanceof PickScreen;
+                if (open) {
+                    mc.screen.keyPressed(GLFW.GLFW_KEY_SPACE, 0, 0);
+                }
+                TaczSpray.LOG.info("[selftest] ten-pull screen open {} (expect true)", open);
+            }
+            case 618 -> shot(mc, "pick");
+            case 620 -> {
+                if (mc.screen instanceof PickScreen pick) {
+                    pick.pick(3);
+                }
+            }
+            case 628 -> shot(mc, "pick-3");
+            case 630 -> {
+                if (mc.screen != null) {
+                    mc.screen.onClose();
+                }
+                TaczSpray.LOG.info("[selftest] closed without keeping: the ten still on the gun {} (expect true)",
+                        TenPull.of(mc.player.getOffhandItem()) != null);
+            }
+            case 634 -> shot(mc, "pick-later");
+            case 636 -> onServer(mc, player -> player.server.getCommands().performPrefixedCommand(
+                    player.createCommandSourceStack(), "taczspray choose"));
+            case 644 -> {
+                boolean open = mc.screen instanceof PickScreen;
+                if (mc.screen instanceof PickScreen pick) {
+                    pick.pick(3);
+                    pick.keep();
+                }
+                TaczSpray.LOG.info("[selftest] /taczspray choose opened it again {} (expect true)", open);
+            }
+            case 652 -> onServer(mc, player -> {
+                ItemStack gun = player.getOffhandItem();
+                TaczSpray.LOG.info("[selftest] kept the fourth: {}; the ten gone {} (expect true, true)",
+                        tenPull != null && tenPull.finishes().get(3).equals(Finish.of(gun)), TenPull.of(gun) == null);
+            });
+            case 656 -> shot(mc, "kept");
+            case 660 -> {
                 TaczSpray.LOG.info("[selftest] done");
                 mc.stop();
             }
@@ -190,6 +239,40 @@ public final class SelfTest {
      * In survival: a gun with no finishes takes no can; a spray takes one; then in creative a spray takes none. The
      * player's game mode is put back after.
      */
+    /** The ten-pull the self-test made, to check which one ends up on the gun. */
+    private static TenPull tenPull;
+
+    /** Ten plain cans, sneaking, in survival, on an AK-47 that already has a finish; then a can and a remover on it. */
+    private static void tenPull(ServerPlayer player) {
+        GameType mode = player.gameMode.getGameModeForPlayer();
+        player.setGameMode(GameType.SURVIVAL);
+        ItemStack gun = gun("tacz:ak47");
+        Finish before = FinishTables.current().roll("tacz:ak47", player.getRandom()::nextDouble).orElseThrow();
+        before.writeTo(gun);
+        player.setItemInHand(InteractionHand.OFF_HAND, gun);
+        ItemStack cans = new ItemStack(ModItems.SPRAY_CAN.get(), TenPull.SIZE);
+        player.getInventory().setItem(0, cans);
+        player.getInventory().selected = 0;
+        player.setShiftKeyDown(true);
+        cans.getItem().finishUsingItem(cans, player.level(), player);
+        player.setShiftKeyDown(false);
+        ItemStack held = player.getOffhandItem();
+        tenPull = TenPull.of(held);
+        TaczSpray.LOG.info("[selftest] ten-pull: cans left {}, ten on the gun {}, its finish unchanged {} "
+                + "(expect 0, true, true)", cans.getCount(), tenPull != null, before.equals(Finish.of(held)));
+        ItemStack one = new ItemStack(ModItems.SPRAY_CAN.get());
+        player.getInventory().setItem(0, one);
+        one.getItem().finishUsingItem(one, player.level(), player);
+        ItemStack remover = new ItemStack(ModItems.PAINT_REMOVER.get());
+        player.getInventory().setItem(1, remover);
+        remover.getItem().finishUsingItem(remover, player.level(), player);
+        TaczSpray.LOG.info("[selftest] while the ten wait: a can kept {}, a remover kept {}, finish still there {} "
+                + "(expect true, true, true)", one.getCount() == 1, remover.getCount() == 1,
+                before.equals(Finish.of(held)));
+        player.getInventory().setItem(1, ItemStack.EMPTY);
+        player.setGameMode(mode);
+    }
+
     /** One plain can on the AK-47 in the off hand, for a reveal to skip. */
     private static void sprayOnce(ServerPlayer player) {
         ItemStack can = new ItemStack(ModItems.SPRAY_CAN.get());
@@ -304,6 +387,8 @@ public final class SelfTest {
         player.serverLevel().getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(32))
                 .forEach(ItemEntity::discard);
         player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 60, 0, false, false));
+        player.setHealth(player.getMaxHealth());
+        player.getFoodData().setFoodLevel(20);
         String gunId = System.getProperty("taczspray.selftest.gun", "tacz:ak47");
         player.getInventory().setItem(0, new ItemStack(ModItems.SPRAY_CAN.get(), 2));
         player.getInventory().selected = 0;

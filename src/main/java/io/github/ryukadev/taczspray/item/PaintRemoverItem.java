@@ -24,11 +24,11 @@ public final class PaintRemoverItem extends PaintingItem {
     }
 
     @Override
-    protected boolean apply(ServerPlayer player, ItemStack self, ItemStack gun) {
+    protected int apply(ServerPlayer player, ItemStack self, ItemStack gun) {
         Finish.remove(gun);
         player.getInventory().setChanged();
         player.displayClientMessage(Component.translatable("taczspray.message.removed"), true);
-        return true;
+        return 1;
     }
 
     @Override

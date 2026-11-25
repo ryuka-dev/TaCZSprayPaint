@@ -90,6 +90,11 @@ public final class RevealScreen extends Screen {
         }
     }
 
+    @Override
+    protected void init() {
+        GunModel.prepare(reveal.gun());
+    }
+
     public static void open(RevealMessage reveal) {
         Minecraft.getInstance().setScreen(new RevealScreen(reveal));
     }
@@ -281,6 +286,9 @@ public final class RevealScreen extends Screen {
             return;
         }
         Font font = Minecraft.getInstance().font;
+        // a darker backing, so the chat behind the screen does not show through the text
+        int back = Math.min(width - 8, 340);
+        g.fill(cx - back / 2, ry + 94, cx + back / 2, ry + 176, 0xB0000000);
         // twice the size, unless that is too wide (a long name in some languages); then cut if still too wide
         int room = width - 16;
         String title = names.get(reveal.winAt());
@@ -348,7 +356,7 @@ public final class RevealScreen extends Screen {
         return 0xFF000000 | rgb;
     }
 
-    private static void play(SoundEvent event, float pitch, float volume) {
+    static void play(SoundEvent event, float pitch, float volume) {
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, pitch, volume));
     }
 }

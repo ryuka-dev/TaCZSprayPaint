@@ -1,6 +1,7 @@
 package io.github.ryukadev.taczspray.client;
 
 import io.github.ryukadev.taczspray.Finish;
+import io.github.ryukadev.taczspray.TenPull;
 import net.minecraft.ChatFormatting;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.network.chat.Component;
@@ -39,6 +40,11 @@ public final class FinishText {
     /** Under the gun's name: the finish's name in its grade's colour and the grade; then the band and the wear. */
     @SubscribeEvent
     public static void tooltip(ItemTooltipEvent event) {
+        if (TenPull.of(event.getItemStack()) != null) {
+            List<Component> lines = event.getToolTip();
+            lines.add(Math.min(1, lines.size()), Component.translatable("taczspray.tooltip.pending", TenPull.SIZE)
+                    .withStyle(ChatFormatting.GOLD));
+        }
         Finish finish = Finish.of(event.getItemStack());
         if (finish == null) {
             return;
