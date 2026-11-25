@@ -3,6 +3,7 @@ package io.github.ryukadev.taczspray.dev;
 import io.github.ryukadev.taczspray.Finish;
 import io.github.ryukadev.taczspray.TaczSpray;
 import io.github.ryukadev.taczspray.client.ClientCatalog;
+import io.github.ryukadev.taczspray.client.PickScreen;
 import io.github.ryukadev.taczspray.client.RevealScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
@@ -10,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +30,7 @@ public final class MultiplayerWatch {
 
     private final Map<String, String> held = new HashMap<>();
     private int ticks;
+    private int pickAt = -1;
     private int shots;
     private int shootAt = -1;
     private String shotName;
@@ -80,6 +83,17 @@ public final class MultiplayerWatch {
         }
         if (ticks == closeRevealAt && mc.screen instanceof RevealScreen) {
             mc.setScreen(null);
+        }
+        // a ten-pull: turn the ten over, keep the second
+        if (pickAt < 0 && mc.screen instanceof PickScreen) {
+            pickAt = ticks + 30;
+            TaczSpray.LOG.info("[mp] client {}: ten-pull screen opened", me);
+        }
+        if (ticks == pickAt && mc.screen instanceof PickScreen pick) {
+            pick.keyPressed(GLFW.GLFW_KEY_SPACE, 0, 0);
+            pick.pick(1);
+            pick.keep();
+            TaczSpray.LOG.info("[mp] client {}: kept the second", me);
         }
         for (Player p : mc.level.players()) {
             String name = p.getGameProfile().getName();

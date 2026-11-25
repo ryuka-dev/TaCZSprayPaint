@@ -1,6 +1,7 @@
 package io.github.ryukadev.taczspray.dev;
 
 import io.github.ryukadev.taczspray.Finish;
+import io.github.ryukadev.taczspray.TenPull;
 import io.github.ryukadev.taczspray.FinishTables;
 import io.github.ryukadev.taczspray.item.CanLabel;
 import io.github.ryukadev.taczspray.TaczSpray;
@@ -94,11 +95,29 @@ public final class MultiplayerCheck {
                 face(a, b);
                 TaczSpray.LOG.info("[mp] server: after the remover {} holds {}", name(a), Finish.of(bare));
             }
-            case SETTLE + 520 -> finish(server);
+            case SETTLE + 440 -> {
+                // a ten-pull: the ten go to the sprayer's client, which keeps the second (MultiplayerWatch)
+                ItemStack gun = a.getMainHandItem().copy();
+                a.setItemInHand(InteractionHand.OFF_HAND, gun);
+                ItemStack cans = new ItemStack(ModItems.SPRAY_CAN.get(), TenPull.SIZE);
+                a.setItemInHand(InteractionHand.MAIN_HAND, cans);
+                a.setShiftKeyDown(true);
+                cans.getItem().finishUsingItem(cans, a.level(), a);
+                a.setShiftKeyDown(false);
+                tenPull = TenPull.of(a.getOffhandItem());
+                TaczSpray.LOG.info("[mp] server: {} ten-pull rolled {}", name(a), tenPull != null);
+            }
+            case SETTLE + 540 -> TaczSpray.LOG.info("[mp] server: {} kept the second of the ten {}; the ten gone {}"
+                    + " (expect true, true)", name(a), tenPull != null
+                    && tenPull.finishes().get(1).equals(Finish.of(a.getOffhandItem())),
+                    TenPull.of(a.getOffhandItem()) == null);
+            case SETTLE + 560 -> finish(server);
             default -> {
             }
         }
     }
+
+    private static TenPull tenPull;
 
     private static void setUp(ServerPlayer a, ServerPlayer b) {
         for (ServerPlayer p : List.of(a, b)) {
