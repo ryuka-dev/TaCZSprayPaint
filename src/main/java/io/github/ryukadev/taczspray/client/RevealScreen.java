@@ -3,6 +3,7 @@ package io.github.ryukadev.taczspray.client;
 import io.github.ryukadev.taczspray.Finish;
 import io.github.ryukadev.taczspray.TaczSpray;
 import io.github.ryukadev.taczspray.net.RevealMessage;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -166,6 +167,16 @@ public final class RevealScreen extends Screen {
                 ClientCatalog.lookName(finish.look()).copy().withStyle(colour),
                 FinishText.grade(finish.grade()).copy().withStyle(colour),
                 FinishText.band(finish.band()), FinishText.wear(finish.wear()));
+    }
+
+    /** The same without the chat line's lead-in, for a screen: name · grade · band wear. */
+    static Component summary(Finish finish) {
+        Style colour = Style.EMPTY.withColor(TextColor.fromRgb(gradeColour(finish.grade())));
+        Component dot = Component.literal(" · ").withStyle(ChatFormatting.DARK_GRAY);
+        return Component.empty()
+                .append(ClientCatalog.lookName(finish.look()).copy().withStyle(colour)).append(dot)
+                .append(FinishText.grade(finish.grade()).copy().withStyle(colour)).append(dot)
+                .append(FinishText.band(finish.band())).append(" " + FinishText.wear(finish.wear()));
     }
 
     @Override

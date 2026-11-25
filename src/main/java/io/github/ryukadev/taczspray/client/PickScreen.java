@@ -215,15 +215,16 @@ public final class PickScreen extends Screen {
         g.fill(cx - sw / 2 - 2, stageY - 2, cx + sw / 2 + 2, stageY + STAGE_H + 2, 0xFF000000 | border);
         g.fill(cx - sw / 2, stageY, cx + sw / 2, stageY + STAGE_H, 0xFF000000 | BACKGROUND);
         int textY = stageY + STAGE_H + 6;
+        Component line = shown >= 0 ? RevealScreen.summary(finishes.get(shown)) : Component.empty();
         // a darker backing, so the chat behind the screen does not show through the text
-        g.fill(cx - sw / 2 - 2, textY - 3, cx + sw / 2 + 2, textY + 22, 0xB0000000);
+        int back = Math.min(width - 4, Math.max(sw + 4, font.width(line) + 12));
+        g.fill(cx - back / 2, textY - 3, cx + back / 2, textY + 22, 0xB0000000);
         if (shown >= 0) {
             g.enableScissor(cx - sw / 2, stageY, cx + sw / 2, stageY + STAGE_H);
             float yaw = (float) Math.sin(t / 1100.0) * 28;
             GunModel.draw(g, guns.get(shown), cx, stageY + STAGE_H / 2f, sw - 24, STAGE_H - 12, yaw);
             g.disableScissor();
             Finish f = finishes.get(shown);
-            Component line = RevealScreen.resultLine(f);
             g.drawString(font, line, cx - font.width(line) / 2, textY, SUB, true);
             WearBar.draw(g, cx - WEAR_W / 2, textY + 14, WEAR_W, 4, f.band(), f.wear(), ClientCatalog.bands());
         } else {
