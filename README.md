@@ -23,6 +23,15 @@ writes it, with examples, into `config/taczspray/examples/`.
 
 Work in progress: nothing is released yet.
 
+## Languages
+
+English and Simplified Chinese are written by hand. The other 18 are the languages TaCZ comes in, machine translated
+and then checked by translating each line back. They use TaCZ's word for "gun" and Minecraft's for "off hand", so the
+two mods read the same in your language.
+
+If a line sounds wrong, a fix is welcome. Each language is one file in `src/main/resources/assets/taczspray/lang/`, and
+F3+T reloads it in game. A line missing from a file shows up in English.
+
 ## Requirements
 
 - Minecraft 1.20.1, Forge 47

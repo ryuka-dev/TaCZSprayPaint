@@ -8,6 +8,8 @@ import io.github.ryukadev.taczspray.item.CanLabel;
 import io.github.ryukadev.taczspray.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -132,6 +134,17 @@ public final class SelfTest {
                                 TooltipFlag.NORMAL).stream().map(Component::getString).limit(3).toList());
                 shot(mc, "custom");
             }
+            case 545 -> {
+                // the tooltips as the game draws them, in whatever language the game is in
+                ItemStack can = new ItemStack(ModItems.SPRAY_CAN.get());
+                TaczSpray.LOG.info("[selftest] {}: can tooltip {}", mc.getLanguageManager().getSelected(),
+                        can.getTooltipLines(mc.player, TooltipFlag.NORMAL).stream()
+                                .map(c -> c.getString() + " (" + mc.font.width(c) + " px)").toList());
+                showTooltip(mc, can);
+            }
+            case 550 -> shot(mc, "tooltip-can");
+            case 551 -> showTooltip(mc, mc.player.getMainHandItem().copy());
+            case 556 -> shot(mc, "tooltip-gun");
             case 560 -> {
                 TaczSpray.LOG.info("[selftest] done");
                 mc.stop();
@@ -275,6 +288,17 @@ public final class SelfTest {
             ServerPlayer player = server.getPlayerList().getPlayer(uuid);
             if (player != null) {
                 work.accept(player);
+            }
+        });
+    }
+
+    /** A screen with nothing on it but this item's tooltip. */
+    private static void showTooltip(Minecraft mc, ItemStack stack) {
+        mc.setScreen(new Screen(Component.empty()) {
+            @Override
+            public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+                renderBackground(g);
+                g.renderTooltip(font, stack, 4, 20);
             }
         });
     }

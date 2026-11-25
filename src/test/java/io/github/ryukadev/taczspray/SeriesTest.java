@@ -27,6 +27,11 @@ class SeriesTest {
         assertArrayEquals(new double[]{0, 0, 1, 1, 0}, s.grades());
         assertEquals("金属系列", s.name("zh_cn"));
         assertEquals("Metal Series", s.name("ja_jp"), "English when the language has none");
+        assertEquals("金属系列", s.name("zh_tw"), "another variety of the same language before English");
+        Series portuguese = parse("p", """
+                {"v": 1, "name": {"en_us": "Metal", "pt_br": "Metal (BR)"}, "looks": ["gold"]}""");
+        assertEquals("Metal (BR)", portuguese.name("pt_pt"));
+        assertEquals("Metal", portuguese.name("es_es"));
         Series plain = parse("summer", """
                 {"v": 1, "name": "Summer", "looks": ["sakura"]}""");
         assertEquals("Summer", plain.name("zh_cn"));

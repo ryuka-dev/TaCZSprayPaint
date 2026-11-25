@@ -42,13 +42,19 @@ public record Series(String id, Map<String, String> names, Set<String> looks, @N
         return new FinishTable.Pool(looks, grades);
     }
 
-    /** The name for a language: that language's, else English, else any, else the id. */
+    /**
+     * The name for a language: that language's, else another variety of the same language's ({@code zh_tw} for
+     * {@code zh_cn}), else English, else the one for any language, else any, else the id.
+     */
     public String name(String language) {
         return name(names, language, id);
     }
 
     public static String name(Map<String, String> names, String language, String fallback) {
         String n = names.get(language);
+        if (n == null) {
+            n = sameLanguage(names, language);
+        }
         if (n == null) {
             n = names.get("en_us");
         }
@@ -59,6 +65,22 @@ public record Series(String id, Map<String, String> names, Set<String> looks, @N
             n = names.values().iterator().next();
         }
         return n == null ? fallback : n;
+    }
+
+    /** The first name whose language code starts the same as this one's, up to the underscore. */
+    @Nullable
+    private static String sameLanguage(Map<String, String> names, String language) {
+        int cut = language.indexOf('_');
+        if (cut <= 0) {
+            return null;
+        }
+        String prefix = language.substring(0, cut + 1);
+        for (Map.Entry<String, String> e : names.entrySet()) {
+            if (e.getKey().startsWith(prefix)) {
+                return e.getValue();
+            }
+        }
+        return null;
     }
 
     /**

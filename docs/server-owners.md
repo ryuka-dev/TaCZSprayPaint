@@ -87,7 +87,9 @@ digits and `_`.
 }
 ```
 
-- `name`: one text, or one per language. A can's tooltip shows it.
+- `name`: one text, or one per language. A can's tooltip shows it. Languages are the game's codes (`en_us`, `zh_cn`,
+  `de_de`...). A player whose language you left out gets another variety of it if you wrote one (`zh_cn` for a
+  `zh_tw` player), then English.
 - `looks`: the patterns. On each gun, a can gives one of the patterns that gun has. A pattern that does not exist is
   skipped, and the log says so.
 - `grades` (optional): five weights, as in the settings. Leave it out to use the settings' grade weights, or the

@@ -1,0 +1,64 @@
+{
+  "gun": {
+    "from": "tacz",
+    "key": "config.tacz.common.gun",
+    "used_in": [
+      "item.taczspray.paint_remover.desc",
+      "item.taczspray.spray_can.desc",
+      "taczspray.message.gun_in_off_hand",
+      "taczspray.message.no_finishes",
+      "taczspray.message.no_look",
+      "taczspray.message.no_paint",
+      "taczspray.message.series_no_gun"
+    ],
+    "seen": {
+      "ca_es": "Arma de foc",
+      "da_dk": "Våben",
+      "de_de": "Waffe",
+      "es_es": "Armas de fuego",
+      "eu_es": "Arma",
+      "fr_fr": "Arme",
+      "id_id": "Senpi",
+      "it_it": "Arma",
+      "ja_jp": "銃",
+      "ko_kr": "총기",
+      "pl_pl": "Broń",
+      "pt_br": "Arma",
+      "ru_ru": "Оружие",
+      "th_th": "ปืน",
+      "tr_tr": "Silah",
+      "uk_ua": "Зброя",
+      "vi_vn": "Súng",
+      "zh_tw": "槍枝"
+    }
+  },
+  "off_hand": {
+    "from": "minecraft 1.20.1",
+    "key": "item.modifiers.offhand",
+    "used_in": [
+      "item.taczspray.paint_remover.desc",
+      "item.taczspray.spray_can.desc",
+      "taczspray.message.gun_in_off_hand"
+    ],
+    "seen": {
+      "ca_es": "A la mà secundària:",
+      "da_dk": "Når i anden hånd:",
+      "de_de": "In der Zweithand:",
+      "es_es": "En la mano secundaria:",
+      "eu_es": "Bigarren eskuan:",
+      "fr_fr": "Dans la main secondaire :",
+      "id_id": "Saat di Tangan Kedua:",
+      "it_it": "Nella mano secondaria:",
+      "ja_jp": "オフハンドに持ったとき：",
+      "ko_kr": "다른 손에 있을 때:",
+      "pl_pl": "Kiedy w drugiej ręce:",
+      "pt_br": "Na mão secundária:",
+      "ru_ru": "Когда во второстепенной руке:",
+      "th_th": "เมื่ออยู่ในมือรอง:",
+      "tr_tr": "Diğer Eldeyken:",
+      "uk_ua": "Коли в іншій руці:",
+      "vi_vn": "Khi ở tay phụ:",
+      "zh_tw": "在非慣用手時："
+    }
+  }
+}

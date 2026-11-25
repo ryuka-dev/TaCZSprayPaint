@@ -9,6 +9,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -179,9 +180,18 @@ public final class RevealScreen extends Screen {
         g.fill(x, y + size - bar, x + size, y + size, opaque(colour));
         if (named) {
             Font font = Minecraft.getInstance().font;
-            String name = font.plainSubstrByWidth(names.get(i), size - 6);
+            String name = fit(font, names.get(i), size - 6);
             g.drawString(font, name, x + 4, y + 3, 0xFFFFFF, true);
         }
+    }
+
+    /** As much of {@code s} as fits in {@code width}, ending in "..." when it was cut. */
+    static String fit(Font font, String s, int width) {
+        if (font.width(s) <= width) {
+            return s;
+        }
+        String more = CommonComponents.ELLIPSIS.getString();
+        return font.plainSubstrByWidth(s, Math.max(0, width - font.width(more))) + more;
     }
 
     private void drawWinner(GuiGraphics g, long t, int ry) {
@@ -208,10 +218,15 @@ public final class RevealScreen extends Screen {
             return;
         }
         Font font = Minecraft.getInstance().font;
+        // twice the size, unless that is too wide (a long name in some languages); then cut if still too wide
+        int room = width - 16;
         String title = names.get(reveal.winAt());
+        int scale = font.width(title) * 2 <= room ? 2 : 1;
+        title = fit(font, title, room / scale);
         g.pose().pushPose();
-        g.pose().scale(2, 2, 1);
-        g.drawString(font, title, Math.round((cx - font.width(title)) / 2f), Math.round((ry + 100) / 2f), 0xFFFFFF, true);
+        g.pose().scale(scale, scale, 1);
+        g.drawString(font, title, Math.round((cx - font.width(title) * scale / 2f) / scale),
+                Math.round((ry + 100 + (2 - scale) * 4.5f) / scale), 0xFFFFFF, true);
         g.pose().popPose();
         String grade = FinishText.grade(won.grade()).getString();
         String rest = "  " + FinishText.band(won.band()).getString() + " " + FinishText.wear(won.wear());
