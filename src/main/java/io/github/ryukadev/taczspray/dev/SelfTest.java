@@ -226,7 +226,20 @@ public final class SelfTest {
                         tenPull != null && tenPull.finishes().get(3).equals(Finish.of(gun)), TenPull.of(gun) == null);
             });
             case 656 -> shot(mc, "kept");
-            case 660 -> {
+            // the icons in the hotbar: a plain can, a series can, a one-finish can (those two labelled), a remover
+            case 657 -> onServer(mc, player -> {
+                ItemStack series = new ItemStack(ModItems.SPRAY_CAN.get());
+                CanLabel.ofSeries(SERIES).writeTo(series);
+                ItemStack look = new ItemStack(ModItems.SPRAY_CAN.get());
+                CanLabel.ofLook("gold").writeTo(look);
+                player.getInventory().setItem(0, new ItemStack(ModItems.SPRAY_CAN.get()));
+                player.getInventory().setItem(1, series);
+                player.getInventory().setItem(2, look);
+                player.getInventory().setItem(3, new ItemStack(ModItems.PAINT_REMOVER.get()));
+                player.getInventory().selected = 4;
+            });
+            case 662 -> shot(mc, "icons");
+            case 666 -> {
                 TaczSpray.LOG.info("[selftest] done");
                 mc.stop();
             }

@@ -2,5 +2,8 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "taczspray:item/spray_can"
-  }
+  },
+  "overrides": [
+    {"predicate": {"taczspray:labelled": 1}, "model": "taczspray:item/spray_can_labelled"}
+  ]
 }
