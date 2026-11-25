@@ -1,0 +1,10 @@
+The files in this folder (the .bin region files, regions.json and the finish.json files that point at them) are made
+from the models of the default gun pack of Timeless and Classics Zero (TaCZ), by Serene Wave Studio and Timeless Squad,
+art by NekoCrane, Receke and Pos_2333: https://github.com/MCModderAnchor/TACZ
+
+For each gun that can be painted they keep the corners and texture coordinates of the faces that get painted, and
+which texture pixels to paint, converted to TaCZ Spray Paint's own format. They hold none of the pack's texture pixels.
+
+Like the pack, they are licensed under Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International
+(CC BY-NC-ND 4.0): https://creativecommons.org/licenses/by-nc-nd/4.0/
+They may be shared for non-commercial purposes only. The rest of TaCZ Spray Paint (its code) is GPL-3.0.

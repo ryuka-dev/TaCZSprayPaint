@@ -40,5 +40,12 @@ F3+T reloads it in game. A line missing from a file shows up in English.
 
 ## License
 
-Code: GPL-3.0, the same as Timeless and Classics Zero. The default gun pack is not redistributed: finishes are
-composited onto the textures already installed with TaCZ, on the player's own machine.
+Code: GPL-3.0, the same as Timeless and Classics Zero.
+
+The finish data in `src/main/resources/assets/taczspray/finishes/` is made from the models of TaCZ's default gun pack.
+For each gun that can be painted, it keeps the corners and texture coordinates of the faces that get painted, and
+which texture pixels to paint, in a format of this mod's own. The pack is by Serene Wave Studio and Timeless Squad
+(art by NekoCrane, Receke and Pos_2333) and is licensed under
+[CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/), so this data is shared under the same license,
+for non-commercial use only. It holds none of their texture pixels: finishes are painted onto the textures already
+installed with TaCZ, on the player's own machine.

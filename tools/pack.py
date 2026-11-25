@@ -167,7 +167,13 @@ def run_release(release):
 
 def merge():
     """Region directories, shared when every release computed the same bytes. {region: {family: directory}}."""
+    # the licence notice for this data is written by hand; keep it
+    notice = ASSETS / "finishes" / "NOTICE.txt"
+    kept = notice.read_bytes() if notice.exists() else None
     shutil.rmtree(ASSETS / "finishes", ignore_errors=True)
+    if kept is not None:
+        notice.parent.mkdir(parents=True)
+        notice.write_bytes(kept)
     regions_all = sorted({d.name for rel in RELEASES for d in (STAGE / rel).iterdir()})
     mapping = {}
     total = 0
