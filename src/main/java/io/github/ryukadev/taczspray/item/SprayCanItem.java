@@ -30,14 +30,21 @@ import java.util.Optional;
  * draws from every finish (or the series the server owner set for plain cans); a labelled one ({@link CanLabel}) from
  * a series or gives one finish.
  * <p>
- * Sneaking with at least {@link TenPull#SIZE} cans (any number in creative mode) rolls ten at once from the same pool
- * and uses ten cans; the gun keeps its finish until its owner picks one of the ten ({@link TenPull}).
+ * The same item class is the spray can case, which rolls {@link TenPull#SIZE} at once from the same pool and is used up
+ * in one go; the gun keeps its finish until its owner picks one of the ten ({@link TenPull}).
  */
 public final class SprayCanItem extends PaintingItem {
     private static final int[] MIST = {0xE04848, 0xF2C14E, 0x58B368, 0x4A8FE0, 0xB060D0, 0xF08CB0};
 
-    public SprayCanItem(Properties properties) {
+    private final int rolls;
+
+    /** @param rolls 1 for a can, {@link TenPull#SIZE} for a case */
+    public SprayCanItem(Properties properties, int rolls) {
         super(properties);
+        if (rolls != 1 && rolls != TenPull.SIZE) {
+            throw new IllegalArgumentException("a can rolls 1, a case " + TenPull.SIZE);
+        }
+        this.rolls = rolls;
     }
 
     /** The pool a can draws from on this server, or why it cannot. */
@@ -89,23 +96,21 @@ public final class SprayCanItem extends PaintingItem {
         String id = FinishTables.gunId(gun);
         FinishTable table = FinishTables.current();
         var random = player.getRandom();
-        boolean ten = player.isShiftKeyDown()
-                && (self.getCount() >= TenPull.SIZE || player.getAbilities().instabuild);
         List<Finish> rolled = new ArrayList<>();
-        for (int i = 0; draw.pool() != null && i < (ten ? TenPull.SIZE : 1); i++) {
+        for (int i = 0; draw.pool() != null && i < rolls; i++) {
             table.roll(id, draw.pool(), random::nextDouble).ifPresent(rolled::add);
         }
-        if (rolled.size() != (ten ? TenPull.SIZE : 1)) {
+        if (rolled.size() != rolls) {
             player.displayClientMessage(draw.refusal() != null ? draw.refusal()
                     : Component.translatable("taczspray.message.no_finishes"), true);
             return 0;
         }
-        if (ten) {
+        if (rolls == TenPull.SIZE) {
             TenPull pull = new TenPull(random.nextLong(), rolled);
             pull.writeTo(gun);
             player.getInventory().setChanged();
             Network.sendTo(player, new ChoiceMessage(gun, pull, true));
-            return TenPull.SIZE;
+            return 1;
         }
         Finish finish = rolled.get(0);
         finish.writeTo(gun);
@@ -118,7 +123,6 @@ public final class SprayCanItem extends PaintingItem {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
-        tooltip.add(Component.translatable("item.taczspray.spray_can.ten", TenPull.SIZE).withStyle(ChatFormatting.GRAY));
         CanLabel.of(stack).ifPresentOrElse(l -> {
             if (l.series() != null) {
                 tooltip.add(Component.translatable("taczspray.tooltip.series", ClientCatalog.seriesName(l.series()))

@@ -8,6 +8,7 @@ import io.github.ryukadev.taczspray.client.compat.OculusPbr;
 import io.github.ryukadev.taczspray.item.CanLabel;
 import io.github.ryukadev.taczspray.item.ModItems;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.world.item.Item;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -34,10 +35,13 @@ public final class ClientSetup {
     public static void setup(FMLClientSetupEvent event) {
         GunTextures.setSource(FinishTextures.instance());
         event.enqueueWork(OculusPbr::registerIfPresent);
-        // a can for a series or one finish has its own icon (models/item/spray_can.json's override)
-        event.enqueueWork(() -> ItemProperties.register(ModItems.SPRAY_CAN.get(), TaczSpray.id("labelled"),
-                (stack, level, entity, seed) -> CanLabel.of(stack)
-                        .map(l -> l.series() != null || l.look() != null ? 1f : 0f).orElse(0f)));
+        // a can or case for a series or one finish has its own icon (the overrides in models/item/)
+        event.enqueueWork(() -> {
+            for (var item : new Item[]{ModItems.SPRAY_CAN.get(), ModItems.SPRAY_CASE.get()}) {
+                ItemProperties.register(item, TaczSpray.id("labelled"), (stack, level, entity, seed) -> CanLabel.of(stack)
+                        .map(l -> l.series() != null || l.look() != null ? 1f : 0f).orElse(0f));
+            }
+        });
     }
 
     @SubscribeEvent

@@ -22,6 +22,7 @@ config/taczspray/
 | 设置 | 默认 | 作用 |
 |---|---|---|
 | `[crafting] spray_can` | `true` | 玩家能不能合成喷漆罐。关掉后配方就不存在了（配方书和 JEI 里也没有），喷漆罐只能靠 `/taczspray give` 获得 |
+| `[crafting] spray_case` | `true` | 十连喷漆箱，同上（8 个喷漆罐加 1 颗钻石）。一箱一次出十个外观，玩家选一个留下 |
 | `[crafting] paint_remover` | `true` | 去漆剂，同上 |
 | `[odds] grades` | `[]` | 五档外观等级的权重，从制式到孤品。留空就用默认的 `[79.92, 15.98, 3.2, 0.64, 0.26]`。权重可以是 0，合计不必是 100。权重为 0 的档不会从普通喷漆罐出，也不会从没写自己 `grades` 的系列出；只出一款外观的喷漆罐照样给 |
 | `[odds] wear_bands` | `[]` | 五个外观成色的权重：崭新出厂、略有磨损、久经沙场、破损不堪、战痕累累。留空就是 `[3, 24, 33, 24, 16]`。写成 `[3, 24, 33, 0, 0]` 就永远不出最旧的两档。自己写了 `wear` 范围的外观，只在那个范围里按这些权重出；如果范围整个落在权重为 0 的档里，以范围为准 |
@@ -45,7 +46,7 @@ config/taczspray/
 }
 ```
 
-去漆剂的配方是 `paint_remover.json`。你的配方会整个替换掉我们的，所以上面的合成开关只有在你加上我们这一行时才对它起作用：
+十连喷漆箱的配方是 `spray_case.json`，去漆剂的是 `paint_remover.json`。你的配方会整个替换掉我们的，所以上面的合成开关只有在你加上我们这一行时才对它起作用：
 `"conditions": [{"type": "taczspray:craftable", "item": "spray_can"}],`。KubeJS、CraftTweaker 也可以改配方。
 
 ## 发放喷漆罐
@@ -54,7 +55,10 @@ config/taczspray/
 /taczspray give <玩家> [数量]                  普通喷漆罐
 /taczspray give <玩家> series <系列> [数量]    某个系列的喷漆罐
 /taczspray give <玩家> look <图案> [数量]      只出某一款外观的喷漆罐
+/taczspray give <玩家> case ...                同上，换成十连喷漆箱
 ```
+
+十连喷漆箱一次出十个外观，玩家选一个留下，例如 `/taczspray give @a case series metal 1`。只出一款外观的箱子，出的是这款外观的十种磨损。玩家选之前，十个结果存在枪上；所有玩家都能用 `/taczspray choose` 重新打开来选。
 
 需要权限等级 2。系列和图案都能按 Tab 补全。能执行指令的东西都能用它：商店、开箱、投票奖励、任务。玩家背包装不下的会掉在脚边。
 

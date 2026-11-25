@@ -27,6 +27,7 @@ Forge writes this file with comments on the first start.
 | Setting | Default | What it does |
 |---|---|---|
 | `[crafting] spray_can` | `true` | Whether players can craft spray cans. Off: the recipe is gone (also from the recipe book and JEI), and cans only come from `/taczspray give`. |
+| `[crafting] spray_case` | `true` | The same for spray can cases (eight spray cans and a diamond). A case rolls ten finishes at once and the player keeps one of them. |
 | `[crafting] paint_remover` | `true` | The same for paint remover. |
 | `[odds] grades` | `[]` | Five weights for the grades, standard to unique. Empty means the default, `[79.92, 15.98, 3.2, 0.64, 0.26]`. A weight may be 0, and they need not add up to 100. A grade weighted 0 never comes out of plain cans, or of series that have no `grades` of their own. A can for one finish still gives it. |
 | `[odds] wear_bands` | `[]` | Five weights for how worn a finish comes out: factory new, minimal wear, field-tested, well-worn, battle-scarred. Empty means `[3, 24, 33, 24, 16]`. `[3, 24, 33, 0, 0]` never gives the two most worn. A finish with its own `wear` range only comes out inside that range, by these odds. If the whole range lies in bands weighted 0, the range wins. |
@@ -51,7 +52,7 @@ To change a recipe, use an ordinary data pack. Put this in `world/datapacks/my_r
 }
 ```
 
-The paint remover's recipe is `paint_remover.json`. Your recipe replaces ours whole, so the crafting switch above only
+The spray can case's recipe is `spray_case.json`, the paint remover's `paint_remover.json`. Your recipe replaces ours whole, so the crafting switch above only
 applies to it if you add our line `"conditions": [{"type": "taczspray:craftable", "item": "spray_can"}],`. KubeJS
 and CraftTweaker work too.
 
@@ -61,7 +62,12 @@ and CraftTweaker work too.
 /taczspray give <players> [count]                  plain cans
 /taczspray give <players> series <series> [count]  cans of a series
 /taczspray give <players> look <pattern> [count]   cans that give one finish
+/taczspray give <players> case ...                 the same, as spray can cases
 ```
+
+A spray can case rolls ten finishes at once and the player keeps one of them, for example
+`/taczspray give @a case series metal 1`. A case for one finish gives ten of that finish, worn differently. Until the
+player picks one, the ten stay on the gun; `/taczspray choose`, which every player can use, opens them again.
 
 This needs permission level 2. Series and patterns tab-complete. Anything that can run a command can use it: shops,
 crates, vote rewards, quests. What does not fit in a player's inventory drops at their feet.

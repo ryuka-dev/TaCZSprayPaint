@@ -99,11 +99,9 @@ public final class MultiplayerCheck {
                 // a ten-pull: the ten go to the sprayer's client, which keeps the second (MultiplayerWatch)
                 ItemStack gun = a.getMainHandItem().copy();
                 a.setItemInHand(InteractionHand.OFF_HAND, gun);
-                ItemStack cans = new ItemStack(ModItems.SPRAY_CAN.get(), TenPull.SIZE);
-                a.setItemInHand(InteractionHand.MAIN_HAND, cans);
-                a.setShiftKeyDown(true);
-                cans.getItem().finishUsingItem(cans, a.level(), a);
-                a.setShiftKeyDown(false);
+                ItemStack cases = new ItemStack(ModItems.SPRAY_CASE.get());
+                a.setItemInHand(InteractionHand.MAIN_HAND, cases);
+                cases.getItem().finishUsingItem(cases, a.level(), a);
                 tenPull = TenPull.of(a.getOffhandItem());
                 TaczSpray.LOG.info("[mp] server: {} ten-pull rolled {}", name(a), tenPull != null);
             }

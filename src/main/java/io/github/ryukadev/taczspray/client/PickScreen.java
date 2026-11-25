@@ -54,6 +54,7 @@ public final class PickScreen extends Screen {
     private int picked = -1;
     private boolean kept;
     private int lastHurt = -1;
+    private final HeldKeys held = HeldKeys.now();
     private Button keep;
     private int top;
 
@@ -120,7 +121,16 @@ public final class PickScreen extends Screen {
     }
 
     @Override
+    public boolean keyReleased(int key, int scanCode, int modifiers) {
+        held.released(key);
+        return super.keyReleased(key, scanCode, modifiers);
+    }
+
+    @Override
     public boolean keyPressed(int key, int scanCode, int modifiers) {
+        if (!held.fresh(key)) {
+            return true;
+        }
         if (key != GLFW.GLFW_KEY_ESCAPE && !allTurned()) {
             if (elapsed() >= GRACE_MS) {
                 turnedAll = true;

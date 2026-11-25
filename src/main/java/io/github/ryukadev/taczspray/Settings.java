@@ -13,6 +13,7 @@ public final class Settings {
     public static final String FILE = TaczSpray.MOD_ID + "/settings.toml";
     public static final ForgeConfigSpec SPEC;
     private static final ForgeConfigSpec.BooleanValue CRAFT_SPRAY_CAN;
+    private static final ForgeConfigSpec.BooleanValue CRAFT_SPRAY_CASE;
     private static final ForgeConfigSpec.BooleanValue CRAFT_PAINT_REMOVER;
     private static final ForgeConfigSpec.ConfigValue<List<?>> GRADES;
     private static final ForgeConfigSpec.ConfigValue<List<?>> WEAR_BANDS;
@@ -26,6 +27,8 @@ public final class Settings {
         CRAFT_SPRAY_CAN = b.comment("Whether players can craft spray cans at a crafting table.",
                 "Off: the recipe is gone; cans only come from /taczspray give (or whatever runs it).")
                 .define("spray_can", true);
+        CRAFT_SPRAY_CASE = b.comment("Whether players can craft spray can cases (ten finishes at once, one to keep;",
+                "eight spray cans and a diamond).").define("spray_case", true);
         CRAFT_PAINT_REMOVER = b.comment("Whether players can craft paint remover.").define("paint_remover", true);
         b.pop().push("odds");
         GRADES = b.comment("Five weights for the grades, standard to unique, e.g. [79.92, 15.98, 3.2, 0.64, 0.26]",
@@ -56,13 +59,15 @@ public final class Settings {
         return true;
     }
 
-    /** Whether {@code item} ("spray_can", "paint_remover") may be crafted; anything else may. */
+    /** Whether {@code item} ("spray_can", "spray_case", "paint_remover") may be crafted; anything else may. */
     public static boolean craftable(String item) {
         return switch (item) {
             case "spray_can" -> loaded() ? CRAFT_SPRAY_CAN.get() : true;
+            case "spray_case" -> loaded() ? CRAFT_SPRAY_CASE.get() : true;
             case "paint_remover" -> loaded() ? CRAFT_PAINT_REMOVER.get() : true;
             default -> {
-                TaczSpray.LOG.warn("A recipe asks whether \"{}\" may be crafted; only spray_can and paint_remover "
+                TaczSpray.LOG.warn("A recipe asks whether \"{}\" may be crafted; only spray_can, spray_case and "
+                        + "paint_remover "
                         + "have a switch", item);
                 yield true;
             }

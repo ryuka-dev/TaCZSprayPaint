@@ -5,8 +5,9 @@ violet rather than black, as vanilla's are a darker shade rather than black):
     python tools/icons.py
 
 Writes src/main/resources/assets/taczspray/textures/item/spray_can.png (a plain can), spray_can_labelled.png (a can
-for a series or one finish: pink, with paint running down it) and paint_remover.png (a trigger spray bottle), and an
-8x preview of them in build/icons-preview.png.
+for a series or one finish: pink, with paint running down it), spray_case.png and spray_case_labelled.png (a box of
+cans, the ten-pull), and paint_remover.png (a trigger spray bottle), and an 8x preview of them in
+build/icons-preview.png.
 """
 from pathlib import Path
 
@@ -56,6 +57,27 @@ SPRAY_CAN_LABELLED = """
 .....OOOOOOO....
 """
 
+# A spray can case: a cardboard box, flaps open, three cans' caps showing, taped across, a small label. A case for a
+# series or one finish has pink caps and pink tape, as the labelled can is pink.
+SPRAY_CASE = """
+................
+....OO.OO.OO....
+...ORrORrORrO...
+...ORrORrORrO...
+..OOHMOHMOHMOO..
+.OffOOOOOOOOffO.
+..OBBBBBBBBbbO..
+..OBBBBBBBBbbO..
+..OTTTTTTTTttO..
+..OBBBBBBBBbbO..
+..OBBWWWWBBbbO..
+..OBBWkkWBBbbO..
+..OBBWWWWBBbbO..
+..OBBBBBBBBbbO..
+..ObbbbbbbbbbO..
+...OOOOOOOOOO...
+"""
+
 # Paint remover: a trigger spray bottle, head and trigger in teal, white bottle with a green label.
 PAINT_REMOVER = """
 ................
@@ -87,6 +109,13 @@ CAN = {
     "C": (110, 206, 240), "c": (66, 160, 214), "v": (44, 112, 170),
     "H": (236, 240, 244), "L": (198, 206, 216), "M": (160, 170, 184), "S": (120, 128, 148), "D": (86, 90, 114),
 }
+CASE = {
+    **OUTLINE,
+    "R": (240, 98, 86), "r": (206, 58, 56), "H": (236, 240, 244), "M": (160, 170, 184),
+    "B": (204, 156, 100), "b": (164, 118, 72), "f": (182, 136, 86),
+    "T": (230, 202, 146), "t": (194, 164, 112), "W": (246, 244, 236), "k": (52, 44, 64),
+}
+CASE_LABELLED = {**CASE, "R": (246, 140, 180), "r": (220, 96, 148), "T": (246, 140, 180), "t": (220, 96, 148)}
 REMOVER = {
     **OUTLINE,
     "h": (130, 214, 226), "s": (72, 150, 178), "n": (96, 170, 196), "t": (110, 190, 214), "c": (58, 120, 150),
@@ -109,6 +138,7 @@ def draw(grid, palette):
 
 def main():
     icons = {"spray_can": draw(SPRAY_CAN, CAN), "spray_can_labelled": draw(SPRAY_CAN_LABELLED, CAN),
+             "spray_case": draw(SPRAY_CASE, CASE), "spray_case_labelled": draw(SPRAY_CASE, CASE_LABELLED),
              "paint_remover": draw(PAINT_REMOVER, REMOVER)}
     preview = Image.new("RGBA", (len(icons) * (128 + 8) - 8, 128), (139, 139, 139, 255))
     for i, (name, img) in enumerate(icons.items()):

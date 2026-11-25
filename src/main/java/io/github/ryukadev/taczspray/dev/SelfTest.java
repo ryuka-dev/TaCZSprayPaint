@@ -226,17 +226,28 @@ public final class SelfTest {
                         tenPull != null && tenPull.finishes().get(3).equals(Finish.of(gun)), TenPull.of(gun) == null);
             });
             case 656 -> shot(mc, "kept");
-            // the icons in the hotbar: a plain can, a series can, a one-finish can (those two labelled), a remover
+            // cases from the command; then the icons in the hotbar: a plain can, a series can, a one-finish can (those
+            // two labelled), a plain case, a series case, a remover
             case 657 -> onServer(mc, player -> {
-                ItemStack series = new ItemStack(ModItems.SPRAY_CAN.get());
-                CanLabel.ofSeries(SERIES).writeTo(series);
+                player.getInventory().clearContent();
+                player.server.getCommands().performPrefixedCommand(player.createCommandSourceStack(),
+                        "taczspray give @s case series " + SERIES + " 2");
+                int cases = player.getInventory().countItem(ModItems.SPRAY_CASE.get());
+                TaczSpray.LOG.info("[selftest] /taczspray give @s case series ... 2: {} series cases (expect 2, true)",
+                        cases + ", " + CanLabel.of(player.getInventory().getItem(0)).map(l -> SERIES.equals(l.series()))
+                                .orElse(false));
+                ItemStack seriesCan = new ItemStack(ModItems.SPRAY_CAN.get());
+                CanLabel.ofSeries(SERIES).writeTo(seriesCan);
                 ItemStack look = new ItemStack(ModItems.SPRAY_CAN.get());
                 CanLabel.ofLook("gold").writeTo(look);
+                ItemStack seriesCase = player.getInventory().getItem(0).copy();
                 player.getInventory().setItem(0, new ItemStack(ModItems.SPRAY_CAN.get()));
-                player.getInventory().setItem(1, series);
+                player.getInventory().setItem(1, seriesCan);
                 player.getInventory().setItem(2, look);
-                player.getInventory().setItem(3, new ItemStack(ModItems.PAINT_REMOVER.get()));
-                player.getInventory().selected = 4;
+                player.getInventory().setItem(3, new ItemStack(ModItems.SPRAY_CASE.get()));
+                player.getInventory().setItem(4, seriesCase);
+                player.getInventory().setItem(5, new ItemStack(ModItems.PAINT_REMOVER.get()));
+                player.getInventory().selected = 6;
             });
             case 662 -> shot(mc, "icons");
             case 666 -> {
@@ -255,7 +266,7 @@ public final class SelfTest {
     /** The ten-pull the self-test made, to check which one ends up on the gun. */
     private static TenPull tenPull;
 
-    /** Ten plain cans, sneaking, in survival, on an AK-47 that already has a finish; then a can and a remover on it. */
+    /** A spray can case, in survival, on an AK-47 that already has a finish; then a can and a remover on it. */
     private static void tenPull(ServerPlayer player) {
         GameType mode = player.gameMode.getGameModeForPlayer();
         player.setGameMode(GameType.SURVIVAL);
@@ -263,16 +274,14 @@ public final class SelfTest {
         Finish before = FinishTables.current().roll("tacz:ak47", player.getRandom()::nextDouble).orElseThrow();
         before.writeTo(gun);
         player.setItemInHand(InteractionHand.OFF_HAND, gun);
-        ItemStack cans = new ItemStack(ModItems.SPRAY_CAN.get(), TenPull.SIZE);
-        player.getInventory().setItem(0, cans);
+        ItemStack cases = new ItemStack(ModItems.SPRAY_CASE.get());
+        player.getInventory().setItem(0, cases);
         player.getInventory().selected = 0;
-        player.setShiftKeyDown(true);
-        cans.getItem().finishUsingItem(cans, player.level(), player);
-        player.setShiftKeyDown(false);
+        cases.getItem().finishUsingItem(cases, player.level(), player);
         ItemStack held = player.getOffhandItem();
         tenPull = TenPull.of(held);
-        TaczSpray.LOG.info("[selftest] ten-pull: cans left {}, ten on the gun {}, its finish unchanged {} "
-                + "(expect 0, true, true)", cans.getCount(), tenPull != null, before.equals(Finish.of(held)));
+        TaczSpray.LOG.info("[selftest] ten-pull: cases left {}, ten on the gun {}, its finish unchanged {} "
+                + "(expect 0, true, true)", cases.getCount(), tenPull != null, before.equals(Finish.of(held)));
         ItemStack one = new ItemStack(ModItems.SPRAY_CAN.get());
         player.getInventory().setItem(0, one);
         one.getItem().finishUsingItem(one, player.level(), player);

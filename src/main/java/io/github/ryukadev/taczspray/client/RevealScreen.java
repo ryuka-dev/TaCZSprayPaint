@@ -29,7 +29,8 @@ import java.util.List;
  * sound by grade. Then the winning cell grows into a stage with the pattern and the gun itself, turning (the gun is
  * in the off hand, which TaCZ does not draw in first person), and the wear bar under the text.
  * <p>
- * Any key or click skips it (but not in its first moments, so the click that finished the spray does not); taking
+ * Any key or click skips it (but not in its first moments, so the click that finished the spray does not, nor a key
+ * held since before it opened, as sneak or a movement key, until it is let go); taking
  * damage closes it. Either way, if the finish was not shown yet it is put in the chat. Once shown, any key or click
  * closes it. The reel is the server's; this only plays it.
  */
@@ -73,6 +74,7 @@ public final class RevealScreen extends Screen {
     private boolean landed;
     private boolean twinkled;
     private int lastHurt = -1;
+    private final HeldKeys held = HeldKeys.now();
 
     private RevealScreen(RevealMessage reveal) {
         super(Component.translatable("taczspray.reveal.title"));
@@ -122,7 +124,13 @@ public final class RevealScreen extends Screen {
 
     @Override
     public boolean keyPressed(int key, int scanCode, int modifiers) {
-        return input();
+        return !held.fresh(key) || input();
+    }
+
+    @Override
+    public boolean keyReleased(int key, int scanCode, int modifiers) {
+        held.released(key);
+        return super.keyReleased(key, scanCode, modifiers);
     }
 
     @Override
