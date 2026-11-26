@@ -5,11 +5,16 @@
     "used_in": [
       "item.taczspray.paint_remover.desc",
       "item.taczspray.spray_can.desc",
+      "item.taczspray.spray_case.desc",
+      "taczspray.command.no_pending",
+      "taczspray.message.choice_gone",
       "taczspray.message.gun_in_off_hand",
       "taczspray.message.no_finishes",
       "taczspray.message.no_look",
       "taczspray.message.no_paint",
-      "taczspray.message.series_no_gun"
+      "taczspray.message.pending",
+      "taczspray.message.series_no_gun",
+      "taczspray.pick.link.hover"
     ],
     "seen": {
       "ca_es": "Arma de foc",
@@ -32,12 +37,42 @@
       "zh_tw": "槍枝"
     }
   },
+  "main_hand": {
+    "from": "minecraft 1.20.1",
+    "key": "item.modifiers.mainhand",
+    "used_in": [
+      "item.taczspray.paint_remover.desc",
+      "item.taczspray.spray_can.desc",
+      "item.taczspray.spray_case.desc"
+    ],
+    "seen": {
+      "ca_es": "A la mà principal:",
+      "da_dk": "Når i primære hånd:",
+      "de_de": "In der Haupthand:",
+      "es_es": "En la mano principal:",
+      "eu_es": "Esku nagusian:",
+      "fr_fr": "Dans la main principale :",
+      "id_id": "Saat di Tangan Utama:",
+      "it_it": "Nella mano principale:",
+      "ja_jp": "利き手に持ったとき：",
+      "ko_kr": "주로 사용하는 손에 있을 때:",
+      "pl_pl": "Kiedy w głównej ręce:",
+      "pt_br": "Na mão principal:",
+      "ru_ru": "Когда в ведущей руке:",
+      "th_th": "เมื่ออยู่ในมือหลัก:",
+      "tr_tr": "Ana Eldeyken:",
+      "uk_ua": "Коли в основній руці:",
+      "vi_vn": "Khi ở tay chính:",
+      "zh_tw": "在慣用手時："
+    }
+  },
   "off_hand": {
     "from": "minecraft 1.20.1",
     "key": "item.modifiers.offhand",
     "used_in": [
       "item.taczspray.paint_remover.desc",
       "item.taczspray.spray_can.desc",
+      "item.taczspray.spray_case.desc",
       "taczspray.message.gun_in_off_hand"
     ],
     "seen": {

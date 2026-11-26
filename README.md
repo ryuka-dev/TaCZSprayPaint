@@ -1,39 +1,43 @@
 # TaCZ Spray Paint
 
-Spray paint for [Timeless and Classics Zero](https://modrinth.com/mod/timeless-and-classics-zero) guns.
+An add-on for [Timeless and Classics Zero](https://modrinth.com/mod/timeless-and-classics-zero) (TaCZ) that adds
+spray paint finishes for guns.
 
-A spray can gives the gun in your off hand a random finish: the pattern, its grade and how worn it looks are rolled
-every time, and no two guns come out the same. Each spray uses up one can, and a gun can be sprayed again as often as
-you like. Paint remover takes the finish off, one bottle at a time.
+## Items
 
-A spray can case rolls ten finishes at once, and you keep the one you like. The reveal shows the painted gun and how
-worn it is; press any key to skip it and get the result in the chat.
+- **Spray Can**: gives a gun a random finish. Each finish has a pattern, a grade and an amount of wear, all rolled
+  separately, so no two guns come out the same. A gun can be sprayed again any number of times.
+- **Spray Can Case**: gives ten finishes at once; the player picks one of them for the gun.
+- **Paint Remover**: removes the finish from a gun.
 
-Finishes only change colours. Models, animations, sounds and stats stay exactly as they are.
+To use one, hold it in the main hand and a gun in the off hand, then press and hold right-click. Each use consumes one
+item. After spraying, a screen shows the painted gun and its wear; any key skips it, and the result is posted in chat.
 
-## For server owners and modpack makers
+Finishes only change colours. Models, animations, sounds and stats are unchanged.
 
-Everything is plain files in `config/taczspray/`, with no code needed, and players install nothing extra:
+## Configuration
 
-- **Your own finishes**: drop a small tiling `pattern.png` and a few lines of `finish.json` into a folder. The server
-  sends the pattern to players when they join.
-- **Series**: sets of finishes with their own odds, like weapon cases.
-- **Cans that give one finish**, and `/taczspray give` for shops, crates and rewards.
-- **Switches**: whether cans can be crafted, the grade and wear odds, and what plain cans give.
+The mod is configured through files in `config/taczspray/`. No code is needed, and clients do not need anything else
+installed: the server sends custom finishes to players when they join.
 
-See the [server owners' guide](docs/server-owners.md) ([中文](docs/server-owners.zh_cn.md)). The first start also
-writes it, with examples, into `config/taczspray/examples/`.
+- **Custom finishes**: a folder with a tiling `pattern.png` and a short `finish.json`.
+- **Series**: groups of finishes with their own odds, like weapon cases.
+- **Cans for one specific finish**, and the `/taczspray give` command for shops, crates and rewards.
+- **Settings**: crafting switches, grade and wear odds, and what plain spray cans draw from.
 
-Work in progress: nothing is released yet.
+Details are in the [configuration guide](docs/server-owners.md) ([中文](docs/server-owners.zh_cn.md)). On the first
+start the mod also writes the guide and some examples into `config/taczspray/examples/`.
+
+Not released yet.
 
 ## Languages
 
-English and Simplified Chinese are written by hand. The other 18 are the languages TaCZ comes in, machine translated
-and then checked by translating each line back. They use TaCZ's word for "gun" and Minecraft's for "off hand", so the
-two mods read the same in your language.
+English and Simplified Chinese are written by hand. The other 18 are the languages TaCZ ships with, machine translated
+and then checked by translating each line back. They use TaCZ's word for "gun" and Minecraft's words for "main hand"
+and "off hand", so both mods use the same terms in each language.
 
-If a line sounds wrong, a fix is welcome. Each language is one file in `src/main/resources/assets/taczspray/lang/`, and
-F3+T reloads it in game. A line missing from a file shows up in English.
+Corrections are welcome. Each language is one file in `src/main/resources/assets/taczspray/lang/`; F3+T reloads it in
+game. Lines missing from a file are shown in English.
 
 ## Requirements
 
