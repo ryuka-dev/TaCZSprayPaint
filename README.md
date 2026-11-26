@@ -5,6 +5,8 @@ English | [中文](README.zh_cn.md)
 An add-on for [Timeless and Classics Zero](https://modrinth.com/mod/timeless-and-classics-zero) (TaCZ) that adds
 spray paint finishes for guns.
 
+![Four painted guns being inspected](docs/media/grid_inspect.gif)
+
 ## Items
 
 - **Spray Can**: gives a gun a random finish. Each finish has a pattern, a grade and an amount of wear, all rolled
@@ -14,6 +16,12 @@ spray paint finishes for guns.
 
 To use one, hold it in the main hand and a gun in the off hand, then press and hold right-click. Each use consumes one
 item. After spraying, a screen shows the painted gun and its wear; any key skips it, and the result is posted in chat.
+
+![A spray landing on Gold](docs/media/reveal_gold.gif)
+
+![Picking one of ten from a case](docs/media/case_pick.gif)
+
+![One finish with four different amounts of wear](docs/media/wear_titanium.gif)
 
 Finishes only change colours. Models, animations, sounds and stats are unchanged.
 
@@ -30,8 +38,6 @@ installed: the server sends custom finishes to players when they join.
 Details are in the [configuration guide](docs/server-owners.md) ([中文](docs/server-owners.zh_cn.md)). On the first
 start the mod also writes the guide and some examples into `config/taczspray/examples/`.
 
-Not released yet.
-
 ## Languages
 
 English and Simplified Chinese are written by hand. The other 18 are the languages TaCZ ships with, machine translated
@@ -40,6 +46,10 @@ and "off hand", so both mods use the same terms in each language.
 
 Corrections are welcome. Each language is one file in `src/main/resources/assets/taczspray/lang/`; F3+T reloads it in
 game. Lines missing from a file are shown in English.
+
+## Download
+
+[GitHub Releases](https://github.com/ryuka-dev/TaCZSprayPaint/releases)
 
 ## Requirements
 
