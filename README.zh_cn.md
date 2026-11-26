@@ -1,4 +1,4 @@
-# TaCZ Spray Paint
+# 发愤涂枪（TaCZ Spray Paint）
 
 [English](README.md) | 中文
 
