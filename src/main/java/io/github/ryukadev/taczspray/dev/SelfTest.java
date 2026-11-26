@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.event.TickEvent;
@@ -250,7 +251,18 @@ public final class SelfTest {
                 player.getInventory().selected = 6;
             });
             case 662 -> shot(mc, "icons");
-            case 666 -> {
+            // the recording help: /hidehud takes every overlay away (hotbar, crosshair, TaCZ's ammo counter) and
+            // leaves the held gun drawn; a second /hidehud brings them back
+            case 663 -> onServer(mc, player -> player.getInventory().setItem(6, DevGuns.make("tacz:ak47")));
+            case 666 -> mc.player.getInventory().selected = 6;
+            case 672 -> shot(mc, "hidehud-before");
+            case 673 -> TaczSpray.LOG.info("[selftest] /hidehud ran: {} (expect true)",
+                    ClientCommandHandler.runCommand("hidehud"));
+            case 676 -> shot(mc, "hidehud");
+            case 677 -> TaczSpray.LOG.info("[selftest] /hidehud again ran: {} (expect true)",
+                    ClientCommandHandler.runCommand("hidehud"));
+            case 681 -> shot(mc, "hidehud-off");
+            case 685 -> {
                 TaczSpray.LOG.info("[selftest] done");
                 mc.stop();
             }
