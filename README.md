@@ -1,5 +1,7 @@
 # TaCZ Spray Paint
 
+English | [中文](README.zh_cn.md)
+
 An add-on for [Timeless and Classics Zero](https://modrinth.com/mod/timeless-and-classics-zero) (TaCZ) that adds
 spray paint finishes for guns.
 
