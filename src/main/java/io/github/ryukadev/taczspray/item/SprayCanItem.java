@@ -6,6 +6,7 @@ import io.github.ryukadev.taczspray.FinishTables;
 import io.github.ryukadev.taczspray.PaintableGuns;
 import io.github.ryukadev.taczspray.Series;
 import io.github.ryukadev.taczspray.TenPull;
+import io.github.ryukadev.taczspray.dev.DevKit;
 import io.github.ryukadev.taczspray.client.ClientCatalog;
 import io.github.ryukadev.taczspray.net.ChoiceMessage;
 import io.github.ryukadev.taczspray.net.Network;
@@ -112,7 +113,7 @@ public final class SprayCanItem extends PaintingItem {
             Network.sendTo(player, new ChoiceMessage(gun, pull, true));
             return 1;
         }
-        Finish finish = rolled.get(0);
+        Finish finish = DevKit.rigged(id, table, random::nextDouble).orElse(rolled.get(0));
         finish.writeTo(gun);
         player.getInventory().setChanged();
         Network.sendTo(player, new RevealMessage(gun, finish, table.reel(id, draw.pool(), finish, random::nextDouble)));

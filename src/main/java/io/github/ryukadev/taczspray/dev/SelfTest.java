@@ -262,7 +262,29 @@ public final class SelfTest {
             case 677 -> TaczSpray.LOG.info("[selftest] /hidehud again ran: {} (expect true)",
                     ClientCommandHandler.runCommand("hidehud"));
             case 681 -> shot(mc, "hidehud-off");
-            case 685 -> {
+            // the filming rig: a plain can lands on the rigged pattern, and its reel still scrolls through others
+            case 685 -> onServer(mc, player -> {
+                var commands = player.server.getCommands();
+                commands.performPrefixedCommand(player.createCommandSourceStack(), "taczspray_dev rig gold");
+                sprayOnce(player);
+                Finish got = Finish.of(player.getOffhandItem());
+                TaczSpray.LOG.info("[selftest] rigged to gold, a plain can gave {} (expect gold)",
+                        got == null ? null : got.look());
+                commands.performPrefixedCommand(player.createCommandSourceStack(), "taczspray_dev rig off");
+            });
+            case 705 -> shot(mc, "rigged-scrolling");
+            case 880 -> shot(mc, "rigged-landed");
+            case 885 -> {
+                mc.setScreen(null);
+                onServer(mc, player -> {
+                    sprayOnce(player);
+                    Finish got = Finish.of(player.getOffhandItem());
+                    TaczSpray.LOG.info("[selftest] rig off, a plain can gave {} (gold now and then by chance)",
+                            got == null ? null : got.look());
+                });
+            }
+            case 890 -> mc.setScreen(null);
+            case 895 -> {
                 TaczSpray.LOG.info("[selftest] done");
                 mc.stop();
             }
