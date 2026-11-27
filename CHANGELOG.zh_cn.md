@@ -2,6 +2,10 @@
 
 [English](CHANGELOG.md) | 中文
 
+## 未发布
+
+- Forge 的模组列表里显示本模组的图标。
+
 ## 1.0.0（2026-11-26）
 
 首个版本。支持 Minecraft 1.20.1（Forge 47）上的永恒枪械工坊：Zero 1.1.8-hotfix、1.1.8-hotfix2 与 1.2.0-hotfix。

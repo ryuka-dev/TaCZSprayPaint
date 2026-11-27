@@ -9,6 +9,9 @@ version = "${mod_version}"
 displayName = "${mod_name}"
 authors = "${mod_authors}"
 displayURL = "https://github.com/ryuka-dev/TaCZSprayPaint"
+logoFile = "logo.png"
+# pixel art: scale the logo without smoothing
+logoBlur = false
 description = '''
 Spray paint for Timeless and Classics Zero guns. A spray can gives the gun in your off hand a random finish:
 pattern, grade and wear are rolled every time. Paint remover takes it off again.

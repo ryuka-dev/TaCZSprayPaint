@@ -2,6 +2,10 @@
 
 English | [中文](CHANGELOG.zh_cn.md)
 
+## Unreleased
+
+- The mod shows its icon in Forge's mod list.
+
 ## 1.0.0 (2026-11-26)
 
 First release. Works with Timeless and Classics Zero 1.1.8-hotfix, 1.1.8-hotfix2 and 1.2.0-hotfix on Minecraft
